@@ -38,7 +38,8 @@ export type Blok =
   | { type: 'tekst'; inhoud: VertaaldVeld }
   | { type: 'afbeelding'; bron: string; alt: VertaaldVeld; bijschrift?: VertaaldVeld }
   | { type: 'citaat'; tekst: VertaaldVeld; bron: VertaaldVeld }
-  | { type: 'quiz'; vraag: VertaaldVeld; antwoord: boolean; uitleg: VertaaldVeld };
+  | { type: 'quiz'; vraag: VertaaldVeld; antwoord: boolean; uitleg: VertaaldVeld }
+  | { type: 'hoofdstuk'; titel: VertaaldVeld; blokken: Blok[] };
 
 export type Verhaal = {
   id: string;
@@ -47,8 +48,12 @@ export type Verhaal = {
   teaser: VertaaldVeld;
   jaar: number;
   periodeLabel: string;
-  /** Portrait/cover image source for the figure, used by the era-row card (REFACTOR-PLAN.md R4). */
-  afbeelding: string;
+  /** Whether this story is about a person or an event (REFACTOR-PLAN.md R8). */
+  soort: 'persoon' | 'gebeurtenis';
+  /** Portrait/cover image source for the figure, used by the era-row card (REFACTOR-PLAN.md R4). Optional placeholder until AI-generated portraits exist (R8). */
+  afbeelding?: string;
+  /** Fallback hex color for the portrait card when afbeelding is absent (REFACTOR-PLAN.md R8). */
+  portretKleur: string;
   /** Whether this story is eligible for the Home "uitgelicht" hero slot. */
   uitgelicht?: boolean;
   /** Display order within its tijdperk, e.g. for the ~5 figures shown on Home (REFACTOR-PLAN.md R4). */
