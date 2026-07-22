@@ -2,8 +2,6 @@ import { collecties, getCollectie } from '@/content/collecties';
 import { getVerhaal, verhalen } from '@/content/verhalen';
 import type { Verhaal } from '@/constants/types';
 
-const UITGELICHT_VERHAAL_ID = 'crown-for-new-empire';
-
 export function getVerhalenVoorCollectie(collectieId: string): Verhaal[] {
   const collectie = getCollectie(collectieId);
   if (!collectie) return [];
@@ -16,8 +14,10 @@ export function getCollectiesVoorVerhaal(verhaalId: string) {
   return collecties.filter((collectie) => collectie.verhaalIds.includes(verhaalId));
 }
 
+// Picks the first verhaal flagged uitgelicht (in tijdperk order), rather than a hardcoded id,
+// so each era's R7 content agent can nominate its own hero candidate independently.
 export function getUitgelichtVerhaal(): Verhaal {
-  return getVerhaal(UITGELICHT_VERHAAL_ID) ?? verhalen[0];
+  return verhalen.find((verhaal) => verhaal.uitgelicht) ?? verhalen[0];
 }
 
 export function getNieuwToegevoegd(aantal = 6): Verhaal[] {

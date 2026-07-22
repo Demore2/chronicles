@@ -54,7 +54,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "generate:map-data": "node scripts/generate-map-data.mjs"
+    "generate:map-data": "node scripts/generate-map-data.mjs",
+    "validate:content": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-content.mjs"
   },
   "private": true
 }

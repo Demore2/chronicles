@@ -40,7 +40,7 @@ export const useVoortgangStore = create<VoortgangState>()(
   persist(
     (set) => ({
       gelezenIds: new Set<string>(),
-      bekekenIds: new Set(['the-company-sets-sail']),
+      bekekenIds: new Set(['the-long-way-around']),
       streakDagen: 1,
       laatsteActiviteitDatum: null,
       markeerAlsGelezen: (verhaalId) =>

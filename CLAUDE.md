@@ -13,10 +13,13 @@ npm run ios                    # dev server, iOS
 npx tsc --noEmit                # type-check the whole project — run this after any change
 npm run lint                    # expo lint
 npm run generate:map-data       # regenerate src/constants/map-data.ts from Natural Earth data
+npm run validate:content         # structural check of src/content/verhalen/**, collecties.ts
 ```
 
 There is no test suite in this repo — don't invent test commands. `npx tsc --noEmit` is the
-primary correctness check and should be run before considering a change done.
+primary correctness check and should be run before considering a change done. When editing
+content (`src/content/verhalen/*.ts`, `collecties.ts`), also run `npm run validate:content` — see
+`CONTENT-SCHEMA.md` for the schema/style rules it checks against.
 
 Web preview quirk: **`experiments.reactCompiler` in `app.json` is deliberately set to `false`.**
 It was `true` originally, but it miscompiles custom hooks that return more than one plain
@@ -198,14 +201,16 @@ section's i18n heading) was removed in the R6 copy sweep, along with the other d
 (`tabs.kaart`, `voortgang.perLand`/`legeLandenTitel`/`legeLandenBeschrijving`, and the whole
 `kaart`/`regio`/`continent` sections) — see REFACTOR-PLAN.md's R6 note for what stayed and why.
 
-Not done: real content — as of this writing every `src/content/verhalen/<tijdperk-id>.ts` has 2-3
-**placeholder** stories (added after R4, outside the phase plan, purely so the full Home layout —
-every era row populated — could be previewed) and `collecties.ts` still holds only its original
-minimal English-only sample set (2 collections, re-curated in R5 — see below); `continenten.ts`/
-`regios.ts` still hold the old country data but it's now only read by orphaned code; Google Play
-Billing and AdMob are still stubs. **The placeholder stories are not real content**: short, single-`tekst`-block, marked with
-a `TIJDELIJK` comment at the top of each era file, and all six `Tijdperk.actief` flags were
-flipped to `true` to show them. When R7 gives each era its own content agent, that agent should
-replace its era's placeholder stories with real ones (and drop the `TIJDELIJK` comment) rather
-than append to them; re-evaluate `actief` per era only if an R7 era ends up with no real content
-after all.
+Real content done (REFACTOR-PLAN.md phase R7): every `src/content/verhalen/<tijdperk-id>.ts` now
+holds 6 real, historically-accurate stories (36 total), written by one subagent per era per the
+plan's "one agent per era, one file each" design — see `CONTENT-SCHEMA.md` for the schema/style
+rules those agents (and any future content work) should follow, and `npm run validate:content`
+(`scripts/validate-content.mjs`) for the structural checks (unique ids, valid `tijdperkId`, every
+`VertaaldVeld` has `en`, every `Blok` variant well-formed, `quiz.antwoord` boolean, plus every
+`collecties.ts` verhaalId still resolving). The `TIJDELIJK` placeholder stories and comments from
+the post-R4 addendum are gone; all six `Tijdperk.actief` flags stay `true` since every era now has
+real content. `collecties.ts` still holds only its original 2 collections (re-curated in R5 — see
+below), just re-pointed at real story ids instead of placeholders.
+
+Not done: `continenten.ts`/`regios.ts` still hold the old country data but it's now only read by
+orphaned code; Google Play Billing and AdMob are still stubs.

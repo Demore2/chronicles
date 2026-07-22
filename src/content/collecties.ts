@@ -1,9 +1,9 @@
 import type { Collectie } from '@/constants/types';
 
-// verhaalIds below point at the current per-era placeholder stories (see the TIJDELIJK
-// comments in src/content/verhalen/*.ts). getVerhalenVoorCollectie() silently drops any id
-// that no longer resolves, so when an R7 agent replaces its era's placeholder stories, re-check
-// these lists — a renamed/removed id won't error, it'll just quietly shrink a storyline.
+// verhaalIds below point at real stories written by the R7 per-era content agents
+// (REFACTOR-PLAN.md). getVerhalenVoorCollectie() silently drops any id that no longer
+// resolves, so if an era file's ids ever change again, re-check these lists — a renamed/removed
+// id won't error, it'll just quietly shrink a storyline.
 export const collecties: Collectie[] = [
   {
     id: 'power-and-conflict',
@@ -12,7 +12,7 @@ export const collecties: Collectie[] = [
     beschrijving: { en: 'Kings, crowds, and the wars that reshaped power.' },
     kleur: '#8B4A52',
     icoonNaam: 'shield-outline',
-    verhaalIds: ['crown-for-new-empire', 'storming-a-fortress-for-liberty', 'rebuilding-after-the-war'],
+    verhaalIds: ['an-empire-crowned-again', 'a-fortress-falls-in-paris', 'the-night-the-wall-came-down'],
   },
   {
     id: 'trade-and-progress',
@@ -21,7 +21,7 @@ export const collecties: Collectie[] = [
     beschrijving: { en: 'Scholars, merchants, and the inventions that moved the world forward.' },
     kleur: '#B8923F',
     icoonNaam: 'boat-outline',
-    verhaalIds: ['a-library-for-the-world', 'the-company-sets-sail', 'steam-power-takes-the-rails'],
+    verhaalIds: ['marks-that-remember', 'shares-for-every-merchant', 'the-line-that-outran-the-horse'],
   },
 ];
 

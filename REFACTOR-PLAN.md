@@ -119,7 +119,7 @@ re-derive anything.
 | R4 | Home / era rows UI | ✅ done |
 | R5 | Collecties reframing | ✅ done |
 | R6 | i18n + copy sweep | ✅ done |
-| R7 | Content pipeline / agents | ⬜ not started |
+| R7 | Content pipeline / agents | ✅ done |
 
 **R1 note:** `npm run lint` had never been run in this repo before — no ESLint config existed.
 Running it for R1 auto-installed `eslint`/`eslint-config-expo` and generated `eslint.config.js`
@@ -254,6 +254,51 @@ harmed that are reachable from a live screen. `tsc --noEmit` clean; `npm run lin
 same pre-existing baseline from R1/R3/R4/R5 (unrelated files). Verified on web (`localhost:8083`):
 Home, Voortgang (era breakdown only, no country section), Profiel, and both `/collectie/<id>`
 screens all render unchanged.
+
+**R7 note:** Built the two pipeline pieces first — `CONTENT-SCHEMA.md` (schema/style guide for
+`Verhaal`/`Blok`, id conventions, historical-accuracy rules) and `npm run validate:content`
+(`scripts/validate-content.mjs`). The validator needed its own custom ESM loader
+(`scripts/ts-content-loader.mjs`): the project has no `ts-node`/`tsx` dependency, and while
+Node 24 can run `.ts` files directly (type-stripping), its ESM resolver doesn't understand the
+`@/` tsconfig path alias and requires explicit extensions on relative imports — neither of which
+the content files have, since they're written for Metro's bundler resolution. The loader rewrites
+`@/*` to `src/*` and appends `.ts`/`/index.ts` to extensionless specifiers before handing back to
+Node's resolver; `--disable-warning=MODULE_TYPELESS_PACKAGE_JSON` in the npm script silences the
+resulting (harmless) "reparsing as ES module" warning. The validator checks unique ids, valid
+`tijdperkId`, every `VertaaldVeld` has `en`, every `Blok` variant is well-formed, and
+`quiz.antwoord` is a boolean — plus one check beyond the plan's literal list: every
+`collecties.ts` `verhaalId` resolves to a real story, since R5's note had already flagged that
+exact silent-shrinkage failure mode.
+
+Then ran 6 parallel subagents, one per era, each instructed to touch only its own
+`src/content/verhalen/<era-id>.ts` and replace that era's `TIJDELIJK` placeholder stories (added
+after R4, see that section's addendum) with 6 real, historically-accurate stories — all 36 stories
+landed with no id collisions across eras. Reviewing agent's job (per the plan) was cross-file
+cleanup, not prose: `collecties.ts`'s `verhaalIds` still pointed at the now-gone placeholder ids
+(`crown-for-new-empire`, `storming-a-fortress-for-liberty`, `rebuilding-after-the-war`,
+`a-library-for-the-world`, `the-company-sets-sail`, `steam-power-takes-the-rails`) and were
+re-pointed at real stories with matching themes, keeping each collection's 3-era span and the
+no-duplicate-story-across-collections rule from R5 (`power-and-conflict`: `an-empire-crowned-again`
+→ `a-fortress-falls-in-paris` → `the-night-the-wall-came-down`; `trade-and-progress`:
+`marks-that-remember` → `shares-for-every-merchant` → `the-line-that-outran-the-horse`).
+`src/content/queries.ts`'s `getUitgelichtVerhaal()` turned out to have never actually used the
+`Verhaal.uitgelicht` flag — it returned a story matched against a hardcoded
+`UITGELICHT_VERHAAL_ID` constant, which is exactly the kind of stale id this phase kept breaking.
+Fixed properly instead of just updating the constant: it now picks the first verhaal (in
+tijdperk/barrel order) with `uitgelicht: true`, so each era's content can nominate its own hero
+candidate independently — Antiquity's `daggers-on-the-senate-floor` (Caesar's assassination) is
+the current pick, since Antiquity is first in tijdperk order and its agent happened to flag that
+story. One more stale reference surfaced by grep, not by `validate:content` (it isn't a content
+file): `src/store/voortgang-store.ts`'s demo-seed `bekekenIds` set still contained the old
+`the-company-sets-sail` id, repointed to `the-long-way-around`. `npx tsc --noEmit` clean;
+`npm run lint` shows only the same pre-existing baseline from R1/R3/R4/R5/R6 (unrelated orphaned
+files); `npm run validate:content` reports `36 verhalen across 6 tijdperken, 2 collecties` with no
+problems. Verified on web (`localhost:8083`): Home hero shows the new Caesar story, both
+storyline/collectie screens show their 3 re-pointed stories, a story screen renders
+`tekst`/`citaat`/`quiz` blocks correctly, `tijdperk/hedendaags` lists all 6 Contemporary stories
+chronologically, and Voortgang's per-era breakdown reads `0/6` for all six eras (`0/36` total) —
+confirming the new content replaced the placeholders everywhere without breaking any existing
+screen.
 
 ## Open decisions
 
