@@ -16,7 +16,7 @@ export function getCollectiesVoorVerhaal(verhaalId: string) {
 
 // Picks the first verhaal flagged uitgelicht (in tijdperk order), rather than a hardcoded id,
 // so each era's R7 content agent can nominate its own hero candidate independently.
-export function getUitgelichtVerhaal(): Verhaal {
+export function getUitgelichtVerhaal(): Verhaal | undefined {
   return verhalen.find((verhaal) => verhaal.uitgelicht) ?? verhalen[0];
 }
 

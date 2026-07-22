@@ -29,6 +29,22 @@ function isVertaaldVeld(value, path) {
   }
 }
 
+function validateChapter(chapter, path) {
+  if (typeof chapter !== 'object' || chapter === null) {
+    errors.push(`${path}: expected a Chapter object`);
+    return;
+  }
+  if (typeof chapter.id !== 'number') {
+    errors.push(`${path}.id: expected a number, got ${JSON.stringify(chapter.id)}`);
+  }
+  isVertaaldVeld(chapter.titel, `${path}.titel`);
+  if (!Array.isArray(chapter.blokken) || chapter.blokken.length === 0) {
+    errors.push(`${path}.blokken: expected a non-empty array`);
+  } else {
+    chapter.blokken.forEach((blok, i) => validateBlok(blok, `${path}.blokken[${i}]`));
+  }
+}
+
 function validateBlok(blok, path) {
   if (typeof blok !== 'object' || blok === null || typeof blok.type !== 'string') {
     errors.push(`${path}: not a valid Blok (missing "type")`);
@@ -89,14 +105,24 @@ for (const verhaal of verhalen) {
     errors.push(`${path}.tijdperkId: "${verhaal.tijdperkId}" does not match any Tijdperk`);
   }
 
+  if (typeof verhaal.portretKleur !== 'string') {
+    errors.push(`${path}.portretKleur: missing or not a string`);
+  } else if (!/^#[0-9A-Fa-f]{6}$/.test(verhaal.portretKleur)) {
+    errors.push(`${path}.portretKleur: "${verhaal.portretKleur}" is geen geldig hex-kleur`);
+  }
+
+  if (verhaal.soort !== 'persoon' && verhaal.soort !== 'gebeurtenis') {
+    errors.push(`${path}.soort: expected 'persoon' or 'gebeurtenis', got ${JSON.stringify(verhaal.soort)}`);
+  }
+
   isVertaaldVeld(verhaal.titel, `${path}.titel`);
   isVertaaldVeld(verhaal.ondertitel, `${path}.ondertitel`);
   isVertaaldVeld(verhaal.teaser, `${path}.teaser`);
 
-  if (!Array.isArray(verhaal.blokken) || verhaal.blokken.length === 0) {
-    errors.push(`${path}.blokken: expected a non-empty array`);
+  if (!Array.isArray(verhaal.chapters) || verhaal.chapters.length === 0) {
+    errors.push(`${path}.chapters: expected a non-empty array`);
   } else {
-    verhaal.blokken.forEach((blok, i) => validateBlok(blok, `${path}.blokken[${i}]`));
+    verhaal.chapters.forEach((chapter, i) => validateChapter(chapter, `${path}.chapters[${i}]`));
   }
 }
 

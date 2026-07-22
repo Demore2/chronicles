@@ -38,8 +38,14 @@ export type Blok =
   | { type: 'tekst'; inhoud: VertaaldVeld }
   | { type: 'afbeelding'; bron: string; alt: VertaaldVeld; bijschrift?: VertaaldVeld }
   | { type: 'citaat'; tekst: VertaaldVeld; bron: VertaaldVeld }
-  | { type: 'quiz'; vraag: VertaaldVeld; antwoord: boolean; uitleg: VertaaldVeld }
-  | { type: 'hoofdstuk'; titel: VertaaldVeld; blokken: Blok[] };
+  | { type: 'quiz'; vraag: VertaaldVeld; antwoord: boolean; uitleg: VertaaldVeld };
+
+export type Chapter = {
+  id: number;
+  titel: VertaaldVeld;
+  afbeelding?: string;
+  blokken: Blok[];
+};
 
 export type Verhaal = {
   id: string;
@@ -61,7 +67,7 @@ export type Verhaal = {
   tijdperkId: string;
   themas: string[];
   leestijdMinuten: number;
-  blokken: Blok[];
+  chapters: Chapter[];
 };
 
 export type Collectie = {

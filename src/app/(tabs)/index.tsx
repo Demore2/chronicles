@@ -35,6 +35,29 @@ export default function OntdekScreen() {
     .filter((verhaal): verhaal is Verhaal => verhaal !== undefined && !gelezenIds.has(verhaal.id));
   const nieuwToegevoegd = getNieuwToegevoegd();
 
+  if (!uitgelicht) {
+    return (
+      <ThemedView style={styles.container}>
+        <SafeAreaView edges={['top']} style={styles.safeArea}>
+          <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+            <View style={styles.headerRow}>
+              <ThemedText type="display">{t((s) => s.tabs.ontdek)}</ThemedText>
+              <View style={[styles.streak, { backgroundColor: theme.backgroundElement }]}>
+                <Ionicons name="flame" size={18} color={theme.accent} />
+                <ThemedText type="smallBold">{streakDagen}</ThemedText>
+              </View>
+            </View>
+            <LegeStaat
+              icoonNaam="book-outline"
+              titel="Geen content"
+              beschrijving="Er zijn nog geen verhalen beschikbaar."
+            />
+          </ScrollView>
+        </SafeAreaView>
+      </ThemedView>
+    );
+  }
+
   function openVerhaal(verhaalId: string) {
     router.push({ pathname: '/verhaal/[id]', params: { id: verhaalId } });
   }

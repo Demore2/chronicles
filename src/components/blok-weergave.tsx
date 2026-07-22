@@ -43,7 +43,7 @@ export function BlokWeergave({
     return (
       <View style={[styles.citaatBlok, { borderLeftColor: theme.accent }]}>
         <ThemedText type="subtitle" style={styles.citaatTekst}>
-          “{v(blok.tekst)}”
+          {'"'}{v(blok.tekst)}{'"'}
         </ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
           — {v(blok.bron)}

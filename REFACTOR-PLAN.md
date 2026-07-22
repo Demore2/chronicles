@@ -120,6 +120,7 @@ re-derive anything.
 | R5 | Collecties reframing | ✅ done |
 | R6 | i18n + copy sweep | ✅ done |
 | R7 | Content pipeline / agents | ✅ done |
+| R8 | Multi-chapter + Oudheid pilot | 🔄 in progress |
 
 **R1 note:** `npm run lint` had never been run in this repo before — no ESLint config existed.
 Running it for R1 auto-installed `eslint`/`eslint-config-expo` and generated `eslint.config.js`
@@ -299,6 +300,219 @@ storyline/collectie screens show their 3 re-pointed stories, a story screen rend
 chronologically, and Voortgang's per-era breakdown reads `0/6` for all six eras (`0/36` total) —
 confirming the new content replaced the placeholders everywhere without breaking any existing
 screen.
+
+### R8 — Multi-chapter + Oudheid 4-verhalen pilot (in progress)
+
+**Scope:** Structuur voor multi-chapter verhalen (geneste `Blok`-type), UI-refactor naar groot-carousel (portret + naam + "Discover more" button), radicale content-reset (alle 36 proef-verhalen weg), start fris met Oudheid-4-verhalen alleen.
+
+**Order:** Werk de blokken in deze volgorde af → elke blok eindigt met `tsc --noEmit` groen.
+
+---
+
+### **R8.1 — `src/constants/types.ts`: Blok + Verhaal extenden**
+
+**Prompt voor Claude Code:**
+```
+Wijzig src/constants/types.ts:
+
+1. Breid de `Blok` union uit met het 'hoofdstuk'-type:
+   - Toevoegen: { type: 'hoofdstuk'; titel: VertaaldVeld; blokken: Blok[] }
+   - Dit is recursief — hoofdstukken kunnen andere blokken bevatten
+
+2. Breid `Verhaal` interface uit met deze velden (voeg toe, vervang niet):
+   - afbeelding?: string;              (URI naar portret, placeholder tot AI)
+   - portretKleur: string;             (Hex-kleur voor fallback, bijv "#A67C52")
+   - (de rest: id, titel, periode, jaren, tijdperkId, korteBeschrijving, beschrijving, blokken, themas, uitgelicht, volgorde, soort blijven ongewijzigd)
+
+3. Controleer: npx tsc --noEmit — moet clean zijn.
+```
+
+**Hex-keuzes voor Oudheid (voorstel):**
+- Caesar (persoon): `#8B4513`
+- Spartacus (persoon): `#CD853F`
+- Rome's Rise (gebeurtenis): `#A0522D`
+- Pompeii Disaster (gebeurtenis): `#C17F4E`
+
+---
+
+### **R8.2 — `src/components/blok-weergave.tsx`: Recursive rendering voor 'hoofdstuk'**
+
+**Prompt voor Claude Code:**
+```
+Wijzig src/components/blok-weergave.tsx:
+
+1. Voeg case toe voor type === 'hoofdstuk':
+   - Render een <View> met titel (gebruik v() voor VertaaldVeld)
+   - Render alle geneste blokken recursief (blok.blokken.map(b => <BlokWeergave key={...} blok={b} />))
+   - Voeg visuele scheiding toe (bijv grijze border-top, padding)
+
+2. Controleer: `npm run lint` en `npx tsc --noEmit` — geen nieuwe warnings.
+```
+
+---
+
+### **R8.3 — `src/components/verhaal-kaart.tsx`: Groot-carousel refactor**
+
+**Prompt voor Claude Code:**
+```
+Wijzig src/components/verhaal-kaart.tsx (of maak nieuw, indien nodig):
+
+**Doel:** Portret-prominente kaart voor Home carousel (zie image: Julius Caesar foto groot, naam eronder).
+
+1. Kaart-layout (groot, bijv width 280px op phone):
+   - Top: Portret-afbeelding (aspect-ratio 3:4 of 2:3, gerond)
+     - Als afbeelding?: use Image component
+     - Als geen afbeelding: fallback ColorBox met portretKleur + initiaal van naam
+   - Middle: Titel (naam, bijv "Julius Caesar") — bold, groot
+   - Bottom: "Discover more" button → navigeer naar /verhaal/[id]
+
+2. Fallback-rendering:
+   - No afbeelding → genereeer kleur-box: backgroundColor = verhaal.portretKleur
+   - Voeg initiaal toe (eerste letter van titel.en)
+   - Font-size groot (bijv 64px)
+
+3. Controleer: `npm run lint` + `npx tsc --noEmit` clean.
+```
+
+---
+
+### **R8.4 — `src/components/tijdperk-rij.tsx`: Carousel-style + button onderaan**
+
+**Prompt voor Claude Code:**
+```
+Wijzig src/components/tijdperk-rij.tsx:
+
+1. Vervang rechts-gealignde "Ontdek meer" link door button onderaan:
+   - Voeg toe onder de HorizontaleRij: <Button title="Discover more" onPress={() => router.push(...)} />
+   
+2. Pas kaart-grootte aan voor groot-carousel effect:
+   - Verhoog kaart-breedte (bijv 280px in plaats van 200px)
+   - Zorg dat portretten volledig zichtbaar zijn (geen crop)
+
+3. Controleer: `npm run lint` + `npx tsc --noEmit` clean.
+```
+
+---
+
+### **R8.5 — `src/content/verhalen/`: Content-reset + Oudheid dual-split**
+
+**Prompt voor Claude Code:**
+```
+Herstructureer src/content/verhalen/:
+
+1. DELETE ALLE 36 PROEF-VERHALEN UIT BESTAANDE ERA-BESTANDEN:
+   - Pas aan: oudheid.ts, middeleeuwen.ts, vroegmoderne-tijd.ts, 
+     industriele-revolutie.ts, twintigste-eeuw.ts, hedendaags.ts
+   - Per bestand: leeg de export array (bijv: export const oudheid: Verhaal[] = [];)
+
+2. Creëer Oudheid dual-split (nieuw):
+   - mkdir src/content/verhalen/oudheid/
+   - Creëer: src/content/verhalen/oudheid/index.ts (barrel, re-export uit personen + gebeurtenissen)
+   - Creëer: src/content/verhalen/oudheid/personen.ts (lege array: export const oudheidPersonen: Verhaal[] = [];)
+   - Creëer: src/content/verhalen/oudheid/gebeurtenissen.ts (lege array: export const oudheidGebeurtennissen: Verhaal[] = [];)
+   - Wijzig: src/content/verhalen/oudheid.ts → gut tot één lijn: export * from './oudheid/index';
+
+3. Controleer: npx tsc --noEmit clean.
+```
+
+---
+
+### **R8.6 — `src/content/collecties.ts`: Reset (leeg)**
+
+**Prompt voor Claude Code:**
+```
+Wijzig src/content/collecties.ts:
+
+1. Maak de Collecties array leeg:
+   export const collecties: Collectie[] = [];
+
+2. Voeg comment toe: // R8: Leeg tot Oudheid 4-verhalen gereed
+
+3. Controleer: npx tsc --noEmit clean.
+```
+
+---
+
+### **R8.7 — `src/store/voortgang-store.ts`: Demo-seed reset**
+
+**Prompt voor Claude Code:**
+```
+Wijzig src/store/voortgang-store.ts:
+
+1. Vind initialState / demo-seed (rond line 20-40)
+2. Reset bekekenIds naar lege set:
+   bekekenIds: new Set<string>(),   // was: new Set(['...', '...', ...])
+
+3. Controleer: npx tsc --noEmit clean.
+```
+
+---
+
+### **R8.8 — `scripts/validate-content.mjs`: portretKleur-check**
+
+**Prompt voor Claude Code:**
+```
+Wijzig scripts/validate-content.mjs (of create new):
+
+1. Voeg validatie toe voor portretKleur:
+   - Check: /^#[0-9A-Fa-f]{6}$/ (valide 6-digit hex)
+   - Error als niet valide: "Verhaal [id] portretKleur is geen geldig hex-kleur"
+
+2. Voeg check toe: verhaal.soort === 'persoon' || 'gebeurtenis'
+   - Error als ander type
+
+3. Voeg check toe: verhaal.portretKleur defined
+   - Error als ontbreekt
+
+4. Run: npm run validate:content — moet 0 errors tonen.
+```
+
+---
+
+### **R8.9 — Home / Voortgang / Profiel sanity-check**
+
+**Prompt voor Claude Code:**
+```
+Visueel checken (npx expo start --web):
+
+1. Home:
+   - Oudheid-rij zichtbaar (groot-carousel style)
+   - Kaarten tonen portret-placeholder (kleur + initiaal C/S/R/P)
+   - "Discover more" button onderaan (niet rechts)
+   - Klik → /verhaal/[id] pagina (empty, pas content later)
+
+2. Voortgang:
+   - "0/4 Oudheid" in per-era breakdown
+
+3. Profiel:
+   - Laad zonder errors
+
+4. Geen TypeScript/lint errors.
+```
+
+---
+
+## **Status R8**
+
+| Blok | Doel | Status |
+|------|------|--------|
+| R8.1 | types.ts: Blok + Verhaal | 🔲 |
+| R8.2 | blok-weergave.tsx: recursive | 🔲 |
+| R8.3 | verhaal-kaart: groot-carousel | 🔲 |
+| R8.4 | tijdperk-rij: button onderaan | 🔲 |
+| R8.5 | content-reset + Oudheid split | 🔲 |
+| R8.6 | collecties reset | 🔲 |
+| R8.7 | voortgang-store reset | 🔲 |
+| R8.8 | validate-content uitbreid | 🔲 |
+| R8.9 | Sanity-check web | 🔲 |
+
+**Pathflow (na R8):**
+- Home → Oudheid-rij (groot-carousel, 4 kaarten)
+- Click → `/verhaal/[id]` → (leeg totdat agents schrijven)
+- Voortgang: "0/4 Oudheid"
+- Profiel: onveranderd
+
+**Done when**: Alle 9 blokken ✅, `tsc` + `lint` + `validate:content` green, web preview toont groot-carousel zonder errors.
 
 ## Open decisions
 

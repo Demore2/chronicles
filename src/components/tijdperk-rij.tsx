@@ -2,9 +2,10 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { HorizontaleRij } from '@/components/horizontale-rij';
 import { ThemedText } from '@/components/themed-text';
-import { VerhaalKaart } from '@/components/verhaal-kaart';
-import { CardDimensions, Spacing } from '@/constants/theme';
+import { VerhaalCarouselKaart } from '@/components/verhaal-carousel-kaart';
+import { Radii, Spacing } from '@/constants/theme';
 import type { Tijdperk, Verhaal } from '@/constants/types';
+import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 
 export function TijdperkRij({
@@ -20,6 +21,7 @@ export function TijdperkRij({
   onPressVerhaal: (verhaalId: string) => void;
   onPressOntdekMeer: () => void;
 }) {
+  const theme = useTheme();
   const { t, v } = useVertaling();
 
   return (
@@ -31,21 +33,23 @@ export function TijdperkRij({
             {v(tijdperk.korteBeschrijving)}
           </ThemedText>
         </View>
-        <Pressable onPress={onPressOntdekMeer} hitSlop={8}>
-          <ThemedText type="link" themeColor="accent">
-            {t((s) => s.ontdek.ontdekMeer)}
-          </ThemedText>
-        </Pressable>
       </View>
       <HorizontaleRij
         data={verhalen}
         keyExtractor={(verhaal) => verhaal.id}
-        itemBreedte={CardDimensions.portraitWidth}
+        itemBreedte={280}
         contentContainerStyle={styles.rij}
         renderItem={({ item }) => (
-          <VerhaalKaart verhaal={item} gelezen={gelezenIds.has(item.id)} onPress={() => onPressVerhaal(item.id)} />
+          <VerhaalCarouselKaart verhaal={item} />
         )}
       />
+      <Pressable
+        onPress={onPressOntdekMeer}
+        style={[styles.button, { backgroundColor: theme.accent }]}>
+        <ThemedText type="smallBold" style={{ color: theme.background }}>
+          {t((s) => s.ontdek.ontdekMeer)}
+        </ThemedText>
+      </Pressable>
     </View>
   );
 }
@@ -55,18 +59,20 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
   },
   kop: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    gap: Spacing.two,
     paddingHorizontal: Spacing.four,
   },
   titelArea: {
-    flex: 1,
     gap: Spacing.half,
   },
   rij: {
     gap: Spacing.three,
     paddingHorizontal: Spacing.four,
+  },
+  button: {
+    marginHorizontal: Spacing.four,
+    paddingVertical: Spacing.two,
+    borderRadius: Radii.button,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
