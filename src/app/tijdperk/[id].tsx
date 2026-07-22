@@ -1,14 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useMemo } from 'react';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
 import { LegeStaat } from '@/components/lege-staat';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { continenten } from '@/constants/continenten';
-import { getRegio } from '@/constants/regios';
 import { Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
 import { getVerhalenByTijdperk } from '@/content/verhalen';
@@ -22,27 +20,9 @@ export default function TijdperkScreen() {
   const theme = useTheme();
   const { t, v } = useVertaling();
   const gelezenIds = useVoortgangStore((state) => state.gelezenIds);
-  const [actieveContinent, setActieveContinent] = useState<string | null>(null);
 
   const tijdperk = getTijdperk(id);
-  const alleVerhalen = useMemo(() => getVerhalenByTijdperk(id), [id]);
-
-  const continentenInTijdperk = useMemo(() => {
-    const ids = new Set<string>();
-    alleVerhalen.forEach((verhaal) => {
-      verhaal.regioIds.forEach((regioId) => {
-        const regio = getRegio(regioId);
-        if (regio) ids.add(regio.continentId);
-      });
-    });
-    return continenten.filter((continent) => ids.has(continent.id));
-  }, [alleVerhalen]);
-
-  const verhalen = actieveContinent
-    ? alleVerhalen.filter((verhaal) =>
-        verhaal.regioIds.some((regioId) => getRegio(regioId)?.continentId === actieveContinent)
-      )
-    : alleVerhalen;
+  const verhalen = useMemo(() => getVerhalenByTijdperk(id), [id]);
 
   if (!tijdperk) {
     return (
@@ -65,40 +45,6 @@ export default function TijdperkScreen() {
         </ThemedText>
         <ThemedText style={styles.wit}>{v(tijdperk.periode)}</ThemedText>
       </View>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chipsRij}
-        style={styles.chipsScroll}>
-        <Pressable
-          onPress={() => setActieveContinent(null)}
-          style={[
-            styles.chip,
-            { backgroundColor: actieveContinent === null ? theme.accent : theme.backgroundElement },
-          ]}>
-          <ThemedText
-            type="small"
-            style={{ color: actieveContinent === null ? theme.background : theme.text }}>
-            {t((s) => s.tijdperkScherm.alle)}
-          </ThemedText>
-        </Pressable>
-        {continentenInTijdperk.map((continent) => (
-          <Pressable
-            key={continent.id}
-            onPress={() => setActieveContinent(continent.id)}
-            style={[
-              styles.chip,
-              { backgroundColor: actieveContinent === continent.id ? theme.accent : theme.backgroundElement },
-            ]}>
-            <ThemedText
-              type="small"
-              style={{ color: actieveContinent === continent.id ? theme.background : theme.text }}>
-              {v(continent.naam)}
-            </ThemedText>
-          </Pressable>
-        ))}
-      </ScrollView>
 
       <FlatList
         data={verhalen}
@@ -148,18 +94,6 @@ const styles = StyleSheet.create({
   },
   wit: {
     color: '#FFFFFF',
-  },
-  chipsScroll: {
-    flexGrow: 0,
-  },
-  chipsRij: {
-    gap: Spacing.two,
-    padding: Spacing.four,
-  },
-  chip: {
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.one,
-    borderRadius: Radii.button,
   },
   lijst: {
     paddingHorizontal: Spacing.four,

@@ -3,15 +3,12 @@ import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Flag } from '@/components/flag';
-import { LegeStaat } from '@/components/lege-staat';
 import { SectieKop } from '@/components/sectie-kop';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { regios } from '@/constants/regios';
 import { Radii, Spacing, withAlpha } from '@/constants/theme';
 import { tijdperken } from '@/constants/tijdperken';
-import { getRegioVoortgang, getTijdperkVoortgang } from '@/content/queries';
+import { getTijdperkVoortgang } from '@/content/queries';
 import { verhalen } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
@@ -27,10 +24,6 @@ export default function VoortgangScreen() {
   const totaalVerhalen = verhalen.length;
   const totaalGelezen = gelezenIds.size;
   const totaalFractie = totaalVerhalen > 0 ? totaalGelezen / totaalVerhalen : 0;
-
-  const regiosMetVerhalen = regios
-    .map((regio) => ({ regio, voortgang: getRegioVoortgang(regio.id, gelezenIds) }))
-    .filter((item) => item.voortgang.totaal > 0);
 
   return (
     <ThemedView style={styles.container}>
@@ -99,45 +92,6 @@ export default function VoortgangScreen() {
                 );
               })}
             </View>
-          </View>
-
-          <View style={styles.sectie}>
-            <SectieKop titel={t((s) => s.voortgang.perLand)} />
-            {regiosMetVerhalen.length === 0 ? (
-              <LegeStaat
-                titel={t((s) => s.voortgang.legeLandenTitel)}
-                beschrijving={t((s) => s.voortgang.legeLandenBeschrijving)}
-              />
-            ) : (
-              <View style={styles.lijst}>
-                {regiosMetVerhalen.map(({ regio, voortgang }) => {
-                  const fractie = voortgang.totaal > 0 ? voortgang.gelezen / voortgang.totaal : 0;
-                  return (
-                    <Pressable
-                      key={regio.id}
-                      onPress={() => router.push({ pathname: '/regio/[id]', params: { id: regio.id } })}
-                      style={[styles.rij, { backgroundColor: theme.backgroundElement }]}>
-                      <Flag iso2={regio.iso2} size={32} />
-                      <View style={styles.rijTekst}>
-                        <ThemedText type="smallBold">{v(regio.naam)}</ThemedText>
-                        <ThemedText type="caption" themeColor="textSecondary">
-                          {t((s) => s.voortgang.aantalVerhalen)(voortgang.gelezen, voortgang.totaal)}
-                        </ThemedText>
-                        <View style={[styles.balkTrackKlein, { backgroundColor: theme.backgroundSelected }]}>
-                          <View
-                            style={[
-                              styles.balkVulling,
-                              { backgroundColor: theme.accent, width: `${fractie * 100}%` },
-                            ]}
-                          />
-                        </View>
-                      </View>
-                      {fractie >= 1 && <Ionicons name="checkmark-circle" size={22} color={theme.accent} />}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            )}
           </View>
         </ScrollView>
       </SafeAreaView>

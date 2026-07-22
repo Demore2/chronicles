@@ -45,7 +45,12 @@ export type Verhaal = {
   teaser: VertaaldVeld;
   jaar: number;
   periodeLabel: string;
-  regioIds: string[];
+  /** Portrait/cover image source for the figure, used by the era-row card (REFACTOR-PLAN.md R4). */
+  afbeelding: string;
+  /** Whether this story is eligible for the Home "uitgelicht" hero slot. */
+  uitgelicht?: boolean;
+  /** Display order within its tijdperk, e.g. for the ~5 figures shown on Home (REFACTOR-PLAN.md R4). */
+  volgorde?: number;
   tijdperkId: string;
   themas: string[];
   leestijdMinuten: number;

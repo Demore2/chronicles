@@ -32,34 +32,52 @@ follow that convention rather than fighting the block.
 ## Architecture
 
 Expo Router app (file-based routing under `src/app`, TypeScript, Zustand for state,
-AsyncStorage for persistence). Four bottom tabs (`src/app/(tabs)/`): Ontdek (Discover/home),
-Kaart (Map), Voortgang (Progress), Profiel (Profile). Stack screens outside the tab group
-(`collectie/[id]`, `tijdperk/[id]`, `verhaal/[id]`, `regio/[id]`) use a shared custom
-`AppHeader` (`src/app/_layout.tsx`) but usually hide its title (`options={{ title: '' }}`) in
-favor of their own colored header block, so that the back chevron still comes from `AppHeader`.
+AsyncStorage for persistence). Three bottom tabs (`src/app/(tabs)/`): Ontdek (route file kept,
+tab label "Home"), Voortgang (Progress), Profiel (Profile) — the Kaart tab was dropped in
+REFACTOR-PLAN.md phase R1, see "Orphaned code" below. Live stack screens outside the tab group
+(`collectie/[id]`, `tijdperk/[id]`, `verhaal/[id]`) use a shared custom `AppHeader`
+(`src/app/_layout.tsx`) but usually hide its title (`options={{ title: '' }}`) in favor of their
+own colored header block, so that the back chevron still comes from `AppHeader`. `regio/[id]`
+still exists but is orphaned as of phase R2 (see "Orphaned code" below) — no live screen links to
+it anymore.
 
 ### Data model (`src/constants/types.ts`)
 
 `Continent` → `Regio` (country, tied to the map via `iso2` and `continentId`) → `Tijdperk`
-(era) and `Verhaal` (story) are the core content types. A `Verhaal` belongs to one `tijdperkId`
-and one or more `regioIds`, and holds an ordered `blokken: Blok[]` array where `Blok` is a
-tagged union (`tekst` | `afbeelding` | `citaat` | `quiz`) rendered by
+(era) and `Verhaal` (story) are the core content types. Since REFACTOR-PLAN.md phase R2,
+`Regio`/`Continent` are no longer part of the UX, and `Tijdperk` is the only structural grouping
+live screens use. `Verhaal.regioIds` was dropped for real in R3 (was `optional`/`@deprecated`
+since R2) — `Verhaal` is now the figure/event itself, with `afbeelding` (portrait/cover image
+source, used by the R4 era-row card) plus optional `uitgelicht` (Home hero eligibility) and
+`volgorde` (display order within its `tijdperk`) driving which ~5 stories per era show up on
+Home. A `Verhaal` belongs to one `tijdperkId` and holds an ordered `blokken: Blok[]` array where
+`Blok` is a tagged union (`tekst` | `afbeelding` | `citaat` | `quiz`) rendered by
 `src/components/blok-weergave.tsx`. `Collectie` is a curated cross-cutting list of `verhaalIds`
-(a "storyline"/theme, not tied to era or region). Content lives in `src/content/verhalen.ts` and
-`src/content/collecties.ts`; `src/content/queries.ts` has the derived lookups (progress by
-region/era, "featured", "next story", etc.) — add new cross-cutting queries there rather than
-inline in screens.
+(a "storyline"/theme, not tied to era or region).
+
+Content lives in `src/content/verhalen/<tijdperk-id>.ts` (one file per era, each exporting a
+`verhalen: Verhaal[]`) plus an index barrel (`src/content/verhalen/index.ts`) that concatenates
+them and exposes `getVerhaal`/`getVerhalenByTijdperk` — this split (REFACTOR-PLAN.md R3) is what
+lets R7 give each era its own agent without merge conflicts. `src/content/verhalen.ts` (the old
+single file) still exists only as a one-line `export * from './verhalen/index'` re-export — it
+couldn't be deleted (rm-block, see above), and Node/TS module resolution picks a file over a
+same-named directory, so `@/content/verhalen` imports actually resolve to this shim, which
+forwards to the real barrel. Import from `@/content/verhalen` as before; don't import the
+directory path directly except when adding a new per-era file. `src/content/collecties.ts` is
+unsplit (small, cross-cutting, not era-partitioned). `src/content/queries.ts` has the derived
+lookups (progress by era, "featured", "next story", etc. — the region-based `getRegioVoortgang`
+was removed in R2) — add new cross-cutting queries there rather than inline in screens.
 
 All user-visible text fields on these types (`titel`, `naam`, `periode`,
 `korteBeschrijving`, `beschrijving`, and every string inside `Blok`) are typed as
 `VertaaldVeld = { en: string; nl?; fr?; de? }`, not plain `string`. Resolve them with the `v()`
 helper from `useVertaling()`, never by reading `.en` or a language key directly — content is
 allowed to have only `en` filled in (real content is still English-only in
-`src/content/verhalen.ts`), and `v()` is what falls back to English.
+`src/content/verhalen/`), and `v()` is what falls back to English.
 
-**Do not rename these data-model identifiers** (`Verhaal`, `Tijdperk`, `Blok`, `Collectie`,
-`regioIds`, etc.) — internal code stays Dutch by convention (see below); only user-facing
-*strings* move through i18n.
+**Do not rename these data-model identifiers** (`Verhaal`, `Tijdperk`, `Blok`, `Collectie`, etc.)
+— internal code stays Dutch by convention (see below); only user-facing *strings* move through
+i18n.
 
 ### i18n (`src/i18n/`, `src/hooks/use-vertaling.ts`)
 
@@ -111,9 +129,27 @@ web.
 
 ### Orphaned code (present but not wired up — don't delete, per the rm-block above)
 
+- `src/app/(tabs)/kaart.tsx`, `src/components/world-map.tsx`, `src/constants/map-data.ts`,
+  `scripts/generate-map-data.mjs`: Kaart tab dropped in REFACTOR-PLAN.md phase R1 (no more
+  Regio/Continent in the UX). The tab route is still registered in `(tabs)/_layout.tsx` with
+  `href: null` (same pattern as the orphaned `ontdek` route) so Expo Router doesn't auto-surface
+  it. The `generate:map-data` script stays in `package.json` — harmless, and consistent with the
+  no-delete convention.
 - `src/components/continent-map.tsx` + `src/app/continent/[continentId].tsx`: an earlier
   continent-zoom-then-bottom-sheet flow, superseded by `WorldMap` navigating straight to
   `/regio/[id]`.
+- `src/app/regio/[id].tsx`: orphaned in REFACTOR-PLAN.md phase R2 (Regio/land dropped from the
+  UX). No live screen routes to it anymore — `(tabs)/voortgang.tsx` no longer has a "by country"
+  section, `tijdperk/[id].tsx` no longer has continent filter chips, and `verhaal/[id].tsx` no
+  longer shows a country caption. The file still compiles (still imports `getRegio`/
+  `getVerhalenByRegio` directly, not through `queries.ts`) but is unreachable from navigation.
+  Since R3 dropped `Verhaal.regioIds` for real, `getVerhalenByRegio` (and `world-map.tsx`'s and
+  `continent/[continentId].tsx`'s calls to it) now always returns `[]` — it's kept only as a
+  no-op so these three orphaned files still compile; don't try to make it filter again without
+  reintroducing a region-to-story mapping first.
+- `src/components/flag.tsx`: only consumer left is orphaned code (`world-map.tsx`,
+  `regio/[id].tsx`) as of R2 — not deleted since it still compiles and may be reused if
+  Regio/Continent ever comes back.
 - `src/components/tijdperk-kaart.tsx`: superseded by `tijdperken-carousel.tsx` on Ontdek.
 - `src/components/placeholder-screen.tsx`: unused now that Voortgang/Profiel are fully built.
 - `src/app/land/[landId]/...`, `src/components/story-card.tsx`,
@@ -128,7 +164,17 @@ persisted (phase 7); `useAbonnement()`/`<AdBanner />` placeholders with `TODO`s 
 Billing/AdMob (phase 8); full i18n (en/nl/fr/de) with a language picker in Profiel; theme picker
 (Licht/Donker/Systeem); Ontdek's era section as a carousel.
 
-Not done: real content — `src/content/verhalen.ts`/`collecties.ts` currently hold a minimal
-English-only sample set (3 stories, 2 collections) meant only to exercise every screen; only
-Europe/4 countries are wired up (`continenten.ts`/`regios.ts` have the rest defined but
-`actief: false`); Google Play Billing and AdMob are still stubs.
+Regio/Continent phased out of the live UX (REFACTOR-PLAN.md phase R2): Voortgang shows progress
+by era only, `tijdperk/[id]` has no continent filter, `verhaal/[id]` shows no country caption;
+`regio/[id].tsx`, `continent/[continentId].tsx`, `world-map.tsx`, `continent-map.tsx`, `flag.tsx`
+are all orphaned (see above).
+
+Content model + file split done (REFACTOR-PLAN.md phase R3): `Verhaal.regioIds` dropped for
+real; `Verhaal` gained `afbeelding`/`uitgelicht`/`volgorde` (not yet read by any screen — that's
+R4); `src/content/verhalen.ts` split into `src/content/verhalen/<tijdperk-id>.ts` + index barrel
+(see "Data model" above for the shim-file mechanics). No screen behaviour changed in this phase.
+
+Not done: real content — `src/content/verhalen/*.ts` (3 of 6 era files still empty) and
+`collecties.ts` currently hold a minimal English-only sample set (3 stories, 2 collections)
+meant only to exercise every screen; `continenten.ts`/`regios.ts` still hold the old country
+data but it's now only read by orphaned code; Google Play Billing and AdMob are still stubs.

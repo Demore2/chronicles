@@ -1,5 +1,5 @@
 import { collecties, getCollectie } from '@/content/collecties';
-import { getVerhaal, getVerhalenByRegio, verhalen } from '@/content/verhalen';
+import { getVerhaal, verhalen } from '@/content/verhalen';
 import type { Verhaal } from '@/constants/types';
 
 const UITGELICHT_VERHAAL_ID = 'crown-for-new-empire';
@@ -30,17 +30,9 @@ export function getVolgendVerhaal(huidigId: string): Verhaal | undefined {
   return verhalen[(index + 1) % verhalen.length];
 }
 
-export type RegioVoortgang = { totaal: number; gelezen: number };
+export type Voortgang = { totaal: number; gelezen: number };
 
-export function getRegioVoortgang(regioId: string, gelezenIds: Set<string>): RegioVoortgang {
-  const verhalenVoorRegio = getVerhalenByRegio(regioId);
-  return {
-    totaal: verhalenVoorRegio.length,
-    gelezen: verhalenVoorRegio.filter((verhaal) => gelezenIds.has(verhaal.id)).length,
-  };
-}
-
-export function getTijdperkVoortgang(tijdperkId: string, gelezenIds: Set<string>): RegioVoortgang {
+export function getTijdperkVoortgang(tijdperkId: string, gelezenIds: Set<string>): Voortgang {
   const verhalenVoorTijdperk = verhalen.filter((verhaal) => verhaal.tijdperkId === tijdperkId);
   return {
     totaal: verhalenVoorTijdperk.length,

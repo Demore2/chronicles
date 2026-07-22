@@ -46,10 +46,6 @@ export default function TabsLayout() {
         options={{ title: t((s) => s.tabs.ontdek), tabBarIcon: tabIcon('compass', 'compass-outline') }}
       />
       <Tabs.Screen
-        name="kaart"
-        options={{ title: t((s) => s.tabs.kaart), tabBarIcon: tabIcon('map', 'map-outline') }}
-      />
-      <Tabs.Screen
         name="voortgang"
         options={{ title: t((s) => s.tabs.voortgang), tabBarIcon: tabIcon('stats-chart', 'stats-chart-outline') }}
       />
@@ -60,6 +56,9 @@ export default function TabsLayout() {
       {/* Oude route, vervangen door (tabs)/index.tsx. Kon niet worden verwijderd
           (Remove-Item is geblokkeerd in dit project) — href: null verbergt 'm uit de tab bar. */}
       <Tabs.Screen name="ontdek" options={{ href: null }} />
+      {/* Kaart-tab uitgefaseerd (REFACTOR-PLAN.md R1): geen Regio/Continent meer in de UX.
+          Kon niet worden verwijderd (Remove-Item is geblokkeerd) — href: null verbergt 'm. */}
+      <Tabs.Screen name="kaart" options={{ href: null }} />
     </Tabs>
   );
 }

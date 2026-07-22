@@ -15,7 +15,6 @@ import { BlokWeergave } from '@/components/blok-weergave';
 import { LegeStaat } from '@/components/lege-staat';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { getRegio } from '@/constants/regios';
 import { Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
 import { getVolgendVerhaal } from '@/content/queries';
@@ -55,11 +54,6 @@ export default function VerhaalScreen() {
   }
 
   const tijdperk = getTijdperk(verhaal.tijdperkId);
-  const regioNamen = verhaal.regioIds
-    .map((regioId) => getRegio(regioId)?.naam)
-    .filter((naam): naam is NonNullable<typeof naam> => Boolean(naam))
-    .map((naam) => v(naam))
-    .join(' · ');
   const volgende = getVolgendVerhaal(verhaal.id);
   const gelezen = gelezenIds.has(verhaal.id);
 
@@ -103,11 +97,6 @@ export default function VerhaalScreen() {
             {t((s) => s.verhaal.minLeestijd)(verhaal.leestijdMinuten)}
           </ThemedText>
         </View>
-        {regioNamen.length > 0 && (
-          <ThemedText type="caption" themeColor="accent">
-            {regioNamen}
-          </ThemedText>
-        )}
 
         <View style={styles.blokken}>
           {verhaal.blokken.map((blok, index) => (

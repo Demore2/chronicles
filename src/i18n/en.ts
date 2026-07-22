@@ -3,7 +3,7 @@
 // tekst (zie src/i18n/index.ts).
 const en = {
   tabs: {
-    ontdek: 'Discover',
+    ontdek: 'Home',
     kaart: 'Map',
     voortgang: 'Progress',
     profiel: 'Profile',

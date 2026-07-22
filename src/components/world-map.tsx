@@ -5,7 +5,7 @@ import Svg, { Path } from 'react-native-svg';
 
 import { MAP_VIEWBOX, countryPaths } from '@/constants/map-data';
 import { regios } from '@/constants/regios';
-import { getRegioVoortgang } from '@/content/queries';
+import { getVerhalenByRegio } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
@@ -27,8 +27,9 @@ export function WorldMap() {
   const voortgangByIso2 = useMemo(() => {
     const map = new Map<string, { regioId: string; totaal: number; gelezen: number }>();
     for (const regio of regios) {
-      const { totaal, gelezen } = getRegioVoortgang(regio.id, gelezenIds);
-      map.set(regio.iso2, { regioId: regio.id, totaal, gelezen });
+      const verhalenVoorRegio = getVerhalenByRegio(regio.id);
+      const gelezen = verhalenVoorRegio.filter((verhaal) => gelezenIds.has(verhaal.id)).length;
+      map.set(regio.iso2, { regioId: regio.id, totaal: verhalenVoorRegio.length, gelezen });
     }
     return map;
   }, [gelezenIds]);
