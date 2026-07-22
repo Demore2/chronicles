@@ -39,3 +39,12 @@ export function getTijdperkVoortgang(tijdperkId: string, gelezenIds: Set<string>
     gelezen: verhalenVoorTijdperk.filter((verhaal) => gelezenIds.has(verhaal.id)).length,
   };
 }
+
+// Sorteert op volgorde (ontbrekend = laatst) i.p.v. jaar, voor de ~5 uitgelichte
+// figuren per tijdperk-rij op Home (REFACTOR-PLAN.md R4).
+export function getUitgelichteVerhalenVoorTijdperk(tijdperkId: string, aantal = 5): Verhaal[] {
+  return verhalen
+    .filter((verhaal) => verhaal.tijdperkId === tijdperkId)
+    .sort((a, b) => (a.volgorde ?? Number.MAX_SAFE_INTEGER) - (b.volgorde ?? Number.MAX_SAFE_INTEGER))
+    .slice(0, aantal);
+}

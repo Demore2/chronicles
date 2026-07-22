@@ -46,11 +46,17 @@ it anymore.
 `Continent` → `Regio` (country, tied to the map via `iso2` and `continentId`) → `Tijdperk`
 (era) and `Verhaal` (story) are the core content types. Since REFACTOR-PLAN.md phase R2,
 `Regio`/`Continent` are no longer part of the UX, and `Tijdperk` is the only structural grouping
-live screens use. `Verhaal.regioIds` was dropped for real in R3 (was `optional`/`@deprecated`
-since R2) — `Verhaal` is now the figure/event itself, with `afbeelding` (portrait/cover image
-source, used by the R4 era-row card) plus optional `uitgelicht` (Home hero eligibility) and
-`volgorde` (display order within its `tijdperk`) driving which ~5 stories per era show up on
-Home. A `Verhaal` belongs to one `tijdperkId` and holds an ordered `blokken: Blok[]` array where
+live screens use. `Tijdperk` gained `actief: boolean` in R4 (same convention as the old
+`Regio`/`Continent.actief`) — only eras with real content are `actief: true`, and only those show
+a row on Home (`getActieveTijdperken()` in `src/constants/tijdperken.ts`); flip an era to `actief:
+true` there once R7 fills in its content file. `Verhaal.regioIds` was dropped for real in R3 (was
+`optional`/`@deprecated` since R2) — `Verhaal` is now the figure/event itself, with `afbeelding`
+(portrait/cover image source — still unused for real rendering; every screen still shows a
+solid-color `Illustratie` placeholder instead, same as before R4) plus optional `uitgelicht` (Home
+hero eligibility) and `volgorde` (display order within its `tijdperk`, used since R4 by
+`getUitgelichteVerhalenVoorTijdperk` in `src/content/queries.ts` to pick the ~5 figures shown per
+era row on Home). A `Verhaal` belongs to one `tijdperkId` and holds an ordered `blokken: Blok[]`
+array where
 `Blok` is a tagged union (`tekst` | `afbeelding` | `citaat` | `quiz`) rendered by
 `src/components/blok-weergave.tsx`. `Collectie` is a curated cross-cutting list of `verhaalIds`
 (a "storyline"/theme, not tied to era or region).
@@ -122,10 +128,12 @@ web.
 
 - `src/components/horizontale-rij.tsx` (`HorizontaleRij`): horizontal `FlatList` wrapper with
   optional edge arrows (only >768px wide, hidden at scroll start/end, one-item-width step). Used
-  by every horizontal row on Ontdek.
-- `src/components/tijdperken-carousel.tsx`: centered "peek" carousel (scale/opacity via
-  `Animated`, snap-to-card, dot indicator, same >768px arrow convention as `HorizontaleRij` but
-  implemented directly since it needs its own scroll-driven animation).
+  by every horizontal row on Ontdek, including inside `TijdperkRij` below.
+- `src/components/tijdperk-rij.tsx` (`TijdperkRij`, added R4): one full-width Home section per
+  active era — title + `korteBeschrijving` subtitle + "Discover more" link to `tijdperk/[id]`,
+  above a `HorizontaleRij` of that era's `VerhaalKaart`s (reused as-is, not a new card type).
+  Ontdek (`(tabs)/index.tsx`) renders one per `getActieveTijdperken()` entry, in chronological
+  (`nummer`) order.
 
 ### Orphaned code (present but not wired up — don't delete, per the rm-block above)
 
@@ -151,6 +159,9 @@ web.
   `regio/[id].tsx`) as of R2 — not deleted since it still compiles and may be reused if
   Regio/Continent ever comes back.
 - `src/components/tijdperk-kaart.tsx`: superseded by `tijdperken-carousel.tsx` on Ontdek.
+- `src/components/tijdperken-carousel.tsx`: superseded in R4 by `tijdperk-rij.tsx` (one row per
+  active era, instead of one swipeable carousel of all eras). Still compiles; unwired from
+  `(tabs)/index.tsx`.
 - `src/components/placeholder-screen.tsx`: unused now that Voortgang/Profiel are fully built.
 - `src/app/land/[landId]/...`, `src/components/story-card.tsx`,
   `src/components/tijdperk-section.tsx`: leftovers from the original Land/Categorie content
@@ -162,7 +173,7 @@ Done: data model + design system + 4 tabs + story screens (phases 1–5); Kaart 
 per-country coloring/progress and direct-to-region navigation (phase 6); Voortgang + streaks,
 persisted (phase 7); `useAbonnement()`/`<AdBanner />` placeholders with `TODO`s for Play
 Billing/AdMob (phase 8); full i18n (en/nl/fr/de) with a language picker in Profiel; theme picker
-(Licht/Donker/Systeem); Ontdek's era section as a carousel.
+(Licht/Donker/Systeem); Ontdek's era section as a carousel (superseded in R4, see below).
 
 Regio/Continent phased out of the live UX (REFACTOR-PLAN.md phase R2): Voortgang shows progress
 by era only, `tijdperk/[id]` has no continent filter, `verhaal/[id]` shows no country caption;
@@ -174,7 +185,26 @@ real; `Verhaal` gained `afbeelding`/`uitgelicht`/`volgorde` (not yet read by any
 R4); `src/content/verhalen.ts` split into `src/content/verhalen/<tijdperk-id>.ts` + index barrel
 (see "Data model" above for the shim-file mechanics). No screen behaviour changed in this phase.
 
-Not done: real content — `src/content/verhalen/*.ts` (3 of 6 era files still empty) and
-`collecties.ts` currently hold a minimal English-only sample set (3 stories, 2 collections)
-meant only to exercise every screen; `continenten.ts`/`regios.ts` still hold the old country
-data but it's now only read by orphaned code; Google Play Billing and AdMob are still stubs.
+Home / era-rows UI done (REFACTOR-PLAN.md phase R4): `Tijdperk` gained `actief`; the "Per
+tijdperk" carousel section was replaced by one `TijdperkRij` per active era (Middle Ages, Early
+Modern Period, 20th Century — the three eras with content), each showing up to 5 stories ordered
+by `volgorde` with a "Discover more" link into `tijdperk/[id]`. The hero/"Featured" block,
+"Storylines" (collecties) row, and "Newly added" row were deliberately kept as-is — the plan's
+literal composition line would have dropped them, but doing so would have orphaned the only
+Home entry point into Collecties, so only the carousel section was swapped. `tijdperk/[id]`
+already matched "full list of every story in that era" with no changes needed.
+`tijdperken-carousel.tsx` is now orphaned (see above). `ontdek.perTijdperk` (the old carousel
+section's i18n heading) is now an unused key — left for the R6 copy sweep to remove, per that
+phase's stated purpose.
+
+Not done: real content — as of this writing every `src/content/verhalen/<tijdperk-id>.ts` has 2-3
+**placeholder** stories (added after R4, outside the phase plan, purely so the full Home layout —
+every era row populated — could be previewed) and `collecties.ts` still holds only its original
+minimal English-only sample set (2 collections); `continenten.ts`/`regios.ts` still hold the old
+country data but it's now only read by orphaned code; Google Play Billing and AdMob are still
+stubs. **The placeholder stories are not real content**: short, single-`tekst`-block, marked with
+a `TIJDELIJK` comment at the top of each era file, and all six `Tijdperk.actief` flags were
+flipped to `true` to show them. When R7 gives each era its own content agent, that agent should
+replace its era's placeholder stories with real ones (and drop the `TIJDELIJK` comment) rather
+than append to them; re-evaluate `actief` per era only if an R7 era ends up with no real content
+after all.

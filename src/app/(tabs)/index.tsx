@@ -9,13 +9,13 @@ import { LegeStaat } from '@/components/lege-staat';
 import { SectieKop } from '@/components/sectie-kop';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { TijdperkenCarousel } from '@/components/tijdperken-carousel';
+import { TijdperkRij } from '@/components/tijdperk-rij';
 import { VerhaalKaart } from '@/components/verhaal-kaart';
 import { CardDimensions, Radii, Spacing } from '@/constants/theme';
-import { tijdperken } from '@/constants/tijdperken';
+import { getActieveTijdperken } from '@/constants/tijdperken';
 import type { Verhaal } from '@/constants/types';
 import { collecties } from '@/content/collecties';
-import { getNieuwToegevoegd, getUitgelichtVerhaal } from '@/content/queries';
+import { getNieuwToegevoegd, getUitgelichteVerhalenVoorTijdperk, getUitgelichtVerhaal } from '@/content/queries';
 import { getVerhaal } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
@@ -109,13 +109,16 @@ export default function OntdekScreen() {
             />
           </View>
 
-          <View style={styles.sectie}>
-            <SectieKop titel={t((s) => s.ontdek.perTijdperk)} />
-            <TijdperkenCarousel
-              tijdperken={tijdperken}
-              onPress={(tijdperk) => router.push({ pathname: '/tijdperk/[id]', params: { id: tijdperk.id } })}
+          {getActieveTijdperken().map((tijdperk) => (
+            <TijdperkRij
+              key={tijdperk.id}
+              tijdperk={tijdperk}
+              verhalen={getUitgelichteVerhalenVoorTijdperk(tijdperk.id)}
+              gelezenIds={gelezenIds}
+              onPressVerhaal={openVerhaal}
+              onPressOntdekMeer={() => router.push({ pathname: '/tijdperk/[id]', params: { id: tijdperk.id } })}
             />
-          </View>
+          ))}
 
           <View style={styles.sectie}>
             <SectieKop titel={t((s) => s.ontdek.nieuwToegevoegd)} />

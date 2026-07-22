@@ -16,6 +16,7 @@ const en = {
     verderLezenLegeBeschrijving: 'Stories you open will appear here.',
     verhaallijnen: 'Storylines',
     perTijdperk: 'By era',
+    ontdekMeer: 'Discover more',
     nieuwToegevoegd: 'Newly added',
   },
   voortgang: {

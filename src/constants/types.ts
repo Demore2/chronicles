@@ -30,6 +30,8 @@ export type Tijdperk = {
   periode: VertaaldVeld;
   korteBeschrijving: VertaaldVeld;
   kleur: string;
+  /** Whether this era has enough content to show on Home yet (REFACTOR-PLAN.md R4 / open decision 4). */
+  actief: boolean;
 };
 
 export type Blok =

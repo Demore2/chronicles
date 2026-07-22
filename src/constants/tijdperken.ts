@@ -18,6 +18,7 @@ export const tijdperken: Tijdperk[] = [
       de: 'Die ersten Reiche, Städte und Zivilisationen entstehen.',
     },
     kleur: '#B8735A',
+    actief: true,
   },
   {
     id: 'middeleeuwen',
@@ -31,6 +32,7 @@ export const tijdperken: Tijdperk[] = [
       de: 'Ritter, Klöster und die ersten Städte mit eigenen Rechten.',
     },
     kleur: '#8B4A52',
+    actief: true,
   },
   {
     id: 'vroegmoderne-tijd',
@@ -44,6 +46,7 @@ export const tijdperken: Tijdperk[] = [
       de: 'Entdeckungsreisen, Handel und Aufstände gegen die Macht.',
     },
     kleur: '#B8923F',
+    actief: true,
   },
   {
     id: 'industriele-revolutie',
@@ -62,6 +65,7 @@ export const tijdperken: Tijdperk[] = [
       de: 'Dampfmaschinen, neue Königreiche und rascher Wandel.',
     },
     kleur: '#5B6B73',
+    actief: true,
   },
   {
     id: 'twintigste-eeuw',
@@ -75,6 +79,7 @@ export const tijdperken: Tijdperk[] = [
       de: 'Weltkriege, Wiederaufbau und ein sich einigendes Europa.',
     },
     kleur: '#5C7A5E',
+    actief: true,
   },
   {
     id: 'hedendaags',
@@ -88,9 +93,14 @@ export const tijdperken: Tijdperk[] = [
       de: 'Die Welt von heute, im Werden.',
     },
     kleur: '#5A6B8C',
+    actief: true,
   },
 ];
 
 export function getTijdperk(id: string): Tijdperk | undefined {
   return tijdperken.find((tijdperk) => tijdperk.id === id);
+}
+
+export function getActieveTijdperken(): Tijdperk[] {
+  return tijdperken.filter((tijdperk) => tijdperk.actief).sort((a, b) => a.nummer - b.nummer);
 }

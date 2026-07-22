@@ -116,7 +116,7 @@ re-derive anything.
 | R1 | Navigation slim down | ✅ done |
 | R2 | Phase out Regio/land | ✅ done |
 | R3 | Content model + file split | ✅ done |
-| R4 | Home / era rows UI | ⬜ not started |
+| R4 | Home / era rows UI | ✅ done |
 | R5 | Collecties reframing | ⬜ not started |
 | R6 | i18n + copy sweep | ⬜ not started |
 | R7 | Content pipeline / agents | ⬜ not started |
@@ -168,6 +168,42 @@ eras with correct counts; the story screen renders all block types. Metro resolv
 `verhalen.ts` shim → `verhalen/index.ts` barrel correctly, confirming the file-over-directory
 resolution behaves the same in the bundler as in `tsc`.
 
+**R4 note:** before writing code, asked the user how to reconcile the plan's literal Home
+composition line (header → Verder lezen → era rows → "Alle verhalen" entry point) with the three
+existing sections it doesn't mention (hero/"Featured", "Storylines"/collecties, "Newly added") —
+dropping them would have orphaned the only Home entry point into Collecties, with no replacement
+specified anywhere in the plan. User chose the low-risk option: keep those three sections as-is,
+and only replace the "Per tijdperk" carousel section. So no "Alle verhalen" entry point was
+built (every era already has its own "Discover more" → `tijdperk/[id]` full-list link; a
+cross-era "browse everything" screen didn't exist before and wasn't requested). `Tijdperk` gained
+`actief: boolean` (open decision 4, resolved below) — `true` for the three eras that currently
+have content (Middle Ages, Early Modern Period, 20th Century), `false` for the three still-empty
+ones (Antiquity, Industrial Revolution, Contemporary Era). New: `src/components/tijdperk-rij.tsx`
+(`TijdperkRij`) reuses `HorizontaleRij` + the existing `VerhaalKaart` (no new card component —
+`VerhaalKaart` already renders the `Illustratie` color-placeholder + title + period label that
+counts as a "figure card"; `Verhaal.afbeelding` still isn't read anywhere, since there are no real
+image assets yet) and `getUitgelichteVerhalenVoorTijdperk()` (new, in `queries.ts`) sorts by
+`volgorde` (falling back to the end for stories without one) instead of by `jaar`, capped at 5.
+`tijdperk/[id]` needed no changes — it already rendered every story in the era, chronologically,
+with no other grouping. `tijdperken-carousel.tsx` is now orphaned (unwired from `(tabs)/index.tsx`
+only — not deleted, per the no-delete convention). The old "Per tijdperk" section heading
+(`ontdek.perTijdperk` i18n key) is now dead — left in `en.ts` for R6 to remove, since R6 is
+explicitly the copy-sweep phase. `tsc --noEmit` clean; `npm run lint` shows only the same
+pre-existing baseline noted in R1/R3 (now including `tijdperken-carousel.tsx`'s ref-during-render
+errors, since that file is unreachable from any live screen but still compiles and still lints).
+Verified on web (`localhost:8082` — 8081 was in use by another session): Home shows the three
+active-era rows in chronological order, each with its one sample story and a working "Discover
+more" link into that era's full list; a direct visit to an inactive era's `tijdperk/[id]` (e.g.
+`oudheid`) still renders correctly with the existing "No stories" empty state, confirming inactive
+eras are simply not linked from Home rather than being broken.
+
+**Post-R4 addendum:** at the user's request, 2 short placeholder stories were added to each of
+the three still-empty era files (Antiquity, Industrial Revolution, Contemporary Era), and all six
+`Tijdperk.actief` flags were set to `true` — purely to preview the full Home layout with every era
+row populated. These are marked `TIJDELIJK` in each era file and are explicitly **not** R7 content;
+the user asked for them to be replaced when R7 starts. R7's per-era agents should overwrite their
+era's placeholder stories rather than add to them.
+
 ## Open decisions
 
 1. **Personage as its own entity?** Only worth it if the "X of 88 characters unlocked"
@@ -175,7 +211,10 @@ resolution behaves the same in the bundler as in `tsc`.
    phase between R3 and R4, not a bolt-on.
 2. **Route rename `ontdek` → `home`?** Recommendation: no. Label-only change in R1.
 3. **How many figures per era row on Home?** Assumed 5. Drives `uitgelicht` in R3.
-4. **Which eras ship active at launch?** Same pattern as the current `actief: false` flag on
-   regions — needed before R4 so the Home page is not endless.
+4. ~~**Which eras ship active at launch?**~~ Resolved in R4: added `Tijdperk.actief: boolean`,
+   same pattern as the old `Regio`/`Continent.actief`. Currently `true` for the three eras with
+   content (Middle Ages, Early Modern Period, 20th Century), `false` for the three still empty
+   (Antiquity, Industrial Revolution, Contemporary Era) — flip to `true` in `tijdperken.ts` as R7
+   fills in each era's content file.
 5. ~~**What does Voortgang measure now?**~~ Resolved in R2: streak + total stories read stayed,
    "by country" was dropped, "by era" (already present alongside it) is now the only breakdown.
