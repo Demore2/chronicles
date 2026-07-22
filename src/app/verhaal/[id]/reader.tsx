@@ -83,7 +83,21 @@ export default function ReaderScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Stack.Screen options={{ title: '' }} />
+      <Stack.Screen options={{ headerShown: false }} />
+
+      <View style={[styles.header, { backgroundColor: theme.background }]}>
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: '/verhaal/[id]/chapters',
+              params: { id: verhaal!.id },
+            })
+          }
+          style={[styles.headerButton, { backgroundColor: theme.backgroundElement }]}>
+          <Ionicons name="arrow-back" size={16} color={theme.text} />
+          <ThemedText type="smallBold">Back to Chapters</ThemedText>
+        </Pressable>
+      </View>
 
       <View style={[styles.voortgangsbalkTrack, { backgroundColor: theme.backgroundElement }]}>
         <View
@@ -95,7 +109,7 @@ export default function ReaderScreen() {
       </View>
 
       <ScrollView onScroll={handleScroll} scrollEventThrottle={16} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
+        <View style={styles.scrollHeader}>
           <ThemedText type="small" themeColor="textSecondary">
             Chapter {chapterId} of {verhaal.chapters.length}
           </ThemedText>
@@ -120,18 +134,6 @@ export default function ReaderScreen() {
       </ScrollView>
 
       <View style={[styles.footer, { backgroundColor: theme.background }]}>
-        <Pressable
-          onPress={() =>
-            router.push({
-              pathname: '/verhaal/[id]/chapters',
-              params: { id: verhaal!.id },
-            })
-          }
-          style={[styles.footerKnop, { backgroundColor: theme.backgroundElement }]}>
-          <Ionicons name="arrow-back" size={16} color={theme.text} />
-          <ThemedText type="smallBold">Back to Chapters</ThemedText>
-        </Pressable>
-
         {!progress.isChapterCompleted(chapterId) ? (
           <Pressable
             onPress={() => progress.completeChapter(chapterId)}
@@ -171,6 +173,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  header: {
+    paddingHorizontal: Spacing.four,
+    paddingVertical: Spacing.three,
+    gap: Spacing.two,
+  },
+  headerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+    paddingVertical: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    borderRadius: Spacing.one,
+  },
   voortgangsbalkTrack: {
     height: 3,
     width: '100%',
@@ -183,7 +199,7 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
     paddingBottom: Spacing.six,
   },
-  header: {
+  scrollHeader: {
     gap: Spacing.one,
     marginBottom: Spacing.three,
   },
@@ -200,7 +216,6 @@ const styles = StyleSheet.create({
     padding: Spacing.three,
   },
   footerKnop: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
