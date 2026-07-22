@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm *)",
+      "PowerShell(npx *)",
+      "PowerShell(git *)",
+      "Edit",
+      "Write"
+    ],
+    "deny": [
+      "PowerShell(rm *)",
+      "PowerShell(Remove-Item *)"
+    ]
+  }
+}

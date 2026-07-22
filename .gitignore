@@ -1,0 +1,54 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+example
+
+# generated native folders
+/ios
+/android
+
+# local scratch output from ad-hoc `expo export` checks
+.tmp-export-check*
+
+# personal Claude Code permission cache (machine-specific)
+.claude/settings.local.json
+
+# portable Git-for-Windows toolchain installed inside this folder on this
+# machine (this is literally what `git.exe` resolves to here) — not project
+# source, must never be committed
+/Git/

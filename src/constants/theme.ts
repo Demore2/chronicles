@@ -1,0 +1,93 @@
+import '@/global.css';
+
+import { Platform } from 'react-native';
+
+export const Colors = {
+  light: {
+    text: '#211F1A',
+    textSecondary: '#6B6355',
+    background: '#F7F1E4',
+    backgroundElement: '#EEE4D0',
+    backgroundSelected: '#E3D6B8',
+    accent: '#3B6E7D',
+    inactive: '#B7AE99',
+  },
+  dark: {
+    text: '#F3ECDC',
+    textSecondary: '#A89E89',
+    background: '#1C1A16',
+    backgroundElement: '#26231D',
+    backgroundSelected: '#332E24',
+    accent: '#6FA8B8',
+    inactive: '#54503F',
+  },
+} as const;
+
+export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
+
+export const Fonts = Platform.select({
+  ios: {
+    sans: 'system-ui',
+    serif: 'ui-serif',
+    rounded: 'ui-rounded',
+    mono: 'ui-monospace',
+  },
+  default: {
+    sans: 'normal',
+    serif: 'serif',
+    rounded: 'normal',
+    mono: 'monospace',
+  },
+  web: {
+    sans: 'var(--font-display)',
+    serif: 'var(--font-serif)',
+    rounded: 'var(--font-rounded)',
+    mono: 'var(--font-mono)',
+  },
+});
+
+export const Spacing = {
+  half: 2,
+  one: 4,
+  two: 8,
+  three: 16,
+  four: 24,
+  five: 32,
+  six: 64,
+} as const;
+
+export const Radii = {
+  card: 16,
+  button: 12,
+  small: 8,
+} as const;
+
+export const Typography = {
+  display: { fontSize: 34, lineHeight: 40, fontWeight: '700' as const },
+  title: { fontSize: 24, lineHeight: 30, fontWeight: '700' as const },
+  subtitle: { fontSize: 18, lineHeight: 24, fontWeight: '600' as const },
+  body: { fontSize: 16, lineHeight: 24, fontWeight: '500' as const },
+  bodyBold: { fontSize: 16, lineHeight: 24, fontWeight: '700' as const },
+  small: { fontSize: 14, lineHeight: 20, fontWeight: '500' as const },
+  smallBold: { fontSize: 14, lineHeight: 20, fontWeight: '700' as const },
+  caption: { fontSize: 12, lineHeight: 16, fontWeight: '600' as const },
+  link: { fontSize: 14, lineHeight: 20, fontWeight: '600' as const },
+} as const;
+
+export const CardDimensions = {
+  portraitWidth: 148,
+  portraitHeight: Math.round((148 * 4) / 3),
+  portraitIllustrationRatio: 0.7,
+  wideHeight: 96,
+} as const;
+
+export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
+export const MaxContentWidth = 800;
+
+export function withAlpha(hexColor: string, alpha: number): string {
+  const hex = hexColor.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
