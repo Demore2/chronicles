@@ -65,10 +65,22 @@ export default function ChaptersScreen() {
       <Stack.Screen options={{ title: '' }} />
 
       <View style={[styles.backButton, { backgroundColor: theme.background }]}>
-        <Pressable onPress={() => router.push('/')} style={[styles.backKnop, { backgroundColor: theme.backgroundElement }]}>
-          <Ionicons name="arrow-back" size={16} color={theme.text} />
-          <ThemedText type="smallBold">Home</ThemedText>
-        </Pressable>
+        <View style={styles.backButtonRow}>
+          <Pressable onPress={() => router.push('/')} style={[styles.backKnop, { backgroundColor: theme.backgroundElement }]}>
+            <Ionicons name="arrow-back" size={16} color={theme.text} />
+            <ThemedText type="smallBold">Home</ThemedText>
+          </Pressable>
+          <View style={styles.livesRow}>
+            {[0, 1, 2].map((i) => (
+              <Ionicons
+                key={i}
+                name={i < progress.lives ? 'heart' : 'heart-outline'}
+                size={20}
+                color={i < progress.lives ? '#FF6B6B' : theme.textSecondary}
+              />
+            ))}
+          </View>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -250,6 +262,16 @@ const styles = StyleSheet.create({
   backButton: {
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.two,
+  },
+  backButtonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.two,
+  },
+  livesRow: {
+    flexDirection: 'row',
+    gap: Spacing.one,
   },
   backKnop: {
     flexDirection: 'row',

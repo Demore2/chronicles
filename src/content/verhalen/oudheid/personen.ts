@@ -38,6 +38,16 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
+      quiz: {
+        vraag: { en: 'In what year was Julius Caesar born?' },
+        opties: [
+          { en: '50 BC' },
+          { en: '100 BC' },
+          { en: '44 BC' },
+          { en: '75 BC' },
+        ],
+        antwoord: 1,
+      },
     },
     {
       id: 2,
@@ -61,6 +71,16 @@ export const juliusCaesar: Verhaal = {
           bron: { en: 'Julius Caesar (Latin: "I came, I saw, I conquered")' },
         },
       ],
+      quiz: {
+        vraag: { en: 'How long did Caesar\'s campaigns in Gaul last?' },
+        opties: [
+          { en: '5 years' },
+          { en: 'Eight years' },
+          { en: '12 years' },
+          { en: '3 years' },
+        ],
+        antwoord: 1,
+      },
     },
     {
       id: 3,
@@ -79,6 +99,16 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
+      quiz: {
+        vraag: { en: 'What did crossing the Rubicon River mean for Caesar?' },
+        opties: [
+          { en: 'A peaceful negotiation' },
+          { en: 'Civil war—an irreversible decision' },
+          { en: 'A journey to Egypt' },
+          { en: 'A retreat from Rome' },
+        ],
+        antwoord: 1,
+      },
     },
     {
       id: 4,
@@ -97,6 +127,16 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
+      quiz: {
+        vraag: { en: 'In which year did Caesar defeat Pompey at the Battle of Pharsalus?' },
+        opties: [
+          { en: '50 BC' },
+          { en: '45 BC' },
+          { en: '48 BC' },
+          { en: '49 BC' },
+        ],
+        antwoord: 2,
+      },
     },
     {
       id: 5,
@@ -115,6 +155,16 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
+      quiz: {
+        vraag: { en: 'Which calendar reform is Julius Caesar famous for?' },
+        opties: [
+          { en: 'The Gregorian calendar' },
+          { en: 'The Julian calendar' },
+          { en: 'The lunar calendar' },
+          { en: 'The Egyptian calendar' },
+        ],
+        antwoord: 1,
+      },
     },
     {
       id: 6,
@@ -133,6 +183,16 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
+      quiz: {
+        vraag: { en: 'On what date was Caesar assassinated?' },
+        opties: [
+          { en: 'The Kalends of March' },
+          { en: 'The Nones of March' },
+          { en: 'The Ides of March' },
+          { en: 'The Ides of April' },
+        ],
+        antwoord: 2,
+      },
     },
     {
       id: 7,
@@ -151,6 +211,16 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
+      quiz: {
+        vraag: { en: 'Who was Caesar\'s adopted heir that became the first emperor?' },
+        opties: [
+          { en: 'Mark Antony' },
+          { en: 'Octavian (later Augustus)' },
+          { en: 'Pompey' },
+          { en: 'Brutus' },
+        ],
+        antwoord: 1,
+      },
     },
     {
       id: 8,
@@ -169,6 +239,16 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
+      quiz: {
+        vraag: { en: 'At what age did Julius Caesar die?' },
+        opties: [
+          { en: '44 years old' },
+          { en: '60 years old' },
+          { en: '56 years old' },
+          { en: '50 years old' },
+        ],
+        antwoord: 2,
+      },
     },
   ],
 };

@@ -68,7 +68,12 @@ export default function ReaderScreen() {
   }
 
   function handleNextChapter() {
-    if (isLastChapter && progress.completedChapters.length === verhaal!.chapters.length) {
+    if (chapter?.quiz) {
+      router.push({
+        pathname: '/verhaal/[id]/chapter-quiz',
+        params: { id: verhaal!.id, chapterId: String(chapterId) },
+      });
+    } else if (isLastChapter && progress.completedChapters.length === verhaal!.chapters.length) {
       router.push({
         pathname: '/verhaal/[id]/quiz',
         params: { id: verhaal!.id },
@@ -86,17 +91,29 @@ export default function ReaderScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={[styles.header, { backgroundColor: theme.background }]}>
-        <Pressable
-          onPress={() =>
-            router.push({
-              pathname: '/verhaal/[id]/chapters',
-              params: { id: verhaal!.id },
-            })
-          }
-          style={[styles.headerButton, { backgroundColor: theme.backgroundElement }]}>
-          <Ionicons name="arrow-back" size={16} color={theme.text} />
-          <ThemedText type="smallBold">Back to Chapters</ThemedText>
-        </Pressable>
+        <View style={styles.headerTop}>
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: '/verhaal/[id]/chapters',
+                params: { id: verhaal!.id },
+              })
+            }
+            style={[styles.headerButton, { backgroundColor: theme.backgroundElement }]}>
+            <Ionicons name="arrow-back" size={16} color={theme.text} />
+            <ThemedText type="smallBold">Back to Chapters</ThemedText>
+          </Pressable>
+        </View>
+        <View style={styles.livesRow}>
+          {[0, 1, 2].map((i) => (
+            <Ionicons
+              key={i}
+              name={i < progress.lives ? 'heart' : 'heart-outline'}
+              size={20}
+              color={i < progress.lives ? '#FF6B6B' : theme.textSecondary}
+            />
+          ))}
+        </View>
       </View>
 
       <View style={[styles.voortgangsbalkTrack, { backgroundColor: theme.backgroundElement }]}>
@@ -155,10 +172,10 @@ export default function ReaderScreen() {
               { backgroundColor: tijdperk?.kleur ?? theme.accent, flex: 1 },
             ]}>
             <ThemedText type="smallBold" style={{ color: theme.background }}>
-              {isLastChapter ? 'Take Quiz' : 'Next Chapter'}
+              {chapter?.quiz ? 'Take Quiz' : isLastChapter ? 'Take Quiz' : 'Next Chapter'}
             </ThemedText>
             <Ionicons
-              name={isLastChapter ? 'help-circle' : 'arrow-forward'}
+              name={chapter?.quiz || isLastChapter ? 'help-circle' : 'arrow-forward'}
               size={16}
               color={theme.background}
             />
@@ -177,6 +194,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.three,
     gap: Spacing.two,
+  },
+  headerTop: {
+    gap: Spacing.two,
+  },
+  livesRow: {
+    flexDirection: 'row',
+    gap: Spacing.one,
   },
   headerButton: {
     flexDirection: 'row',

@@ -40,11 +40,18 @@ export type Blok =
   | { type: 'citaat'; tekst: VertaaldVeld; bron: VertaaldVeld }
   | { type: 'quiz'; vraag: VertaaldVeld; antwoord: boolean; uitleg: VertaaldVeld };
 
+export type ChapterQuiz = {
+  vraag: VertaaldVeld;
+  opties: VertaaldVeld[];
+  antwoord: number;
+};
+
 export type Chapter = {
   id: number;
   titel: VertaaldVeld;
   afbeelding?: string;
   blokken: Blok[];
+  quiz?: ChapterQuiz;
 };
 
 export type Verhaal = {
