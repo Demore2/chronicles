@@ -21,6 +21,12 @@ primary correctness check and should be run before considering a change done. Wh
 content (`src/content/verhalen/*.ts`, `collecties.ts`), also run `npm run validate:content` — see
 `CONTENT-SCHEMA.md` for the schema/style rules it checks against.
 
+**Content verification procedure** (after writing new stories):
+1. Run `npx tsc --noEmit` (all types must pass)
+2. Run `npm run validate:content` (all content must validate)
+3. Start dev server (`npm run web`)
+4. Test story flow in browser: Navigate to each new story → verify all 8 chapters load → click through at least 3 chapters → verify: "Mark Complete" button works → "Take Quiz" button appears → quiz can be answered → "Continue" button navigates to next chapter → repeat for at least one more chapter. Do NOT consider content "done" until chapter navigation is verified end-to-end.
+
 Web preview quirk: **`experiments.reactCompiler` in `app.json` is deliberately set to `false`.**
 It was `true` originally, but it miscompiles custom hooks that return more than one plain
 function value — `useVertaling()` returns `{ t, v, ... }` and calling `v(...)` threw

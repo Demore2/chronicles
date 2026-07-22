@@ -7,6 +7,12 @@
       "runtimeArgs": ["expo", "start", "--web", "--port", "8090"],
       "port": 8090,
       "autoPort": true
+    },
+    {
+      "name": "android",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "android"],
+      "port": 19000
     }
   ]
 }
