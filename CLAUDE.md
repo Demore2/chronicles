@@ -214,3 +214,14 @@ below), just re-pointed at real story ids instead of placeholders.
 
 Not done: `continenten.ts`/`regios.ts` still hold the old country data but it's now only read by
 orphaned code; Google Play Billing and AdMob are still stubs.
+
+Chapter reader system done (R8, 2026-07-22): `src/app/verhaal/[id]/reader.tsx`, 
+`src/app/verhaal/[id]/chapters.tsx`, `src/store/story-progress-store.ts`, 
+`src/hooks/use-story-progress.ts`. Full reading flow with progress persistence:
+- Progress tracked per-chapter (Zustand + AsyncStorage), persists across app restarts
+- Chapter unlocking: sequential (must read chapter 1 before 2, etc.)
+- Read time calculated from word count (words ÷ 250 = minutes)
+- Chapter tiles show: Roman numeral + title + read time (48% width, 2-column grid)
+- Reader header: "← Back to Chapters" button (navigation); footer: "Mark Complete" or "Next Chapter" (action)
+- Chapters overview: "← Home" button at top for easy return to home
+- Progress shown as X/8 chapters + progress bar + visual checkmarks on completed tiles
