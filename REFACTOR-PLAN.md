@@ -117,8 +117,8 @@ re-derive anything.
 | R2 | Phase out Regio/land | ✅ done |
 | R3 | Content model + file split | ✅ done |
 | R4 | Home / era rows UI | ✅ done |
-| R5 | Collecties reframing | ⬜ not started |
-| R6 | i18n + copy sweep | ⬜ not started |
+| R5 | Collecties reframing | ✅ done |
+| R6 | i18n + copy sweep | ✅ done |
 | R7 | Content pipeline / agents | ⬜ not started |
 
 **R1 note:** `npm run lint` had never been run in this repo before — no ESLint config existed.
@@ -203,6 +203,57 @@ the three still-empty era files (Antiquity, Industrial Revolution, Contemporary 
 row populated. These are marked `TIJDELIJK` in each era file and are explicitly **not** R7 content;
 the user asked for them to be replaced when R7 starts. R7's per-era agents should overwrite their
 era's placeholder stories rather than add to them.
+
+**R5 note:** `collecties.ts` copy already had no country language going in (no `Regio`/`land`
+references in either `beschrijving`, and `collectie/[id].tsx` shows no country caption — that
+screen needed no changes). What R5 actually fixed: both collections leaned on the same 3 sample
+stories that existed before R4's placeholder expansion, including `rebuilding-after-the-war`
+appearing in *both* "Power and Conflict" and "Trade and Progress" — an odd overlap for two
+supposedly distinct storylines, and it under-used the fact that every era now has (placeholder)
+content. Re-curated using each story's `themas` tags: "Power and Conflict" is now
+`crown-for-new-empire` (middeleeuwen) → `storming-a-fortress-for-liberty` (vroegmoderne-tijd) →
+`rebuilding-after-the-war` (twintigste-eeuw); "Trade and Progress" is now
+`a-library-for-the-world` (oudheid) → `the-company-sets-sail` (vroegmoderne-tijd) →
+`steam-power-takes-the-rails` (industriele-revolutie) — no more overlap, and each storyline now
+spans 3 eras instead of 2. Descriptions were reworded from era/event language ("Empires, wars...",
+"Merchants, journeys...") to person/role language ("Kings, crowds...", "Scholars, merchants...")
+per the target end state's "framed around people/themes" goal — kept to role nouns (king, crowd,
+scholar) rather than named individuals, since the underlying stories are still anonymous
+`TIJDELIJK` placeholders with no named figures yet. Added a code comment to `collecties.ts` noting
+that `verhaalIds` currently point at placeholder story ids, and that `getVerhalenVoorCollectie()`
+silently drops ids that stop resolving — so R7 agents replacing an era's placeholder stories should
+double-check these two lists don't quietly shrink. No change to the `Collectie` type or
+`collectie/[id].tsx`, per the plan's "no structural change expected". `tsc --noEmit` clean;
+`npm run lint` shows only the same pre-existing baseline from R1/R3/R4 (unrelated files). Verified
+on web (`localhost:8083` — 8081/8082 were in use by other sessions, so `.claude/launch.json`'s web
+config was given an explicit `--port 8083` since `expo start` prompts interactively on a port
+conflict instead of honoring `autoPort`): Home's "Verhaallijnen" row still shows both storyline
+cards, and both `/collectie/<id>` screens show the new description and all 3 re-curated stories in
+era order with no duplicates.
+
+**R6 note:** the "add new keys" half of this phase turned out to already be done — `tabs.ontdek`
+("Home"), `ontdek.verhaallijnen`/`ontdekMeer` and friends were all added incrementally in R1/R4
+as those features landed, and all four languages (en/nl/fr/de) already had full parity for every
+live key (no missing nl/fr/de translations to backfill). So R6 was really just the "remove
+now-dead keys" half. Removed from all four `src/i18n/*.ts` files: `tabs.kaart` (never actually
+read — the Kaart `Tabs.Screen` has no `title` option, `href: null` alone hides it),
+`ontdek.perTijdperk` (flagged dead in the R4 note — superseded by the per-era `TijdperkRij`
+sections), `voortgang.perLand`/`legeLandenTitel`/`legeLandenBeschrijving` (region-based Voortgang
+section removed in R2, these three keys were the only leftover), and the entire `kaart`/`regio`/
+`continent` top-level sections. Deleted from `en.ts` first and let `tsc` point at the rest, per
+the plan's instruction — nl/fr/de had matching entries for all of them (nothing was already
+partially-missing there). The `kaart`/`regio`/`continent` keys were still *read*, just only by the
+three orphaned screens (`(tabs)/kaart.tsx`, `regio/[id].tsx`, `continent/[continentId].tsx`) that
+CLAUDE.md's Orphaned-code section commits to keeping compilable — removing the keys without
+touching those screens would have broken that invariant. Followed the precedent set in R2 (where
+`world-map.tsx` was patched to keep compiling after `getRegioVoortgang` was removed) and inlined
+literal English strings in those three files in place of the removed `t((s) => s.kaart.titel)` /
+`s.regio.*` / `s.continent.*` lookups, dropping the now-unused `t` destructure from each
+(`v(...)` calls for content fields stayed, since those keys weren't touched). No i18n keys were
+harmed that are reachable from a live screen. `tsc --noEmit` clean; `npm run lint` shows only the
+same pre-existing baseline from R1/R3/R4/R5 (unrelated files). Verified on web (`localhost:8083`):
+Home, Voortgang (era breakdown only, no country section), Profiel, and both `/collectie/<id>`
+screens all render unchanged.
 
 ## Open decisions
 

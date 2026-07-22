@@ -20,7 +20,7 @@ export default function ContinentScreen() {
   const continent = continenten.find((item) => item.id === continentId);
   const router = useRouter();
   const theme = useTheme();
-  const { t, v } = useVertaling();
+  const { v } = useVertaling();
   const sheetRef = useRef<ComponentRef<typeof BottomSheet>>(null);
   const [geselecteerd, setGeselecteerd] = useState<GeselecteerdeRegio | null>(null);
 
@@ -38,7 +38,7 @@ export default function ContinentScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Stack.Screen options={{ title: continent ? v(continent.naam) : t((s) => s.continent.titelFallback) }} />
+      <Stack.Screen options={{ title: continent ? v(continent.naam) : 'Continent' }} />
       <ContinentMap continentId={continentId} onSelectRegio={handleSelectRegio} />
 
       <BottomSheet
@@ -76,7 +76,7 @@ export default function ContinentScreen() {
               />
             ) : (
               <BottomSheetView style={styles.sheetLege}>
-                <LegeStaat titel={t((s) => s.continent.binnenkortBeschikbaar)} />
+                <LegeStaat titel="Coming soon" />
               </BottomSheetView>
             )}
           </>

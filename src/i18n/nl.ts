@@ -4,7 +4,6 @@ import type { Vertalingen } from './en';
 const nl: DeepPartial<Vertalingen> = {
   tabs: {
     ontdek: 'Ontdek',
-    kaart: 'Kaart',
     voortgang: 'Voortgang',
     profiel: 'Profiel',
   },
@@ -15,7 +14,6 @@ const nl: DeepPartial<Vertalingen> = {
     verderLezenLegeTitel: 'Nog niets begonnen',
     verderLezenLegeBeschrijving: 'Verhalen die je opent verschijnen hier.',
     verhaallijnen: 'Verhaallijnen',
-    perTijdperk: 'Per tijdperk',
     nieuwToegevoegd: 'Nieuw toegevoegd',
   },
   voortgang: {
@@ -24,10 +22,7 @@ const nl: DeepPartial<Vertalingen> = {
     streakBeschrijving: 'Lees elke dag een verhaal om je streak te behouden.',
     verhalenGelezen: 'Verhalen gelezen',
     perTijdperk: 'Per tijdperk',
-    perLand: 'Per land',
     aantalVerhalen: (gelezen: number, totaal: number) => `${gelezen}/${totaal} verhalen`,
-    legeLandenTitel: 'Nog geen landen',
-    legeLandenBeschrijving: 'Landen met verhalen verschijnen hier.',
   },
   profiel: {
     titel: 'Profiel',
@@ -37,9 +32,6 @@ const nl: DeepPartial<Vertalingen> = {
     themaDonker: 'Donker',
     themaSysteem: 'Systeem',
     taal: 'Taal',
-  },
-  kaart: {
-    titel: 'Kaart',
   },
   collectie: {
     nietGevondenTitel: 'Verhaallijn niet gevonden',
@@ -64,17 +56,6 @@ const nl: DeepPartial<Vertalingen> = {
     nietWaar: 'Niet waar',
     goedGeraden: 'Goed geraden!',
     tochNietHelemaal: 'Toch niet helemaal.',
-  },
-  regio: {
-    nietGevondenTitel: 'Land niet gevonden',
-    nietGevondenBeschrijving: 'Dit land bestaat niet (meer).',
-    voortgang: (gelezen: number, totaal: number) => `${gelezen} van de ${totaal} verhalen gelezen`,
-    geenVerhalenTitel: 'Nog geen verhalen',
-    geenVerhalenBeschrijving: 'Voor dit land staan nog geen verhalen klaar.',
-  },
-  continent: {
-    titelFallback: 'Continent',
-    binnenkortBeschikbaar: 'Binnenkort beschikbaar',
   },
   advertentie: {
     label: 'Advertentie',

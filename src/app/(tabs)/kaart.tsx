@@ -5,17 +5,14 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WorldMap } from '@/components/world-map';
 import { Spacing } from '@/constants/theme';
-import { useVertaling } from '@/hooks/use-vertaling';
 
 export default function KaartScreen() {
-  const { t } = useVertaling();
-
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView edges={['top']} style={styles.header}>
         <View style={styles.headerRow}>
           <ThemedText type="title" style={styles.title} numberOfLines={1}>
-            {t((s) => s.kaart.titel)}
+            Map
           </ThemedText>
         </View>
       </SafeAreaView>

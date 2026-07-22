@@ -4,7 +4,6 @@
 const en = {
   tabs: {
     ontdek: 'Home',
-    kaart: 'Map',
     voortgang: 'Progress',
     profiel: 'Profile',
   },
@@ -15,7 +14,6 @@ const en = {
     verderLezenLegeTitel: 'Nothing started yet',
     verderLezenLegeBeschrijving: 'Stories you open will appear here.',
     verhaallijnen: 'Storylines',
-    perTijdperk: 'By era',
     ontdekMeer: 'Discover more',
     nieuwToegevoegd: 'Newly added',
   },
@@ -25,10 +23,7 @@ const en = {
     streakBeschrijving: 'Read a story every day to keep your streak going.',
     verhalenGelezen: 'Stories read',
     perTijdperk: 'By era',
-    perLand: 'By country',
     aantalVerhalen: (gelezen: number, totaal: number) => `${gelezen}/${totaal} stories`,
-    legeLandenTitel: 'No countries yet',
-    legeLandenBeschrijving: 'Countries with stories will appear here.',
   },
   profiel: {
     titel: 'Profile',
@@ -38,9 +33,6 @@ const en = {
     themaDonker: 'Dark',
     themaSysteem: 'System',
     taal: 'Language',
-  },
-  kaart: {
-    titel: 'Map',
   },
   collectie: {
     nietGevondenTitel: 'Storyline not found',
@@ -65,17 +57,6 @@ const en = {
     nietWaar: 'False',
     goedGeraden: 'Correct!',
     tochNietHelemaal: 'Not quite.',
-  },
-  regio: {
-    nietGevondenTitel: 'Country not found',
-    nietGevondenBeschrijving: 'This country no longer exists.',
-    voortgang: (gelezen: number, totaal: number) => `${gelezen} of ${totaal} stories read`,
-    geenVerhalenTitel: 'No stories yet',
-    geenVerhalenBeschrijving: 'No stories are ready for this country yet.',
-  },
-  continent: {
-    titelFallback: 'Continent',
-    binnenkortBeschikbaar: 'Coming soon',
   },
   advertentie: {
     label: 'Advertisement',

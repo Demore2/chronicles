@@ -18,7 +18,7 @@ export default function RegioScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const theme = useTheme();
-  const { t, v } = useVertaling();
+  const { v } = useVertaling();
   const gelezenIds = useVoortgangStore((state) => state.gelezenIds);
 
   const regio = getRegio(id);
@@ -28,11 +28,8 @@ export default function RegioScreen() {
   if (!regio) {
     return (
       <ThemedView style={styles.container}>
-        <Stack.Screen options={{ title: t((s) => s.regio.nietGevondenTitel) }} />
-        <LegeStaat
-          titel={t((s) => s.regio.nietGevondenTitel)}
-          beschrijving={t((s) => s.regio.nietGevondenBeschrijving)}
-        />
+        <Stack.Screen options={{ title: 'Country not found' }} />
+        <LegeStaat titel="Country not found" beschrijving="This country no longer exists." />
       </ThemedView>
     );
   }
@@ -49,15 +46,12 @@ export default function RegioScreen() {
             <Flag iso2={regio.iso2} size={48} />
             <ThemedText type="display">{v(regio.naam)}</ThemedText>
             <ThemedText themeColor="textSecondary">
-              {t((s) => s.regio.voortgang)(gelezenAantal, verhalen.length)}
+              {gelezenAantal} of {verhalen.length} stories read
             </ThemedText>
           </View>
         }
         ListEmptyComponent={
-          <LegeStaat
-            titel={t((s) => s.regio.geenVerhalenTitel)}
-            beschrijving={t((s) => s.regio.geenVerhalenBeschrijving)}
-          />
+          <LegeStaat titel="No stories yet" beschrijving="No stories are ready for this country yet." />
         }
         renderItem={({ item, index }) => (
           <Pressable

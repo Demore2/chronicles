@@ -194,15 +194,16 @@ literal composition line would have dropped them, but doing so would have orphan
 Home entry point into Collecties, so only the carousel section was swapped. `tijdperk/[id]`
 already matched "full list of every story in that era" with no changes needed.
 `tijdperken-carousel.tsx` is now orphaned (see above). `ontdek.perTijdperk` (the old carousel
-section's i18n heading) is now an unused key — left for the R6 copy sweep to remove, per that
-phase's stated purpose.
+section's i18n heading) was removed in the R6 copy sweep, along with the other dead i18n keys
+(`tabs.kaart`, `voortgang.perLand`/`legeLandenTitel`/`legeLandenBeschrijving`, and the whole
+`kaart`/`regio`/`continent` sections) — see REFACTOR-PLAN.md's R6 note for what stayed and why.
 
 Not done: real content — as of this writing every `src/content/verhalen/<tijdperk-id>.ts` has 2-3
 **placeholder** stories (added after R4, outside the phase plan, purely so the full Home layout —
 every era row populated — could be previewed) and `collecties.ts` still holds only its original
-minimal English-only sample set (2 collections); `continenten.ts`/`regios.ts` still hold the old
-country data but it's now only read by orphaned code; Google Play Billing and AdMob are still
-stubs. **The placeholder stories are not real content**: short, single-`tekst`-block, marked with
+minimal English-only sample set (2 collections, re-curated in R5 — see below); `continenten.ts`/
+`regios.ts` still hold the old country data but it's now only read by orphaned code; Google Play
+Billing and AdMob are still stubs. **The placeholder stories are not real content**: short, single-`tekst`-block, marked with
 a `TIJDELIJK` comment at the top of each era file, and all six `Tijdperk.actief` flags were
 flipped to `true` to show them. When R7 gives each era its own content agent, that agent should
 replace its era's placeholder stories with real ones (and drop the `TIJDELIJK` comment) rather
