@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useStoryProgressStore } from '@/store/story-progress-store';
 
 export function useStoryProgress(verhaalId: string, totalChapters: number) {
@@ -13,7 +13,10 @@ export function useStoryProgress(verhaalId: string, totalChapters: number) {
     [allProgress, verhaalId]
   );
 
-  const isChapterCompleted = (chapterId: number) => progress.completedChapters.includes(chapterId);
+  const isChapterCompleted = useCallback(
+    (chapterId: number) => progress.completedChapters.includes(chapterId),
+    [progress.completedChapters]
+  );
 
   return useMemo(
     () => ({

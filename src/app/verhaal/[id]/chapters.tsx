@@ -14,6 +14,20 @@ import { useVertaling } from '@/hooks/use-vertaling';
 
 const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
+function calculateReadTime(blokken: any[]): number {
+  let totalWords = 0;
+  blokken.forEach((blok) => {
+    if (blok.tekst) {
+      const text = typeof blok.tekst === 'string' ? blok.tekst : blok.tekst.en || '';
+      totalWords += text.split(/\s+/).length;
+    } else if (blok.citaat) {
+      const text = typeof blok.citaat === 'string' ? blok.citaat : blok.citaat.en || '';
+      totalWords += text.split(/\s+/).length;
+    }
+  });
+  return Math.max(1, Math.ceil(totalWords / 250));
+}
+
 export default function ChaptersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -82,6 +96,7 @@ export default function ChaptersScreen() {
           {verhaal.chapters.map((chapter) => {
             const isUnlocked = progress.isChapterUnlocked(chapter.id);
             const isCompleted = progress.isChapterCompleted(chapter.id);
+            const readTime = calculateReadTime(chapter.blokken);
 
             return (
               <Pressable
@@ -99,9 +114,9 @@ export default function ChaptersScreen() {
                     opacity: isUnlocked ? 1 : 0.5,
                   },
                 ]}>
-                <View style={styles.chapterNumber}>
+                <View style={styles.tileImage}>
                   <ThemedText
-                    type="smallBold"
+                    type="display"
                     style={{
                       color: isCompleted ? theme.background : theme.text,
                     }}>
@@ -109,10 +124,32 @@ export default function ChaptersScreen() {
                   </ThemedText>
                 </View>
 
+                <View style={styles.tileContent}>
+                  <ThemedText
+                    type="smallBold"
+                    numberOfLines={2}
+                    style={{
+                      color: isCompleted ? theme.background : theme.text,
+                    }}>
+                    {`Chapter ${chapter.id}: `}
+                    {v(chapter.titel)}
+                  </ThemedText>
+
+                  <ThemedText
+                    type="small"
+                    themeColor="textSecondary"
+                    style={{
+                      color: isCompleted ? 'rgba(255, 255, 255, 0.7)' : theme.textSecondary,
+                      marginTop: Spacing.one,
+                    }}>
+                    {readTime} min read
+                  </ThemedText>
+                </View>
+
                 {!isUnlocked && (
                   <Ionicons
                     name="lock-closed"
-                    size={20}
+                    size={16}
                     color={theme.textSecondary}
                     style={styles.lockIcon}
                   />
@@ -121,7 +158,7 @@ export default function ChaptersScreen() {
                 {isCompleted && (
                   <Ionicons
                     name="checkmark-circle"
-                    size={20}
+                    size={16}
                     color={theme.background}
                     style={styles.checkIcon}
                   />
@@ -174,26 +211,29 @@ const styles = StyleSheet.create({
     marginTop: Spacing.three,
   },
   chapterTile: {
-    width: '23%',
-    aspectRatio: 1,
+    width: '48%',
     borderRadius: Radii.card,
-    alignItems: 'center',
-    justifyContent: 'center',
+    overflow: 'hidden',
     position: 'relative',
   },
-  chapterNumber: {
+  tileImage: {
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  tileContent: {
+    padding: Spacing.two,
+    paddingTop: Spacing.one,
   },
   lockIcon: {
     position: 'absolute',
-    bottom: Spacing.one,
-    right: Spacing.one,
+    bottom: Spacing.two,
+    right: Spacing.two,
   },
   checkIcon: {
     position: 'absolute',
-    top: Spacing.one,
-    right: Spacing.one,
+    top: Spacing.two,
+    right: Spacing.two,
   },
   infoBox: {
     flexDirection: 'row',
