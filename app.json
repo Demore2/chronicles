@@ -1,36 +1,40 @@
 {
   "expo": {
-    "name": "history-app",
-    "slug": "history-app",
+    "name": "Chronicles",
+    "slug": "chronicles-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/chronicles-logo.webp",
     "scheme": "historyapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/images/chronicles-logo.webp",
+      "supportsTabletMode": true
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#F5F1E8",
+        "foregroundImage": "./assets/images/chronicles-logo.webp"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.historyapp"
+      "package": "com.chronicles.historyapp"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/chronicles-logo.webp"
+    },
+    "splash": {
+      "image": "./assets/images/chronicles-logo.webp",
+      "resizeMode": "contain",
+      "backgroundColor": "#F5F1E8"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
+          "backgroundColor": "#F5F1E8",
+          "image": "./assets/images/chronicles-logo.webp",
           "imageWidth": 76
         }
       ],

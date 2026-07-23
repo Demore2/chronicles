@@ -38,6 +38,17 @@ File deletion (`rm`, `Remove-Item`) is blocked by `.claude/settings.json` in thi
 code from superseded features is left in place rather than deleted (see "Orphaned code" below) —
 follow that convention rather than fighting the block.
 
+## Assets & Media
+
+All image assets (logos, icons, splash screens) are located in **`assets/images/`**:
+
+- **Main Logo:** `chronicles-logo.webp` (used in app.json for app icon, splash screen, favicon)
+- **App Icons:** `icon.png`, `favicon.png`, `splash-icon.png`
+- **Android Assets:** `android-icon-*.png` files for adaptive icons
+
+When updating `app.json`, always use paths like: `./assets/images/chronicles-logo.webp`
+(NOT `./src/assets/logo/` — that path is incorrect).
+
 ## Architecture
 
 Expo Router app (file-based routing under `src/app`, TypeScript, Zustand for state,
