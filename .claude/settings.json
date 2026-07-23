@@ -1,15 +1,18 @@
 {
   "permissions": {
-    "allow": [
-      "PowerShell(npm *)",
-      "PowerShell(npx *)",
-      "PowerShell(git *)",
-      "Edit",
-      "Write"
-    ],
-    "deny": [
-      "PowerShell(rm *)",
-      "PowerShell(Remove-Item *)"
-    ]
+    "fileOperations": {
+      "canRead": true,
+      "canWrite": true,
+      "canCreate": true,
+      "canDelete": false,
+      "autoApprove": true
+    },
+    "codeExecution": {
+      "canRun": true,
+      "autoApprove": true
+    },
+    "browser": {
+      "autoApprove": true
+    }
   }
 }
