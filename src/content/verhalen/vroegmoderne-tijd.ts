@@ -1,3 +1,1 @@
-import type { Verhaal } from '@/constants/types';
-
-export const verhalen: Verhaal[] = [];
+export * from './vroegmoderne-tijd/index';
