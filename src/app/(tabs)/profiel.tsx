@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { CharacterGrid } from '@/components/character-grid';
 import { SectieKop } from '@/components/sectie-kop';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -10,6 +11,9 @@ import type { IoniconNaam } from '@/constants/types';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { taalCodes, taalNamen } from '@/i18n/taal-namen';
+import { verhalen } from '@/content/verhalen';
+import { useCharacterUnlockStore } from '@/store/character-unlock-store';
+import { useStoryProgressStore } from '@/store/story-progress-store';
 import { useThemaStore, type ThemaVoorkeur } from '@/store/thema-store';
 
 const THEMA_OPTIES: { waarde: ThemaVoorkeur; icoonNaam: IoniconNaam }[] = [
@@ -29,6 +33,24 @@ export default function ProfielScreen() {
   const { t, taal, setTaal } = useVertaling();
   const themaVoorkeur = useThemaStore((state) => state.themaVoorkeur);
   const setThemaVoorkeur = useThemaStore((state) => state.setThemaVoorkeur);
+  const characterStore = useCharacterUnlockStore();
+  const storyProgressStore = useStoryProgressStore();
+
+  const totalCharacters = verhalen.length;
+  const charactersUnlocked = characterStore.getTotalUnlocked();
+  const unlockedCharacters = characterStore.unlockedCharacters;
+
+  // Calculate chapters read
+  const chaptersRead = Object.values(storyProgressStore.progress).reduce(
+    (sum, prog) => sum + prog.completedChapters.length,
+    0,
+  );
+
+  // Calculate stories completed (all 8 chapters done)
+  const storiesCompleted = verhalen.filter((verhaal) => {
+    const progress = storyProgressStore.getChapterProgress(verhaal.id);
+    return progress.completedChapters.length === (verhaal.chapters?.length ?? 0);
+  }).length;
 
   return (
     <ThemedView style={styles.container}>
@@ -36,6 +58,42 @@ export default function ProfielScreen() {
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.headerRow}>
             <ThemedText type="display">{t((s) => s.profiel.titel)}</ThemedText>
+          </View>
+
+          <View style={[styles.statsBox, { backgroundColor: theme.backgroundElement }]}>
+            <View style={styles.statRow}>
+              <View style={styles.statItem}>
+                <ThemedText type="display" style={{ color: theme.accent }}>
+                  {chaptersRead}
+                </ThemedText>
+                <ThemedText type="small" themeColor="textSecondary">
+                  {t((s) => s.profiel.chaptersRead)}
+                </ThemedText>
+              </View>
+              <View style={styles.statItem}>
+                <ThemedText type="display" style={{ color: theme.accent }}>
+                  {charactersUnlocked}
+                </ThemedText>
+                <ThemedText type="small" themeColor="textSecondary">
+                  {t((s) => s.profiel.charactersUnlocked)}
+                </ThemedText>
+              </View>
+              <View style={styles.statItem}>
+                <ThemedText type="display" style={{ color: theme.accent }}>
+                  {storiesCompleted}
+                </ThemedText>
+                <ThemedText type="small" themeColor="textSecondary">
+                  {t((s) => s.profiel.storiesCompleted)}
+                </ThemedText>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.sectie}>
+            <SectieKop titel={t((s) => s.profiel.characterCollection)} />
+            <View style={[styles.kaart, { backgroundColor: theme.backgroundElement }]}>
+              <CharacterGrid unlockedCharacters={unlockedCharacters} totalCharacters={totalCharacters} />
+            </View>
           </View>
 
           <View style={styles.sectie}>
@@ -105,6 +163,21 @@ const styles = StyleSheet.create({
   headerRow: {
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.three,
+  },
+  statsBox: {
+    marginHorizontal: Spacing.four,
+    padding: Spacing.four,
+    borderRadius: Radii.card,
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    gap: Spacing.three,
+  },
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: Spacing.one,
   },
   sectie: {
     gap: Spacing.three,

@@ -229,5 +229,14 @@ Chapter reader system done (R8, 2026-07-22): `src/app/verhaal/[id]/reader.tsx`,
 - Read time calculated from word count (words ÷ 250 = minutes)
 - Chapter tiles show: Roman numeral + title + read time (48% width, 2-column grid)
 - Reader header: "← Back to Chapters" button (navigation); footer: "Mark Complete" or "Next Chapter" (action)
-- Chapters overview: "← Home" button at top for easy return to home
+- Chapters overview: elegant "Home" button (chevron-back + text) top-left in linkerbovenhoek
 - Progress shown as X/8 chapters + progress bar + visual checkmarks on completed tiles
+
+Profile redesign & UI cleanup done (R8c, 2026-07-23):
+- **Profile screen:** Top stats box showing 3 key metrics (chaptersRead, charactersUnlocked, storiesCompleted), character collection with circular tiles (Optie A: initials + checkmarks for unlocked, grey with "?" for locked)
+- **Character circles:** All verhalen displayed as 70px circles in 3-column grid, unlocked = teal with checkmark, locked = grey with "Locked" label. Click unlocked circles to navigate to story.
+- **Home screen:** Individual character cards in era sections no longer have "Discover more" buttons; only one "Discover more" button per era section at bottom.
+- **Story chapters screen:** Minimalist design with elegant "Home" button (chevron-back + text) positioned absolutely in top-left corner (`position: absolute`, `top: Spacing.three`, `left: Spacing.four`, `zIndex: 10`). No header bar, clean layout.
+- **UI principles:** Prefer minimalist, elegant button placements over full-width bars. Character interactions use circles with visual feedback (checkmarks). Section-level CTAs (like "Discover more") go at section bottom, not per-item.
+
+Not done: Google Play Billing and AdMob are still stubs.

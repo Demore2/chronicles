@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
 import { BlokWeergave } from '@/components/blok-weergave';
+import { CharacterUnlockModal } from '@/components/character-unlock-modal';
 import { LegeStaat } from '@/components/lege-staat';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -14,20 +15,26 @@ import { getVerhaal } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
 import { useVertaling } from '@/hooks/use-vertaling';
+import { useCharacterUnlockStore } from '@/store/character-unlock-store';
 
 export default function ReaderScreen() {
   const { id, chapterId: chapterIdParam } = useLocalSearchParams<{ id: string; chapterId: string }>();
   const router = useRouter();
   const theme = useTheme();
   const { v } = useVertaling();
+  const characterStore = useCharacterUnlockStore();
 
   const [scrollPercentage, setScrollPercentage] = useState(0);
-  const [quizAntwoorden, setQuizAntwoorden] = useState<Record<number, boolean>>({});
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
 
   const verhaal = getVerhaal(id);
   const chapterId = chapterIdParam ? parseInt(chapterIdParam, 10) : 1;
   const chapter = verhaal?.chapters.find((ch) => ch.id === chapterId);
   const progress = useStoryProgress(verhaal?.id ?? '', verhaal?.chapters.length ?? 0);
+
+  const allChaptersRead = progress.completedChapters.length === verhaal?.chapters.length;
+  const characterUnlocked = verhaal ? characterStore.isCharacterUnlocked(verhaal.id) : false;
+  const shouldShowUnlockButton = allChaptersRead && !characterUnlocked;
 
   useEffect(() => {
     if (chapter && scrollPercentage >= 0.8) {
@@ -63,27 +70,25 @@ export default function ReaderScreen() {
     setScrollPercentage(max > 0 ? Math.min(1, Math.max(0, contentOffset.y / max)) : 0);
   }
 
-  function beantwoordQuiz(blokIndex: number, antwoord: boolean) {
-    setQuizAntwoorden((prev) => ({ ...prev, [blokIndex]: antwoord }));
-  }
-
   function handleNextChapter() {
-    if (chapter?.quiz) {
-      router.push({
-        pathname: '/verhaal/[id]/chapter-quiz',
-        params: { id: verhaal!.id, chapterId: String(chapterId) },
-      });
-    } else if (isLastChapter && progress.completedChapters.length === verhaal!.chapters.length) {
-      router.push({
-        pathname: '/verhaal/[id]/quiz',
-        params: { id: verhaal!.id },
-      });
-    } else if (!isLastChapter && nextChapterUnlocked) {
+    if (!isLastChapter && nextChapterUnlocked) {
       router.push({
         pathname: '/verhaal/[id]/reader',
         params: { id: verhaal!.id, chapterId: String(chapterId + 1) },
       });
     }
+  }
+
+  function handleUnlockCharacter() {
+    if (verhaal) {
+      characterStore.unlockCharacter(verhaal.id, verhaal.personage.naam);
+      setShowUnlockModal(true);
+    }
+  }
+
+  function handleCloseUnlockModal() {
+    setShowUnlockModal(false);
+    router.push('/');
   }
 
   return (
@@ -103,16 +108,6 @@ export default function ReaderScreen() {
             <Ionicons name="arrow-back" size={16} color={theme.text} />
             <ThemedText type="smallBold">Back to Chapters</ThemedText>
           </Pressable>
-        </View>
-        <View style={styles.livesRow}>
-          {[0, 1, 2].map((i) => (
-            <Ionicons
-              key={i}
-              name={i < progress.lives ? 'heart' : 'heart-outline'}
-              size={20}
-              color={i < progress.lives ? '#FF6B6B' : theme.textSecondary}
-            />
-          ))}
         </View>
       </View>
 
@@ -139,8 +134,6 @@ export default function ReaderScreen() {
               key={index}
               blok={blok}
               tijdperkKleur={tijdperk?.kleur ?? theme.inactive}
-              gekozenAntwoord={quizAntwoorden[index]}
-              onBeantwoord={(antwoord) => beantwoordQuiz(index, antwoord)}
             />
           ))}
         </View>
@@ -163,25 +156,44 @@ export default function ReaderScreen() {
             </ThemedText>
             <Ionicons name="checkmark-circle" size={16} color={theme.background} />
           </Pressable>
-        ) : (
+        ) : shouldShowUnlockButton ? (
           <Pressable
-            onPress={handleNextChapter}
-            disabled={isLastChapter && progress.completedChapters.length !== verhaal.chapters.length}
+            onPress={handleUnlockCharacter}
             style={[
               styles.footerKnop,
               { backgroundColor: tijdperk?.kleur ?? theme.accent, flex: 1 },
             ]}>
             <ThemedText type="smallBold" style={{ color: theme.background }}>
-              {chapter?.quiz ? 'Take Quiz' : isLastChapter ? 'Take Quiz' : 'Next Chapter'}
+              Unlock {verhaal!.personage.naam}
+            </ThemedText>
+            <Ionicons name="star" size={16} color={theme.background} />
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={handleNextChapter}
+            disabled={isLastChapter}
+            style={[
+              styles.footerKnop,
+              { backgroundColor: tijdperk?.kleur ?? theme.accent, flex: 1 },
+            ]}>
+            <ThemedText type="smallBold" style={{ color: theme.background }}>
+              {isLastChapter ? 'All Chapters Complete' : 'Next Chapter'}
             </ThemedText>
             <Ionicons
-              name={chapter?.quiz || isLastChapter ? 'help-circle' : 'arrow-forward'}
+              name={isLastChapter ? 'checkmark-circle' : 'arrow-forward'}
               size={16}
               color={theme.background}
             />
           </Pressable>
         )}
       </View>
+
+      <Modal visible={showUnlockModal} animationType="fade" transparent={true}>
+        <CharacterUnlockModal
+          personageNaam={verhaal?.personage.naam ?? 'Character'}
+          onClose={handleCloseUnlockModal}
+        />
+      </Modal>
     </ThemedView>
   );
 }
@@ -197,10 +209,6 @@ const styles = StyleSheet.create({
   },
   headerTop: {
     gap: Spacing.two,
-  },
-  livesRow: {
-    flexDirection: 'row',
-    gap: Spacing.one,
   },
   headerButton: {
     flexDirection: 'row',

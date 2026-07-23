@@ -12,8 +12,7 @@ export function VerhaalCarouselKaart({
 }: {
   verhaal: Verhaal;
 }) {
-  const theme = useTheme();
-  const { v, t } = useVertaling();
+  const { v } = useVertaling();
   const router = useRouter();
 
   const getInitial = () => {
@@ -26,7 +25,9 @@ export function VerhaalCarouselKaart({
   };
 
   return (
-    <View style={styles.container}>
+    <Pressable
+      onPress={handlePress}
+      style={styles.container}>
       {/* Portrait/Image Section */}
       <View
         style={[
@@ -54,16 +55,7 @@ export function VerhaalCarouselKaart({
           {v(verhaal.titel)}
         </ThemedText>
       </View>
-
-      {/* Button Section */}
-      <Pressable
-        onPress={handlePress}
-        style={[styles.button, { backgroundColor: theme.accent }]}>
-        <ThemedText type="smallBold" style={{ color: theme.background }}>
-          {t((s) => s.ontdek.ontdekMeer)}
-        </ThemedText>
-      </Pressable>
-    </View>
+    </Pressable>
   );
 }
 
@@ -99,13 +91,5 @@ const styles = StyleSheet.create({
   titel: {
     textAlign: 'center',
     lineHeight: 24,
-  },
-  button: {
-    marginHorizontal: Spacing.two,
-    marginBottom: Spacing.two,
-    paddingVertical: Spacing.two,
-    borderRadius: Radii.button,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

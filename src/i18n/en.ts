@@ -27,6 +27,10 @@ const en = {
   },
   profiel: {
     titel: 'Profile',
+    characterCollection: 'Character Collection',
+    chaptersRead: 'chapters done',
+    charactersUnlocked: 'characters unlocked',
+    storiesCompleted: 'stories completed',
     instellingen: 'Settings',
     thema: 'Theme',
     themaLicht: 'Light',

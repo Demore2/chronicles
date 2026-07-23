@@ -14,6 +14,7 @@ export const juliusCaesar: Verhaal = {
   tijdperkId: 'oudheid',
   themas: ['macht', 'rome', 'ambitie', 'militair', 'politiek'],
   leestijdMinuten: 40,
+  personage: { naam: 'Julius Caesar' },
   chapters: [
     {
       id: 1,
@@ -38,16 +39,6 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
-      quiz: {
-        vraag: { en: 'In what year was Julius Caesar born?' },
-        opties: [
-          { en: '50 BC' },
-          { en: '100 BC' },
-          { en: '44 BC' },
-          { en: '75 BC' },
-        ],
-        antwoord: 1,
-      },
     },
     {
       id: 2,
@@ -71,16 +62,6 @@ export const juliusCaesar: Verhaal = {
           bron: { en: 'Julius Caesar (Latin: "I came, I saw, I conquered")' },
         },
       ],
-      quiz: {
-        vraag: { en: 'How long did Caesar\'s campaigns in Gaul last?' },
-        opties: [
-          { en: '5 years' },
-          { en: 'Eight years' },
-          { en: '12 years' },
-          { en: '3 years' },
-        ],
-        antwoord: 1,
-      },
     },
     {
       id: 3,
@@ -99,16 +80,6 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
-      quiz: {
-        vraag: { en: 'What did crossing the Rubicon River mean for Caesar?' },
-        opties: [
-          { en: 'A peaceful negotiation' },
-          { en: 'Civil war—an irreversible decision' },
-          { en: 'A journey to Egypt' },
-          { en: 'A retreat from Rome' },
-        ],
-        antwoord: 1,
-      },
     },
     {
       id: 4,
@@ -127,16 +98,6 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
-      quiz: {
-        vraag: { en: 'In which year did Caesar defeat Pompey at the Battle of Pharsalus?' },
-        opties: [
-          { en: '50 BC' },
-          { en: '45 BC' },
-          { en: '48 BC' },
-          { en: '49 BC' },
-        ],
-        antwoord: 2,
-      },
     },
     {
       id: 5,
@@ -155,16 +116,6 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
-      quiz: {
-        vraag: { en: 'Which calendar reform is Julius Caesar famous for?' },
-        opties: [
-          { en: 'The Gregorian calendar' },
-          { en: 'The Julian calendar' },
-          { en: 'The lunar calendar' },
-          { en: 'The Egyptian calendar' },
-        ],
-        antwoord: 1,
-      },
     },
     {
       id: 6,
@@ -183,16 +134,6 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
-      quiz: {
-        vraag: { en: 'On what date was Caesar assassinated?' },
-        opties: [
-          { en: 'The Kalends of March' },
-          { en: 'The Nones of March' },
-          { en: 'The Ides of March' },
-          { en: 'The Ides of April' },
-        ],
-        antwoord: 2,
-      },
     },
     {
       id: 7,
@@ -211,16 +152,6 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
-      quiz: {
-        vraag: { en: 'Who was Caesar\'s adopted heir that became the first emperor?' },
-        opties: [
-          { en: 'Mark Antony' },
-          { en: 'Octavian (later Augustus)' },
-          { en: 'Pompey' },
-          { en: 'Brutus' },
-        ],
-        antwoord: 1,
-      },
     },
     {
       id: 8,
@@ -239,16 +170,6 @@ export const juliusCaesar: Verhaal = {
           },
         },
       ],
-      quiz: {
-        vraag: { en: 'At what age did Julius Caesar die?' },
-        opties: [
-          { en: '44 years old' },
-          { en: '60 years old' },
-          { en: '56 years old' },
-          { en: '50 years old' },
-        ],
-        antwoord: 2,
-      },
     },
   ],
 };
@@ -267,15 +188,16 @@ export const spartacus: Verhaal = {
   tijdperkId: 'oudheid',
   themas: ['vrijheid', 'opstand', 'rome', 'verzet', 'slavernij'],
   leestijdMinuten: 40,
+  personage: { naam: 'Spartacus' },
   chapters: [
-    { id: 1, titel: { en: 'Forged in Chains' }, blokken: [{ type: 'tekst', inhoud: { en: 'In the Roman province of Thrace, a man whose name would echo through history as a symbol of resistance was born into slavery. Spartacus possessed a spirit that chains could not break. Around 109 BC, he entered the world as a slave, stripped of freedom by military defeat. For much of his life, he remained bound to masters who saw him as nothing more than property—a tool to be used and discarded.' } }, { type: 'tekst', inhoud: { en: 'The institution of slavery in Rome was vast and brutal. Millions labored in mines, fields, and households across the empire. But it was in the gladiatorial arenas where Spartacus found his purpose. Sold to Batiatus, a lanista who trained fighters for combat, Spartacus excelled. He possessed strength, speed, and intelligence. He survived the arena when so many others perished, earning a reputation as an exceptional fighter.' } }, { type: 'tekst', inhoud: { en: 'Yet even as Spartacus defeated opponent after opponent, something burned within him. The roar of crowds and the blood did not dull his desire for freedom. Unlike many who accepted their fate, Spartacus never resigned himself to slavery. In 73 BC, at approximately thirty-six years old, Spartacus was housed in the gladiatorial school at Capua, Italy. It was here that Spartacus would ignite a flame that would shake Rome to its foundations.' } }], quiz: { vraag: { en: 'Spartacus was originally from Thrace (modern Bulgaria).' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 0 } },
-    { id: 2, titel: { en: 'The Slave Pits' }, blokken: [{ type: 'tekst', inhoud: { en: 'The gladiatorial school at Capua was organized horror. Men were treated as expendable commodities, fed minimal rations and beaten for infractions. The training was intense—designed to produce fighters who would fight regardless of wounds or fear. Spartacus trained alongside warriors like Crixus and Gannicus. Among them, Spartacus began to organize, speaking of freedom not as an impossible dream, but as something that could be seized.' } }, { type: 'tekst', inhoud: { en: 'In the arena, gladiators were forced to fight to the death before crowds demanding blood. Yet before games began, they took an oath binding them as warriors and men. It was this oath Spartacus invoked. He spoke to his fellow fighters about escape, about taking their weapons and breaking free. Most dismissed him as a dreamer. Others, worn down by years of servitude, began to believe. Word spread quietly—there was a plan.' } }, { type: 'tekst', inhoud: { en: 'The guards and masters were confident in their control. They did not see these broken men as a threat, did not see the spark of rebellion Spartacus had kindled. In 73 BC, that spark was about to become a fire.' } }], quiz: { vraag: { en: 'Spartacus was imprisoned in Capua, Italy.' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 0 } },
-    { id: 3, titel: { en: 'The Spark Ignites' }, blokken: [{ type: 'tekst', inhoud: { en: 'In 73 BC, Spartacus and followers made their move. Approximately seventy or eighty gladiators fled, leaving behind the walls of their prison. They fled to Mount Vesuvius, a desperate refuge where they might hide from pursuing Romans. But here, Spartacus began to gather recruits. Word spread among the enslaved: a gladiator had broken free and was gathering followers. Field workers, servants, miners—all began to seek him out.' } }, { type: 'tekst', inhoud: { en: 'Spartacus transformed this growing mass into an army. He organized them into units, trained them to fight, and gave them hope. Within months, approximately 70,000 followers had gathered. They were not professional soldiers, but they were fighting for their lives, for their freedom. This hunger for liberty proved a powerful motivator. Spartacus declared that his followers would no longer be slaves—they would fight their way to freedom or die trying.' } }, { type: 'tekst', inhoud: { en: 'For the first time, Rome would face a slave revolt of unprecedented scale. The mountain that would later destroy Pompeii was now the birthplace of a rebellion that would shake Rome to its core.' } }], quiz: { vraag: { en: 'Spartacus led over 100,000 followers.' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 1 } },
-    { id: 4, titel: { en: 'First Victories' }, blokken: [{ type: 'tekst', inhoud: { en: 'Rome sent relatively small forces to crush what they viewed as a minor nuisance. This proved a grave mistake. The Roman forces, confident in their superiority, advanced into Spartacus\'s territory. What followed were stunning defeats for Rome. Spartacus, with tactical brilliance and knowledge of terrain, outmaneuvered the Roman legions. One by one, Roman commanders fell in battle or retreated in humiliation.' } }, { type: 'tekst', inhoud: { en: 'The early victories had a profound effect throughout Italy. The enslaved population, witnessing that their Roman masters were not invincible, flocked to join his cause. Entire estates were liberated, entire communities rose up against their oppressors. Spartacus\'s army grew exponentially. These victories gave the slave army confidence. They were no longer just refugees hiding in mountains; they were a force that could defeat Roman armies.' } }, { type: 'citaat', tekst: { en: 'I am not a slave, and I will never again be a slave' }, bron: { en: 'Spartacus' } }], quiz: { vraag: { en: 'Spartacus defeated Roman forces in multiple early battles.' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 0 } },
-    { id: 5, titel: { en: 'The March Through Italy' }, blokken: [{ type: 'tekst', inhoud: { en: 'Having defeated multiple Roman forces, Spartacus faced a crucial decision. He could escape Rome, seeking safety beyond the empire\'s borders, or continue marching through Italy, liberating more slaves. For a time, he marched north toward the Alps, perhaps hoping to lead his people to freedom in Gaul. Yet his followers had other ideas. Many had families still enslaved in the south. Others believed they could actually challenge Rome, could overthrow the system that had enslaved them.' } }, { type: 'tekst', inhoud: { en: 'Spartacus decided to turn his army around and march south, toward Rome itself. It was a bold, perhaps reckless decision. As they moved through Italy, more and more joined his cause. The wealthy estates that had built Rome\'s prosperity were attacked and burned. The slaveholders who had lived off enslaved labor were killed or fled. For a brief, glorious moment, it seemed possible that the slave revolt could actually succeed.' } }, { type: 'tekst', inhoud: { en: 'Rome\'s rulers watched with alarm. A slave was marching through their territory with an army now in the hundreds of thousands. The Senate took action. They recalled their best general from Spain and gave him command against Spartacus. His name was Marcus Licinius Crassus, one of Rome\'s richest men and a brilliant military commander.' } }], quiz: { vraag: { en: 'Spartacus marched toward Rome itself.' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 0 } },
-    { id: 6, titel: { en: 'Alliance Tested' }, blokken: [{ type: 'tekst', inhoud: { en: 'Crassus proved a far more formidable opponent than previous generals. He was disciplined, strategic, and merciless. He understood that Spartacus\'s army, though numerous, was not a true military force but desperate individuals. Crassus implemented encirclement and containment, cutting off escape routes and fragmenting forces. The slave army, which had seemed so powerful months earlier, began to come apart. Internal divisions emerged—some wanted to continue fighting, others wanted to escape, still others wanted to negotiate.' } }, { type: 'tekst', inhoud: { en: 'Among Spartacus\'s followers were different factions with different goals. Some, like Crixus, believed in fighting to the end. Others questioned whether they could defeat Rome. Spartacus held his fractured army together through force of personality, but the unity that had made early victories possible was crumbling. The reality of facing a professional Roman military machine was sobering. Each battle with Crassus ate away at numbers and resources.' } }, { type: 'tekst', inhoud: { en: 'By 71 BC, Spartacus was cornered in southern Italy. Crassus had cut off his escape routes. Behind him was the sea; ahead and on all sides were Roman legions. Spartacus\'s great dream had reached its final moment. He had achieved something no slave before him had—gathered hundreds of thousands, defeated Rome\'s generals, proven the enslaved could fight back. But Rome\'s military machine had proven too powerful.' } }], quiz: { vraag: { en: 'Crassus surrounded Spartacus in southern Italy.' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 0 } },
-    { id: 7, titel: { en: 'Final Stand' }, blokken: [{ type: 'tekst', inhoud: { en: 'In 71 BC, at the foot of Mount Vesuvius, Spartacus and his remaining forces made their final stand. The exact battle details are unclear—ancient sources vary—but what is certain is that it was devastating. Crassus brought Rome\'s full military might to bear. Spartacus, knowing the end was near, fought with the courage of a man with nothing left to lose but his chains. He died in battle, though it is not entirely clear how.' } }, { type: 'tekst', inhoud: { en: 'The aftermath was brutal. Crassus wanted to make an example, to ensure no one would ever dare rise up again. He crucified 6,000 of Spartacus\'s followers along the Appian Way, the great road connecting Rome to the provinces. The crucified slaves were left hanging, a terrible warning to anyone who might consider rebellion. Yet in doing this, Rome\'s rulers admitted something: they feared the enslaved. They recognized that beneath their empire\'s surface existed a vast population that resented their bondage.' } }, { type: 'tekst', inhoud: { en: 'Spartacus died as he lived—a warrior fighting for freedom. He never achieved his ultimate goal of liberating all Rome\'s enslaved. But he proved something Rome\'s rulers had hoped to keep hidden: that the enslaved were not content to remain in chains, that they could organize, could fight, and could challenge even the greatest military power the world had yet known.' } }], quiz: { vraag: { en: '6,000 of Spartacus\'s followers were crucified.' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 0 } },
-    { id: 8, titel: { en: 'Legacy of Freedom' }, blokken: [{ type: 'tekst', inhoud: { en: 'Spartacus died in 71 BC, but his memory lived on. For the enslaved masses, he became a symbol of resistance—proof that freedom was not impossible, that slaves could fight back. For Rome\'s rulers, he was a cautionary tale—a reminder that power built on slavery could never be entirely stable. In centuries that followed, Spartacus\'s name was remembered and retold. Philosophers, historians, and modern revolutionaries invoked his spirit as evidence that the oppressed could rise up against their oppressors.' } }, { type: 'tekst', inhoud: { en: 'While Rome continued relying on slavery for centuries after Spartacus\'s death, his revolt exposed deep contradictions of the slave system. Subsequent slave wars were fewer and less successful. Yet Spartacus demonstrated something no military power could fully suppress: the human desire for freedom is stronger than the chains that bind us. In the end, Spartacus did not fail—he succeeded in proving that the enslaved were not mere property, but men and women capable of fighting for their own destiny.' } }, { type: 'tekst', inhoud: { en: 'His name echoes through history as a symbol of resistance, of the courage it takes to defy an empire, and of the belief that freedom is worth any price. Spartacus remains one of history\'s most inspiring figures—a man who dared to dream of liberation and inspired millions to do the same.' } }], quiz: { vraag: { en: 'Spartacus is remembered as a symbol of resistance against oppression.' }, opties: [{ en: 'True' }, { en: 'False' }], antwoord: 0 } },
+    { id: 1, titel: { en: 'Forged in Chains' }, blokken: [{ type: 'tekst', inhoud: { en: 'In the Roman province of Thrace, a man whose name would echo through history as a symbol of resistance was born into slavery. Spartacus possessed a spirit that chains could not break. Around 109 BC, he entered the world as a slave, stripped of freedom by military defeat. For much of his life, he remained bound to masters who saw him as nothing more than property—a tool to be used and discarded.' } }, { type: 'tekst', inhoud: { en: 'The institution of slavery in Rome was vast and brutal. Millions labored in mines, fields, and households across the empire. But it was in the gladiatorial arenas where Spartacus found his purpose. Sold to Batiatus, a lanista who trained fighters for combat, Spartacus excelled. He possessed strength, speed, and intelligence. He survived the arena when so many others perished, earning a reputation as an exceptional fighter.' } }, { type: 'tekst', inhoud: { en: 'Yet even as Spartacus defeated opponent after opponent, something burned within him. The roar of crowds and the blood did not dull his desire for freedom. Unlike many who accepted their fate, Spartacus never resigned himself to slavery. In 73 BC, at approximately thirty-six years old, Spartacus was housed in the gladiatorial school at Capua, Italy. It was here that Spartacus would ignite a flame that would shake Rome to its foundations.' } }] },
+    { id: 2, titel: { en: 'The Slave Pits' }, blokken: [{ type: 'tekst', inhoud: { en: 'The gladiatorial school at Capua was organized horror. Men were treated as expendable commodities, fed minimal rations and beaten for infractions. The training was intense—designed to produce fighters who would fight regardless of wounds or fear. Spartacus trained alongside warriors like Crixus and Gannicus. Among them, Spartacus began to organize, speaking of freedom not as an impossible dream, but as something that could be seized.' } }, { type: 'tekst', inhoud: { en: 'In the arena, gladiators were forced to fight to the death before crowds demanding blood. Yet before games began, they took an oath binding them as warriors and men. It was this oath Spartacus invoked. He spoke to his fellow fighters about escape, about taking their weapons and breaking free. Most dismissed him as a dreamer. Others, worn down by years of servitude, began to believe. Word spread quietly—there was a plan.' } }, { type: 'tekst', inhoud: { en: 'The guards and masters were confident in their control. They did not see these broken men as a threat, did not see the spark of rebellion Spartacus had kindled. In 73 BC, that spark was about to become a fire.' } }] },
+    { id: 3, titel: { en: 'The Spark Ignites' }, blokken: [{ type: 'tekst', inhoud: { en: 'In 73 BC, Spartacus and followers made their move. Approximately seventy or eighty gladiators fled, leaving behind the walls of their prison. They fled to Mount Vesuvius, a desperate refuge where they might hide from pursuing Romans. But here, Spartacus began to gather recruits. Word spread among the enslaved: a gladiator had broken free and was gathering followers. Field workers, servants, miners—all began to seek him out.' } }, { type: 'tekst', inhoud: { en: 'Spartacus transformed this growing mass into an army. He organized them into units, trained them to fight, and gave them hope. Within months, approximately 70,000 followers had gathered. They were not professional soldiers, but they were fighting for their lives, for their freedom. This hunger for liberty proved a powerful motivator. Spartacus declared that his followers would no longer be slaves—they would fight their way to freedom or die trying.' } }, { type: 'tekst', inhoud: { en: 'For the first time, Rome would face a slave revolt of unprecedented scale. The mountain that would later destroy Pompeii was now the birthplace of a rebellion that would shake Rome to its core.' } }] },
+    { id: 4, titel: { en: 'First Victories' }, blokken: [{ type: 'tekst', inhoud: { en: 'Rome sent relatively small forces to crush what they viewed as a minor nuisance. This proved a grave mistake. The Roman forces, confident in their superiority, advanced into Spartacus\'s territory. What followed were stunning defeats for Rome. Spartacus, with tactical brilliance and knowledge of terrain, outmaneuvered the Roman legions. One by one, Roman commanders fell in battle or retreated in humiliation.' } }, { type: 'tekst', inhoud: { en: 'The early victories had a profound effect throughout Italy. The enslaved population, witnessing that their Roman masters were not invincible, flocked to join his cause. Entire estates were liberated, entire communities rose up against their oppressors. Spartacus\'s army grew exponentially. These victories gave the slave army confidence. They were no longer just refugees hiding in mountains; they were a force that could defeat Roman armies.' } }, { type: 'citaat', tekst: { en: 'I am not a slave, and I will never again be a slave' }, bron: { en: 'Spartacus' } }] },
+    { id: 5, titel: { en: 'The March Through Italy' }, blokken: [{ type: 'tekst', inhoud: { en: 'Having defeated multiple Roman forces, Spartacus faced a crucial decision. He could escape Rome, seeking safety beyond the empire\'s borders, or continue marching through Italy, liberating more slaves. For a time, he marched north toward the Alps, perhaps hoping to lead his people to freedom in Gaul. Yet his followers had other ideas. Many had families still enslaved in the south. Others believed they could actually challenge Rome, could overthrow the system that had enslaved them.' } }, { type: 'tekst', inhoud: { en: 'Spartacus decided to turn his army around and march south, toward Rome itself. It was a bold, perhaps reckless decision. As they moved through Italy, more and more joined his cause. The wealthy estates that had built Rome\'s prosperity were attacked and burned. The slaveholders who had lived off enslaved labor were killed or fled. For a brief, glorious moment, it seemed possible that the slave revolt could actually succeed.' } }, { type: 'tekst', inhoud: { en: 'Rome\'s rulers watched with alarm. A slave was marching through their territory with an army now in the hundreds of thousands. The Senate took action. They recalled their best general from Spain and gave him command against Spartacus. His name was Marcus Licinius Crassus, one of Rome\'s richest men and a brilliant military commander.' } }] },
+    { id: 6, titel: { en: 'Alliance Tested' }, blokken: [{ type: 'tekst', inhoud: { en: 'Crassus proved a far more formidable opponent than previous generals. He was disciplined, strategic, and merciless. He understood that Spartacus\'s army, though numerous, was not a true military force but desperate individuals. Crassus implemented encirclement and containment, cutting off escape routes and fragmenting forces. The slave army, which had seemed so powerful months earlier, began to come apart. Internal divisions emerged—some wanted to continue fighting, others wanted to escape, still others wanted to negotiate.' } }, { type: 'tekst', inhoud: { en: 'Among Spartacus\'s followers were different factions with different goals. Some, like Crixus, believed in fighting to the end. Others questioned whether they could defeat Rome. Spartacus held his fractured army together through force of personality, but the unity that had made early victories possible was crumbling. The reality of facing a professional Roman military machine was sobering. Each battle with Crassus ate away at numbers and resources.' } }, { type: 'tekst', inhoud: { en: 'By 71 BC, Spartacus was cornered in southern Italy. Crassus had cut off his escape routes. Behind him was the sea; ahead and on all sides were Roman legions. Spartacus\'s great dream had reached its final moment. He had achieved something no slave before him had—gathered hundreds of thousands, defeated Rome\'s generals, proven the enslaved could fight back. But Rome\'s military machine had proven too powerful.' } }] },
+    { id: 7, titel: { en: 'Final Stand' }, blokken: [{ type: 'tekst', inhoud: { en: 'In 71 BC, at the foot of Mount Vesuvius, Spartacus and his remaining forces made their final stand. The exact battle details are unclear—ancient sources vary—but what is certain is that it was devastating. Crassus brought Rome\'s full military might to bear. Spartacus, knowing the end was near, fought with the courage of a man with nothing left to lose but his chains. He died in battle, though it is not entirely clear how.' } }, { type: 'tekst', inhoud: { en: 'The aftermath was brutal. Crassus wanted to make an example, to ensure no one would ever dare rise up again. He crucified 6,000 of Spartacus\'s followers along the Appian Way, the great road connecting Rome to the provinces. The crucified slaves were left hanging, a terrible warning to anyone who might consider rebellion. Yet in doing this, Rome\'s rulers admitted something: they feared the enslaved. They recognized that beneath their empire\'s surface existed a vast population that resented their bondage.' } }, { type: 'tekst', inhoud: { en: 'Spartacus died as he lived—a warrior fighting for freedom. He never achieved his ultimate goal of liberating all Rome\'s enslaved. But he proved something Rome\'s rulers had hoped to keep hidden: that the enslaved were not content to remain in chains, that they could organize, could fight, and could challenge even the greatest military power the world had yet known.' } }] },
+    { id: 8, titel: { en: 'Legacy of Freedom' }, blokken: [{ type: 'tekst', inhoud: { en: 'Spartacus died in 71 BC, but his memory lived on. For the enslaved masses, he became a symbol of resistance—proof that freedom was not impossible, that slaves could fight back. For Rome\'s rulers, he was a cautionary tale—a reminder that power built on slavery could never be entirely stable. In centuries that followed, Spartacus\'s name was remembered and retold. Philosophers, historians, and modern revolutionaries invoked his spirit as evidence that the oppressed could rise up against their oppressors.' } }, { type: 'tekst', inhoud: { en: 'While Rome continued relying on slavery for centuries after Spartacus\'s death, his revolt exposed deep contradictions of the slave system. Subsequent slave wars were fewer and less successful. Yet Spartacus demonstrated something no military power could fully suppress: the human desire for freedom is stronger than the chains that bind us. In the end, Spartacus did not fail—he succeeded in proving that the enslaved were not mere property, but men and women capable of fighting for their own destiny.' } }, { type: 'tekst', inhoud: { en: 'His name echoes through history as a symbol of resistance, of the courage it takes to defy an empire, and of the belief that freedom is worth any price. Spartacus remains one of history\'s most inspiring figures—a man who dared to dream of liberation and inspired millions to do the same.' } }] },
   ],
 };
 

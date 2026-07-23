@@ -37,21 +37,13 @@ export type Tijdperk = {
 export type Blok =
   | { type: 'tekst'; inhoud: VertaaldVeld }
   | { type: 'afbeelding'; bron: string; alt: VertaaldVeld; bijschrift?: VertaaldVeld }
-  | { type: 'citaat'; tekst: VertaaldVeld; bron: VertaaldVeld }
-  | { type: 'quiz'; vraag: VertaaldVeld; antwoord: boolean; uitleg: VertaaldVeld };
-
-export type ChapterQuiz = {
-  vraag: VertaaldVeld;
-  opties: VertaaldVeld[];
-  antwoord: number;
-};
+  | { type: 'citaat'; tekst: VertaaldVeld; bron: VertaaldVeld };
 
 export type Chapter = {
   id: number;
   titel: VertaaldVeld;
   afbeelding?: string;
   blokken: Blok[];
-  quiz?: ChapterQuiz;
 };
 
 export type Verhaal = {
@@ -75,6 +67,10 @@ export type Verhaal = {
   themas: string[];
   leestijdMinuten: number;
   chapters: Chapter[];
+  /** Character name for unlock system (REFACTOR-PLAN.md R8b). */
+  personage: {
+    naam: string;
+  };
 };
 
 export type Collectie = {

@@ -62,26 +62,12 @@ export default function ChaptersScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Stack.Screen options={{ title: '' }} />
+      <Stack.Screen options={{ headerShown: false }} />
 
-      <View style={[styles.backButton, { backgroundColor: theme.background }]}>
-        <View style={styles.backButtonRow}>
-          <Pressable onPress={() => router.push('/')} style={[styles.backKnop, { backgroundColor: theme.backgroundElement }]}>
-            <Ionicons name="arrow-back" size={16} color={theme.text} />
-            <ThemedText type="smallBold">Home</ThemedText>
-          </Pressable>
-          <View style={styles.livesRow}>
-            {[0, 1, 2].map((i) => (
-              <Ionicons
-                key={i}
-                name={i < progress.lives ? 'heart' : 'heart-outline'}
-                size={20}
-                color={i < progress.lives ? '#FF6B6B' : theme.textSecondary}
-              />
-            ))}
-          </View>
-        </View>
-      </View>
+      <Pressable onPress={() => router.push('/')} style={[styles.homeButton, { backgroundColor: theme.backgroundElement }]}>
+        <Ionicons name="chevron-back" size={20} color={theme.text} />
+        <ThemedText type="smallBold">Home</ThemedText>
+      </Pressable>
 
       <ScrollView contentContainerStyle={styles.content}>
         <ThemedText type="display">{v(verhaal.titel)}</ThemedText>
@@ -183,9 +169,7 @@ export default function ChaptersScreen() {
         <View style={styles.infoBox}>
           <Ionicons name="information-circle-outline" size={20} color={theme.accent} />
           <ThemedText type="small" style={styles.infoText}>
-            {progress.completedChapters.length === verhaal.chapters.length
-              ? 'All chapters completed! Try the quiz now.'
-              : 'Complete chapters in order to unlock the next one.'}
+            Complete chapters in order to unlock the next one.
           </ThemedText>
         </View>
       </ScrollView>
@@ -199,6 +183,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.four,
+    paddingTop: Spacing.six + Spacing.four,
     gap: Spacing.three,
     paddingBottom: Spacing.six,
   },
@@ -259,27 +244,16 @@ const styles = StyleSheet.create({
   infoText: {
     flex: 1,
   },
-  backButton: {
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two,
-  },
-  backButtonRow: {
+  homeButton: {
+    position: 'absolute',
+    top: Spacing.three,
+    left: Spacing.four,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.two,
-  },
-  livesRow: {
-    flexDirection: 'row',
     gap: Spacing.one,
-  },
-  backKnop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.two,
     paddingVertical: Spacing.two,
     paddingHorizontal: Spacing.three,
     borderRadius: Radii.button,
+    zIndex: 10,
   },
 });
