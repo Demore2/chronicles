@@ -16,7 +16,7 @@ import { getActieveTijdperken } from '@/constants/tijdperken';
 import type { Verhaal } from '@/constants/types';
 import { collecties } from '@/content/collecties';
 import { getNieuwToegevoegd, getUitgelichteVerhalenVoorTijdperk, getUitgelichtVerhaal } from '@/content/queries';
-import { getVerhaal } from '@/content/verhalen';
+import { getVerhaal, verhalen as allVerhalen } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useVoortgangStore } from '@/store/voortgang-store';
@@ -27,6 +27,7 @@ export default function OntdekScreen() {
   const { t, v } = useVertaling();
   const gelezenIds = useVoortgangStore((state) => state.gelezenIds);
   const bekekenIds = useVoortgangStore((state) => state.bekekenIds);
+  const completedStories = useVoortgangStore((state) => state.completedStories);
   const streakDagen = useVoortgangStore((state) => state.streakDagen);
 
   const uitgelicht = getUitgelichtVerhaal();
@@ -132,16 +133,54 @@ export default function OntdekScreen() {
             />
           </View>
 
-          {getActieveTijdperken().map((tijdperk) => (
-            <TijdperkRij
-              key={tijdperk.id}
-              tijdperk={tijdperk}
-              verhalen={getUitgelichteVerhalenVoorTijdperk(tijdperk.id)}
-              gelezenIds={gelezenIds}
-              onPressVerhaal={openVerhaal}
-              onPressOntdekMeer={() => router.push({ pathname: '/tijdperk/[id]', params: { id: tijdperk.id } })}
-            />
-          ))}
+          {getActieveTijdperken().map((tijdperk) => {
+            let highlighted = getUitgelichteVerhalenVoorTijdperk(tijdperk.id);
+            highlighted = highlighted.filter((v) => !completedStories.has(v.id));
+
+            if (highlighted.length === 0) {
+              const allVerhalenInEra = allVerhalen.filter((v) => v.tijdperkId === tijdperk.id);
+              highlighted = allVerhalenInEra
+                .filter((v) => !completedStories.has(v.id))
+                .sort((a, b) => (a.volgorde ?? Number.MAX_SAFE_INTEGER) - (b.volgorde ?? Number.MAX_SAFE_INTEGER))
+                .slice(0, 5);
+            }
+
+            if (highlighted.length === 0) {
+              return (
+                <View key={tijdperk.id} style={styles.emptyEraSection}>
+                  <View style={styles.kop}>
+                    <View style={styles.titelArea}>
+                      <ThemedText type="title">{v(tijdperk.titel)}</ThemedText>
+                      <ThemedText type="small" themeColor="textSecondary">
+                        {v(tijdperk.korteBeschrijving)}
+                      </ThemedText>
+                    </View>
+                  </View>
+                  <ThemedText type="small" themeColor="textSecondary" style={styles.emptyMessage}>
+                    {t((s) => s.voortgang.noMoreStories)}
+                  </ThemedText>
+                  <Pressable
+                    onPress={() => router.push({ pathname: '/tijdperk/[id]', params: { id: tijdperk.id } })}
+                    style={[styles.button, { backgroundColor: theme.accent }]}>
+                    <ThemedText type="smallBold" style={{ color: theme.background }}>
+                      {t((s) => s.ontdek.ontdekMeer)}
+                    </ThemedText>
+                  </Pressable>
+                </View>
+              );
+            }
+
+            return (
+              <TijdperkRij
+                key={tijdperk.id}
+                tijdperk={tijdperk}
+                verhalen={highlighted}
+                gelezenIds={gelezenIds}
+                onPressVerhaal={openVerhaal}
+                onPressOntdekMeer={() => router.push({ pathname: '/tijdperk/[id]', params: { id: tijdperk.id } })}
+              />
+            );
+          })}
 
           <View style={styles.sectie}>
             <SectieKop titel={t((s) => s.ontdek.nieuwToegevoegd)} />
@@ -213,5 +252,25 @@ const styles = StyleSheet.create({
   rij: {
     gap: Spacing.three,
     paddingHorizontal: Spacing.four,
+  },
+  emptyEraSection: {
+    gap: Spacing.three,
+    paddingHorizontal: Spacing.four,
+  },
+  kop: {
+    gap: Spacing.one,
+  },
+  titelArea: {
+    gap: Spacing.half,
+  },
+  emptyMessage: {
+    marginHorizontal: Spacing.four,
+  },
+  button: {
+    marginHorizontal: Spacing.four,
+    paddingVertical: Spacing.two,
+    borderRadius: Radii.button,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

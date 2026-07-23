@@ -5,10 +5,13 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 type VoortgangState = {
   gelezenIds: Set<string>;
   bekekenIds: Set<string>;
+  completedStories: Set<string>;
   streakDagen: number;
   laatsteActiviteitDatum: string | null;
   markeerAlsGelezen: (verhaalId: string) => void;
   markeerAlsBekeken: (verhaalId: string) => void;
+  markStoryCompleted: (verhaalId: string) => void;
+  isStoryCompleted: (verhaalId: string) => boolean;
 };
 
 function vandaag(): string {
@@ -38,9 +41,10 @@ function isSerializedSet(value: unknown): value is SerializedSet {
 
 export const useVoortgangStore = create<VoortgangState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       gelezenIds: new Set<string>(),
       bekekenIds: new Set<string>(),
+      completedStories: new Set<string>(),
       streakDagen: 1,
       laatsteActiviteitDatum: null,
       markeerAlsGelezen: (verhaalId) =>
@@ -53,6 +57,12 @@ export const useVoortgangStore = create<VoortgangState>()(
           bekekenIds: new Set(state.bekekenIds).add(verhaalId),
           ...bijgewerkteStreak(state.laatsteActiviteitDatum, state.streakDagen),
         })),
+      markStoryCompleted: (verhaalId) =>
+        set((state) => ({
+          completedStories: new Set(state.completedStories).add(verhaalId),
+          ...bijgewerkteStreak(state.laatsteActiviteitDatum, state.streakDagen),
+        })),
+      isStoryCompleted: (verhaalId) => get().completedStories.has(verhaalId),
     }),
     {
       name: 'voortgang-storage',

@@ -13,7 +13,7 @@ import { useVertaling } from '@/hooks/use-vertaling';
 import { taalCodes, taalNamen } from '@/i18n/taal-namen';
 import { verhalen } from '@/content/verhalen';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
-import { useStoryProgressStore } from '@/store/story-progress-store';
+import { useVoortgangStore } from '@/store/voortgang-store';
 import { useThemaStore, type ThemaVoorkeur } from '@/store/thema-store';
 
 const THEMA_OPTIES: { waarde: ThemaVoorkeur; icoonNaam: IoniconNaam }[] = [
@@ -34,23 +34,13 @@ export default function ProfielScreen() {
   const themaVoorkeur = useThemaStore((state) => state.themaVoorkeur);
   const setThemaVoorkeur = useThemaStore((state) => state.setThemaVoorkeur);
   const characterStore = useCharacterUnlockStore();
-  const storyProgressStore = useStoryProgressStore();
+  const voortgangStore = useVoortgangStore();
 
   const totalCharacters = verhalen.length;
   const charactersUnlocked = characterStore.getTotalUnlocked();
   const unlockedCharacters = characterStore.unlockedCharacters;
-
-  // Calculate chapters read
-  const chaptersRead = Object.values(storyProgressStore.progress).reduce(
-    (sum, prog) => sum + prog.completedChapters.length,
-    0,
-  );
-
-  // Calculate stories completed (all 8 chapters done)
-  const storiesCompleted = verhalen.filter((verhaal) => {
-    const progress = storyProgressStore.getChapterProgress(verhaal.id);
-    return progress.completedChapters.length === (verhaal.chapters?.length ?? 0);
-  }).length;
+  const chaptersRead = voortgangStore.bekekenIds.size;
+  const storiesCompleted = voortgangStore.completedStories.size;
 
   return (
     <ThemedView style={styles.container}>

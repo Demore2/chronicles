@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 
 import { AdBanner } from '@/components/ad-banner';
@@ -16,6 +16,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
+import { useVoortgangStore } from '@/store/voortgang-store';
 
 export default function ReaderScreen() {
   const { id, chapterId: chapterIdParam } = useLocalSearchParams<{ id: string; chapterId: string }>();
@@ -23,9 +24,11 @@ export default function ReaderScreen() {
   const theme = useTheme();
   const { v } = useVertaling();
   const characterStore = useCharacterUnlockStore();
+  const voortgangStore = useVoortgangStore();
 
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const hasAutoUnlockedRef = useRef(false);
 
   const verhaal = getVerhaal(id);
   const chapterId = chapterIdParam ? parseInt(chapterIdParam, 10) : 1;
@@ -41,6 +44,15 @@ export default function ReaderScreen() {
       progress.completeChapter(chapterId);
     }
   }, [scrollPercentage, chapter, chapterId, progress]);
+
+  useEffect(() => {
+    if (allChaptersRead && !characterUnlocked && !hasAutoUnlockedRef.current && verhaal) {
+      hasAutoUnlockedRef.current = true;
+      voortgangStore.markStoryCompleted(verhaal.id);
+      characterStore.unlockCharacter(verhaal.id, verhaal.personage.naam);
+      setShowUnlockModal(true);
+    }
+  }, [allChaptersRead, characterUnlocked, verhaal, voortgangStore, characterStore]);
 
   if (!verhaal) {
     return (

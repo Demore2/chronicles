@@ -17,7 +17,7 @@ export default function TijdperkScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { t, v } = useVertaling();
-  const gelezenIds = useVoortgangStore((state) => state.gelezenIds);
+  const completedStories = useVoortgangStore((state) => state.completedStories);
 
   const tijdperk = getTijdperk(id);
   const verhalen = useMemo(() => getVerhalenByTijdperk(id), [id]);
@@ -57,7 +57,7 @@ export default function TijdperkScreen() {
                 <VerhaalKaart
                   key={verhaal.id}
                   verhaal={verhaal}
-                  gelezen={gelezenIds.has(verhaal.id)}
+                  gelezen={completedStories.has(verhaal.id)}
                   onPress={() => router.push({ pathname: '/verhaal/[id]', params: { id: verhaal.id } })}
                 />
               ))}

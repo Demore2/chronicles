@@ -8,7 +8,6 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Radii, Spacing, withAlpha } from '@/constants/theme';
 import { tijdperken } from '@/constants/tijdperken';
-import { getTijdperkVoortgang } from '@/content/queries';
 import { verhalen } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
@@ -18,12 +17,8 @@ export default function VoortgangScreen() {
   const theme = useTheme();
   const router = useRouter();
   const { t, v } = useVertaling();
-  const gelezenIds = useVoortgangStore((state) => state.gelezenIds);
+  const completedStories = useVoortgangStore((state) => state.completedStories);
   const streakDagen = useVoortgangStore((state) => state.streakDagen);
-
-  const totaalVerhalen = verhalen.length;
-  const totaalGelezen = gelezenIds.size;
-  const totaalFractie = totaalVerhalen > 0 ? totaalGelezen / totaalVerhalen : 0;
 
   return (
     <ThemedView style={styles.container}>
@@ -43,29 +38,13 @@ export default function VoortgangScreen() {
             </View>
           </View>
 
-          <View style={[styles.voortgangCard, { backgroundColor: theme.backgroundElement }]}>
-            <View style={styles.voortgangKopRow}>
-              <ThemedText type="smallBold">{t((s) => s.voortgang.verhalenGelezen)}</ThemedText>
-              <ThemedText type="smallBold" themeColor="accent">
-                {t((s) => s.voortgang.aantalVerhalen)(totaalGelezen, totaalVerhalen)}
-              </ThemedText>
-            </View>
-            <View style={[styles.balkTrack, { backgroundColor: theme.backgroundSelected }]}>
-              <View
-                style={[
-                  styles.balkVulling,
-                  { backgroundColor: theme.accent, width: `${totaalFractie * 100}%` },
-                ]}
-              />
-            </View>
-          </View>
-
           <View style={styles.sectie}>
-            <SectieKop titel={t((s) => s.voortgang.perTijdperk)} />
+            <SectieKop titel={t((s) => s.voortgang.byEra)} />
             <View style={styles.lijst}>
               {tijdperken.map((tijdperk) => {
-                const voortgang = getTijdperkVoortgang(tijdperk.id, gelezenIds);
-                const fractie = voortgang.totaal > 0 ? voortgang.gelezen / voortgang.totaal : 0;
+                const verhalenInEra = verhalen.filter((v) => v.tijdperkId === tijdperk.id);
+                const completedInEra = verhalenInEra.filter((v) => completedStories.has(v.id)).length;
+                const fractie = verhalenInEra.length > 0 ? completedInEra / verhalenInEra.length : 0;
                 return (
                   <Pressable
                     key={tijdperk.id}
@@ -74,7 +53,7 @@ export default function VoortgangScreen() {
                     <View style={styles.rijTekst}>
                       <ThemedText type="smallBold">{v(tijdperk.titel)}</ThemedText>
                       <ThemedText type="caption" themeColor="textSecondary">
-                        {t((s) => s.voortgang.aantalVerhalen)(voortgang.gelezen, voortgang.totaal)}
+                        {t((s) => s.voortgang.storiesOfEra)(completedInEra, verhalenInEra.length)}
                       </ThemedText>
                       <View style={[styles.balkTrackKlein, { backgroundColor: theme.backgroundSelected }]}>
                         <View
@@ -85,7 +64,7 @@ export default function VoortgangScreen() {
                         />
                       </View>
                     </View>
-                    {fractie >= 1 && voortgang.totaal > 0 && (
+                    {fractie >= 1 && verhalenInEra.length > 0 && (
                       <Ionicons name="checkmark-circle" size={22} color={theme.accent} />
                     )}
                   </Pressable>
@@ -132,17 +111,6 @@ const styles = StyleSheet.create({
   streakTekst: {
     flex: 1,
     gap: Spacing.half,
-  },
-  voortgangCard: {
-    marginHorizontal: Spacing.four,
-    padding: Spacing.four,
-    borderRadius: Radii.card,
-    gap: Spacing.two,
-  },
-  voortgangKopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
   balkTrack: {
     height: 8,
