@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { Illustratie } from '@/components/illustratie';
 import { ThemedText } from '@/components/themed-text';
@@ -27,11 +27,19 @@ export function VerhaalKaart({
       onPress={onPress}
       style={[styles.shadowWrapper, { backgroundColor: theme.background }, gelezen && styles.gelezen]}>
       <View style={styles.card}>
-        <Illustratie
-          kleur={tijdperk?.kleur ?? theme.inactive}
-          icoonNaam="book-outline"
-          style={styles.illustratie}
-        />
+        {verhaal.afbeelding ? (
+          <Image
+            source={{ uri: verhaal.afbeelding }}
+            style={styles.portraitImage}
+            resizeMode="cover"
+          />
+        ) : (
+          <Illustratie
+            kleur={verhaal.portretKleur}
+            icoonNaam="book-outline"
+            style={styles.illustratie}
+          />
+        )}
         {gelezen && (
           <View style={[styles.checkBadge, { backgroundColor: theme.accent }]}>
             <Ionicons name="checkmark" size={14} color={theme.background} />
@@ -71,6 +79,10 @@ const styles = StyleSheet.create({
   },
   illustratie: {
     height: Math.round(CardDimensions.portraitHeight * CardDimensions.portraitIllustrationRatio),
+  },
+  portraitImage: {
+    height: Math.round(CardDimensions.portraitHeight * CardDimensions.portraitIllustrationRatio),
+    width: '100%',
   },
   checkBadge: {
     position: 'absolute',

@@ -1,4 +1,5 @@
 import type { Verhaal } from '@/constants/types';
+import { GENERATED_IMAGES } from '@/constants/generated-images';
 
 export const juliusCaesar: Verhaal = {
   id: 'julius-caesar',
@@ -8,6 +9,7 @@ export const juliusCaesar: Verhaal = {
   jaar: -44,
   periodeLabel: '100 BC - 44 BC',
   soort: 'persoon',
+  afbeelding: GENERATED_IMAGES['julius-caesar'],
   portretKleur: '#8B4513',
   uitgelicht: false,
   volgorde: 1,
@@ -182,6 +184,7 @@ export const spartacus: Verhaal = {
   jaar: -71,
   periodeLabel: '109 BC - 71 BC',
   soort: 'persoon',
+  afbeelding: GENERATED_IMAGES['spartacus'],
   portretKleur: '#CD853F',
   uitgelicht: false,
   volgorde: 2,

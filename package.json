@@ -43,6 +43,7 @@
     "eslint-config-expo": "~57.0.0",
     "flag-icons": "^7.5.0",
     "react-native-svg-transformer": "^1.5.3",
+    "replicate": "^0.40.0",
     "topojson-client": "^3.1.0",
     "typescript": "~6.0.3",
     "world-atlas": "^2.0.2",
@@ -56,7 +57,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "generate:map-data": "node scripts/generate-map-data.mjs",
-    "validate:content": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-content.mjs"
+    "validate:content": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/validate-content.mjs",
+    "generate:images:r9": "node scripts/generate-portrait-images.mjs"
   },
   "private": true
 }

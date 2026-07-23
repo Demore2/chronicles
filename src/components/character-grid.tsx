@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -93,6 +93,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.two,
     position: 'relative',
+  },
+  portraitImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
   },
   checkmark: {
     position: 'absolute',

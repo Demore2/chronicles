@@ -1,4 +1,5 @@
 ﻿import type { Verhaal } from '@/constants/types';
+import { GENERATED_IMAGES } from '@/constants/generated-images';
 
 export const romesRise: Verhaal = {
   id: 'rome-rise',
@@ -8,6 +9,7 @@ export const romesRise: Verhaal = {
   jaar: -27,
   periodeLabel: '753 BC - 27 BC',
   soort: 'gebeurtenis',
+  afbeelding: GENERATED_IMAGES['rome-rise'],
   portretKleur: '#A0522D',
   uitgelicht: false,
   volgorde: 3,
@@ -35,6 +37,7 @@ export const pompeiiDisaster: Verhaal = {
   jaar: 79,
   periodeLabel: '79 AD',
   soort: 'gebeurtenis',
+  afbeelding: GENERATED_IMAGES['pompeii-disaster'],
   portretKleur: '#C17F4E',
   uitgelicht: false,
   volgorde: 4,
