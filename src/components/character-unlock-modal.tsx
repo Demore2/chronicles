@@ -1,5 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Radii, Spacing } from '@/constants/theme';
@@ -7,18 +6,37 @@ import { useTheme } from '@/hooks/use-theme';
 
 interface CharacterUnlockModalProps {
   personageNaam: string;
+  personageImage?: string;
   onClose: () => void;
 }
 
-export function CharacterUnlockModal({ personageNaam, onClose }: CharacterUnlockModalProps) {
+export function CharacterUnlockModal({ personageNaam, personageImage, onClose }: CharacterUnlockModalProps) {
   const theme = useTheme();
+  const initial = personageNaam[0]?.toUpperCase() ?? '?';
 
   return (
     <View style={styles.overlay}>
       <View style={[styles.modal, { backgroundColor: theme.background }]}>
-        <View style={styles.celebration}>
-          <Ionicons name="star" size={64} color={theme.accent} />
-        </View>
+        {personageImage ? (
+          <View style={styles.portraitWrapper}>
+            <Image
+              source={{ uri: personageImage }}
+              style={[styles.portraitCircle, styles.portraitImage]}
+              resizeMode="cover"
+            />
+          </View>
+        ) : (
+          <View style={[styles.portraitCircle, { backgroundColor: theme.accent }]}>
+            <ThemedText
+              type="display"
+              style={{
+                color: theme.background,
+                fontSize: 56,
+              }}>
+              {initial}
+            </ThemedText>
+          </View>
+        )}
 
         <ThemedText type="display" style={styles.title}>
           Character Unlocked!
@@ -59,13 +77,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: '85%',
   },
-  celebration: {
-    position: 'relative',
-    height: 100,
-    width: 100,
+  portraitWrapper: {
     marginBottom: Spacing.four,
+  },
+  portraitCircle: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  portraitImage: {
+    width: 120,
+    height: 120,
   },
   title: {
     marginBottom: Spacing.one,

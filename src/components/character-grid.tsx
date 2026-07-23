@@ -34,27 +34,55 @@ export function CharacterGrid({ unlockedCharacters, totalCharacters }: Character
               }
             }}
             style={styles.cardContainer}>
-            <View
-              style={[
-                styles.circle,
-                {
-                  backgroundColor: isUnlocked ? theme.accent : theme.inactive,
-                },
-              ]}>
-              <ThemedText
-                type="display"
-                style={{
-                  color: theme.background,
-                  fontSize: 32,
-                }}>
-                {initial}
-              </ThemedText>
-              {isUnlocked && (
+            {isUnlocked && verhaal.afbeelding ? (
+              <View style={styles.portraitWrapper}>
+                <Image
+                  source={{ uri: verhaal.afbeelding }}
+                  style={styles.circle}
+                  resizeMode="cover"
+                />
                 <View style={[styles.checkmark, { backgroundColor: theme.background }]}>
                   <Ionicons name="checkmark" size={12} color={theme.accent} />
                 </View>
-              )}
-            </View>
+              </View>
+            ) : isUnlocked ? (
+              <View
+                style={[
+                  styles.circle,
+                  {
+                    backgroundColor: theme.accent,
+                  },
+                ]}>
+                <ThemedText
+                  type="display"
+                  style={{
+                    color: theme.background,
+                    fontSize: 32,
+                  }}>
+                  {initial}
+                </ThemedText>
+                <View style={[styles.checkmark, { backgroundColor: theme.background }]}>
+                  <Ionicons name="checkmark" size={12} color={theme.accent} />
+                </View>
+              </View>
+            ) : (
+              <View
+                style={[
+                  styles.circle,
+                  {
+                    backgroundColor: theme.inactive,
+                  },
+                ]}>
+                <ThemedText
+                  type="display"
+                  style={{
+                    color: theme.textSecondary,
+                    fontSize: 24,
+                  }}>
+                  ?
+                </ThemedText>
+              </View>
+            )}
             <ThemedText
               type="small"
               numberOfLines={2}
@@ -85,6 +113,10 @@ const styles = StyleSheet.create({
     width: '30%',
     marginBottom: Spacing.two,
   },
+  portraitWrapper: {
+    position: 'relative',
+    marginBottom: Spacing.two,
+  },
   circle: {
     width: 70,
     height: 70,
@@ -92,12 +124,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.two,
-    position: 'relative',
-  },
-  portraitImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    overflow: 'hidden',
   },
   checkmark: {
     position: 'absolute',

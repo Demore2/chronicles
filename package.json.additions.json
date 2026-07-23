@@ -1,0 +1,51 @@
+{
+  "comment": "Add these to your existing package.json",
+  "comment2": "The 'scripts' section should be merged into your existing scripts, not replace them",
+  
+  "dependencies_to_add": {
+    "@anthropic-ai/sdk": "^0.24.0"
+  },
+
+  "scripts_to_add": {
+    "generate:batch": "node orchestration-controller.mjs",
+    "generate:batch:dev": "node orchestration-controller.mjs",
+    "generate:batch:validate": "npm run validate:content && npx tsc --noEmit && npm run lint"
+  },
+
+  "usage_examples": {
+    "example1": "npm run generate:batch -- --eras all --count 6",
+    "example2": "npm run generate:batch -- --eras oudheid,middeleeuwen --count 4",
+    "example3": "npm run generate:batch -- --eras twintigste-eeuw --count 8 --themes liberation"
+  },
+
+  "steps": [
+    {
+      "step": 1,
+      "description": "Install the dependency",
+      "command": "npm install @anthropic-ai/sdk"
+    },
+    {
+      "step": 2,
+      "description": "Open package.json and find the 'scripts' section",
+      "example": "\"scripts\": { \"web\": \"expo start --web\", ... }"
+    },
+    {
+      "step": 3,
+      "description": "Add these 3 lines to your scripts section",
+      "additions": [
+        "\"generate:batch\": \"node orchestration-controller.mjs\",",
+        "\"generate:batch:dev\": \"node orchestration-controller.mjs\",",
+        "\"generate:batch:validate\": \"npm run validate:content && npx tsc --noEmit && npm run lint\""
+      ]
+    },
+    {
+      "step": 4,
+      "description": "Save package.json and you're done!"
+    }
+  ],
+
+  "what_if_it_already_has_different_scripts": {
+    "explanation": "Your existing 'scripts' section already has 'web', 'android', 'ios', 'lint', etc.",
+    "instruction": "Just ADD the 3 generate:batch lines to that section. Don't remove or replace anything."
+  }
+}

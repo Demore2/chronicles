@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CollectieKaart } from '@/components/collectie-kaart';
 import { HorizontaleRij } from '@/components/horizontale-rij';
@@ -21,7 +21,10 @@ import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
+const SHOW_STORYLINES = false;
+
 export default function OntdekScreen() {
+  const insets = useSafeAreaInsets();
   const theme = useTheme();
   const router = useRouter();
   const { t, v } = useVertaling();
@@ -33,14 +36,14 @@ export default function OntdekScreen() {
   const uitgelicht = getUitgelichtVerhaal();
   const verderLezen = [...bekekenIds]
     .map((id) => getVerhaal(id))
-    .filter((verhaal): verhaal is Verhaal => verhaal !== undefined && !gelezenIds.has(verhaal.id));
+    .filter((verhaal): verhaal is Verhaal => verhaal !== undefined && !gelezenIds.has(verhaal.id) && !completedStories.has(verhaal.id));
   const nieuwToegevoegd = getNieuwToegevoegd();
 
   if (!uitgelicht) {
     return (
       <ThemedView style={styles.container}>
         <SafeAreaView edges={['top']} style={styles.safeArea}>
-          <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          <ScrollView contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 80 }]} showsVerticalScrollIndicator={false}>
             <View style={styles.headerRow}>
               <ThemedText type="display">{t((s) => s.tabs.ontdek)}</ThemedText>
               <View style={[styles.streak, { backgroundColor: theme.backgroundElement }]}>
@@ -66,7 +69,7 @@ export default function OntdekScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView edges={['top']} style={styles.safeArea}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 80 }]} showsVerticalScrollIndicator={false}>
           <View style={styles.headerRow}>
             <ThemedText type="display">{t((s) => s.tabs.ontdek)}</ThemedText>
             <View style={[styles.streak, { backgroundColor: theme.backgroundElement }]}>
@@ -117,21 +120,23 @@ export default function OntdekScreen() {
             )}
           </View>
 
-          <View style={styles.sectie}>
-            <SectieKop titel={t((s) => s.ontdek.verhaallijnen)} />
-            <HorizontaleRij
-              data={collecties}
-              keyExtractor={(collectie) => collectie.id}
-              itemBreedte={CardDimensions.portraitWidth}
-              contentContainerStyle={styles.rij}
-              renderItem={({ item }) => (
-                <CollectieKaart
-                  collectie={item}
-                  onPress={() => router.push({ pathname: '/collectie/[id]', params: { id: item.id } })}
-                />
-              )}
-            />
-          </View>
+          {SHOW_STORYLINES && (
+            <View style={styles.sectie}>
+              <SectieKop titel={t((s) => s.ontdek.verhaallijnen)} />
+              <HorizontaleRij
+                data={collecties}
+                keyExtractor={(collectie) => collectie.id}
+                itemBreedte={CardDimensions.portraitWidth}
+                contentContainerStyle={styles.rij}
+                renderItem={({ item }) => (
+                  <CollectieKaart
+                    collectie={item}
+                    onPress={() => router.push({ pathname: '/collectie/[id]', params: { id: item.id } })}
+                  />
+                )}
+              />
+            </View>
+          )}
 
           {getActieveTijdperken().map((tijdperk) => {
             let highlighted = getUitgelichteVerhalenVoorTijdperk(tijdperk.id);

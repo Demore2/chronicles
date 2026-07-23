@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.three,
+    justifyContent: 'center',
   },
   advertentie: {
     marginTop: Spacing.three,

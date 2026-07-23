@@ -28,6 +28,8 @@ const THEMA_LABEL_SLEUTEL = {
   systeem: 'themaSysteem',
 } as const;
 
+const SHOW_LANGUAGE_PICKER = false;
+
 export default function ProfielScreen() {
   const theme = useTheme();
   const { t, taal, setTaal } = useVertaling();
@@ -80,7 +82,7 @@ export default function ProfielScreen() {
           </View>
 
           <View style={styles.sectie}>
-            <SectieKop titel={t((s) => s.profiel.characterCollection)} />
+            <SectieKop titel={`${t((s) => s.profiel.characterCollection)} (${charactersUnlocked} of ${totalCharacters})`} />
             <View style={[styles.kaart, { backgroundColor: theme.backgroundElement }]}>
               <CharacterGrid unlockedCharacters={unlockedCharacters} totalCharacters={totalCharacters} />
             </View>
@@ -111,27 +113,29 @@ export default function ProfielScreen() {
               </View>
             </View>
 
-            <View style={[styles.kaart, { backgroundColor: theme.backgroundElement }]}>
-              <ThemedText type="smallBold">{t((s) => s.profiel.taal)}</ThemedText>
-              <View style={styles.taalRij}>
-                {taalCodes.map((code) => {
-                  const actief = taal === code;
-                  return (
-                    <Pressable
-                      key={code}
-                      onPress={() => setTaal(code)}
-                      style={[
-                        styles.taalKnop,
-                        { backgroundColor: actief ? theme.accent : theme.backgroundSelected },
-                      ]}>
-                      <ThemedText type="small" style={{ color: actief ? theme.background : theme.text }}>
-                        {taalNamen[code]}
-                      </ThemedText>
-                    </Pressable>
-                  );
-                })}
+            {SHOW_LANGUAGE_PICKER && (
+              <View style={[styles.kaart, { backgroundColor: theme.backgroundElement }]}>
+                <ThemedText type="smallBold">{t((s) => s.profiel.taal)}</ThemedText>
+                <View style={styles.taalRij}>
+                  {taalCodes.map((code) => {
+                    const actief = taal === code;
+                    return (
+                      <Pressable
+                        key={code}
+                        onPress={() => setTaal(code)}
+                        style={[
+                          styles.taalKnop,
+                          { backgroundColor: actief ? theme.accent : theme.backgroundSelected },
+                        ]}>
+                        <ThemedText type="small" style={{ color: actief ? theme.background : theme.text }}>
+                          {taalNamen[code]}
+                        </ThemedText>
+                      </Pressable>
+                    );
+                  })}
+                </View>
               </View>
-            </View>
+            )}
           </View>
         </ScrollView>
       </SafeAreaView>

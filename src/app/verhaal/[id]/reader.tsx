@@ -203,6 +203,7 @@ export default function ReaderScreen() {
       <Modal visible={showUnlockModal} animationType="fade" transparent={true}>
         <CharacterUnlockModal
           personageNaam={verhaal?.personage.naam ?? 'Character'}
+          personageImage={verhaal?.afbeelding}
           onClose={handleCloseUnlockModal}
         />
       </Modal>

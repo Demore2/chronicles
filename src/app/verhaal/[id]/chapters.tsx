@@ -64,10 +64,11 @@ export default function ChaptersScreen() {
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
 
-      <Pressable onPress={() => router.push('/')} style={[styles.homeButton, { backgroundColor: theme.backgroundElement }]}>
-        <Ionicons name="chevron-back" size={20} color={theme.text} />
-        <ThemedText type="smallBold">Home</ThemedText>
-      </Pressable>
+      <View style={styles.headerBar}>
+        <Pressable onPress={() => router.push('/')} style={[styles.homeButton, { backgroundColor: theme.backgroundElement }]}>
+          <ThemedText type="smallBold">Home</ThemedText>
+        </Pressable>
+      </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <ThemedText type="display">{v(verhaal.titel)}</ThemedText>
@@ -181,9 +182,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  headerBar: {
+    paddingHorizontal: Spacing.four,
+    paddingTop: Spacing.five,
+    paddingBottom: Spacing.three,
+    flexDirection: 'row',
+  },
+  homeButton: {
+    paddingVertical: Spacing.three,
+    paddingHorizontal: Spacing.four,
+    borderRadius: Radii.button,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   content: {
     padding: Spacing.four,
-    paddingTop: Spacing.six + Spacing.four,
     gap: Spacing.three,
     paddingBottom: Spacing.six,
   },
@@ -243,17 +256,5 @@ const styles = StyleSheet.create({
   },
   infoText: {
     flex: 1,
-  },
-  homeButton: {
-    position: 'absolute',
-    top: Spacing.three,
-    left: Spacing.four,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.one,
-    paddingVertical: Spacing.two,
-    paddingHorizontal: Spacing.three,
-    borderRadius: Radii.button,
-    zIndex: 10,
   },
 });
