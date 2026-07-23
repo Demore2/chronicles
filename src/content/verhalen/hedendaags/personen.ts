@@ -1,4 +1,5 @@
 import type { Verhaal } from '@/constants/types';
+import { CHARACTER_IMAGES } from '@/constants/character-images';
 
 // Contemporary Era: Steve Jobs, Malala Yousafzai, Nelson Mandela
 // Note: Full 8-chapter stories from agents; showing condensed structure for brevity
@@ -12,6 +13,7 @@ export const steveJobs: Verhaal = {
   jaar: 2011,
   periodeLabel: '1955 - 2011',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/1zZVRnmfKHRvfknjDCOwQgpeyDczqfUlpF4Mh1apmWdjXHwbB/tmpxaoclki2.webp',
   portretKleur: '#5A6B8C',
   uitgelicht: false,
   volgorde: 1,
@@ -143,6 +145,7 @@ export const malala: Verhaal = {
   jaar: 2014,
   periodeLabel: '1997 - Present',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/pgRS5dhUbzbvBNJaJn2uDmmWVkRIpMRG4b1gvXqWDrzldAvF/tmp0x4wfhnz.webp',
   portretKleur: '#5A6B8C',
   uitgelicht: false,
   volgorde: 2,
@@ -274,6 +277,7 @@ export const nelson: Verhaal = {
   jaar: 2013,
   periodeLabel: '1918 - 2013',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/yPkm1RWnWG57OdQt9wRTHVYyzLaBkOMonbo4Af11vsXZ7AeWA/tmpbjjlf0gb.webp',
   portretKleur: '#5A6B8C',
   uitgelicht: false,
   volgorde: 3,

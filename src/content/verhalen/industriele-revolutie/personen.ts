@@ -1,4 +1,5 @@
 ﻿import type { Verhaal } from '@/constants/types';
+import { CHARACTER_IMAGES } from '@/constants/character-images';
 
 export const james: Verhaal = {
   id: 'james-watt',
@@ -8,6 +9,7 @@ export const james: Verhaal = {
   jaar: 1819,
   periodeLabel: '1736 - 1819',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/ry22aUEHMELpIZfves3Ue0qWAWbCFepNTh5w2dNeeFhVFdAvF/tmp_ho2rgn4.webp',
   portretKleur: '#5B6B73',
   uitgelicht: false,
   volgorde: 1,
@@ -152,6 +154,7 @@ export const florence: Verhaal = {
   jaar: 1910,
   periodeLabel: '1820 - 1910',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/gJvdejppwMU3aqw3RxhiseEafXFqmWmAzAduqNrmyTn9pD4tA/tmpgz7i7vah.webp',
   portretKleur: '#8B6B47',
   uitgelicht: false,
   volgorde: 2,
@@ -292,6 +295,7 @@ export const thomas: Verhaal = {
   jaar: 1931,
   periodeLabel: '1847 - 1931',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/9EU9F5ZzoGrOPJJbsM0k2WP3FEvO8RpoaBMfiWPx6rPu6AeWA/tmpb5zdeibf.webp',
   portretKleur: '#6B5B4A',
   uitgelicht: false,
   volgorde: 3,

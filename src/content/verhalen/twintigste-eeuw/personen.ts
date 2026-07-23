@@ -1,4 +1,5 @@
 import type { Verhaal } from '@/constants/types';
+import { CHARACTER_IMAGES } from '@/constants/character-images';
 
 // Content generated from 20th Century agent (3 stories with 8 chapters each)
 // Full details: Marie Curie, Winston Churchill, Martin Luther King Jr.
@@ -11,6 +12,7 @@ export const marieCurie: Verhaal = {
   jaar: 1934,
   periodeLabel: '1867 - 1934',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/PenNQBeHkfC10pxKkFwVk1jiKzjTaqcSCrlVx7fLfedVf7AeWA/tmpinmosfrw.webp',
   portretKleur: '#6B8E4F',
   uitgelicht: false,
   volgorde: 1,
@@ -155,6 +157,7 @@ export const winstonChurchill: Verhaal = {
   jaar: 1965,
   periodeLabel: '1874 - 1965',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/0vjAmhan4yawNVUAsOB4K6gcJVZkqL1jNPp5upTfVfLs4B8WA/tmp5nph1j3l.webp',
   portretKleur: '#4A5A6B',
   uitgelicht: false,
   volgorde: 2,
@@ -286,6 +289,7 @@ export const martinLutherKingJr: Verhaal = {
   jaar: 1968,
   periodeLabel: '1929 - 1968',
   soort: 'persoon',
+  afbeelding: 'https://replicate.delivery/xezq/PI4Nj4DgTWL1FRk8NLCsxexaUabP5qYo5yKuLKp3mIJn8AeWA/tmpwzftbu8k.webp',
   portretKleur: '#6B4A3A',
   uitgelicht: false,
   volgorde: 3,
