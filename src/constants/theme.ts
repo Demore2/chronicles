@@ -11,6 +11,11 @@ export const Colors = {
     backgroundSelected: '#E3D6B8',
     accent: '#3B6E7D',
     inactive: '#B7AE99',
+    // Semantische kleuren (R8.AUTH deel 2): formulierfouten, wachtwoordsterkte, uitloggen.
+    // Bewust gedempt — een schreeuwend #FF0000 hoort niet in dit beige palet.
+    gevaar: '#A8322A',
+    waarschuwing: '#9A6B14',
+    succes: '#3F7A4B',
   },
   dark: {
     text: '#F3ECDC',
@@ -20,6 +25,9 @@ export const Colors = {
     backgroundSelected: '#332E24',
     accent: '#6FA8B8',
     inactive: '#54503F',
+    gevaar: '#E08A80',
+    waarschuwing: '#D9AE5F',
+    succes: '#7FB98B',
   },
 } as const;
 

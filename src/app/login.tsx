@@ -1,0 +1,189 @@
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import HistoryBook from '@/assets/images/mascotte/history-book.svg';
+import { AuthKnop } from '@/components/auth-knop';
+import { AuthVeld } from '@/components/auth-veld';
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { isGeldigEmail } from '@/constants/auth-validatie';
+import { Radii, Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
+import { useVertaling } from '@/hooks/use-vertaling';
+// De losse `login` in plaats van `useAuth()`: de hook zet ook de sessie-listener op en die
+// hoort maar op één plek te draaien (de root layout). Zie de opmerking bij `useAuth`.
+import { login } from '@/hooks/useAuth';
+
+export default function LoginScreen() {
+  const theme = useTheme();
+  const { t } = useVertaling();
+
+  const [email, setEmail] = useState('');
+  const [wachtwoord, setWachtwoord] = useState('');
+  const [fout, setFout] = useState<string | null>(null);
+  const [bezig, setBezig] = useState(false);
+
+  async function handleLogin() {
+    if (!email.trim() || !wachtwoord) {
+      setFout(t((s) => s.auth.foutVeldenLeeg));
+      return;
+    }
+    if (!isGeldigEmail(email)) {
+      setFout(t((s) => s.auth.foutEmailOngeldig));
+      return;
+    }
+
+    setFout(null);
+    setBezig(true);
+    const resultaat = await login(email, wachtwoord);
+    setBezig(false);
+
+    if (!resultaat.ok) {
+      setFout(resultaat.error);
+      return;
+    }
+    // De poort in de root layout stuurt óók door zodra de store een user heeft; dit is de
+    // snelle weg zodat er geen frame met het inlogscherm blijft staan. Twee keer naar
+    // dezelfde route vervangen is een no-op.
+    router.replace('/');
+  }
+
+  function handleWachtwoordVergeten() {
+    // TODO: wachtwoord-reset via supabase.auth.resetPasswordForEmail() — nog geen scherm voor.
+    console.log('TODO: wachtwoord vergeten-stroom bestaat nog niet');
+  }
+
+  return (
+    <ThemedView style={styles.container}>
+      <SafeAreaView edges={['top', 'bottom']} style={styles.safeArea}>
+        <KeyboardAvoidingView
+          style={styles.flex}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
+            <View style={styles.kop}>
+              <HistoryBook width={56} height={56} color={theme.accent} />
+              <ThemedText type="title">{t((s) => s.auth.loginTitel)}</ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t((s) => s.auth.loginOndertitel)}
+              </ThemedText>
+            </View>
+
+            {fout !== null && (
+              <View style={[styles.foutvak, { backgroundColor: theme.backgroundElement }]}>
+                <Ionicons name="alert-circle-outline" size={18} color={theme.gevaar} />
+                <ThemedText type="small" themeColor="gevaar" style={styles.foutTekst}>
+                  {fout}
+                </ThemedText>
+              </View>
+            )}
+
+            <AuthVeld
+              label={t((s) => s.auth.email)}
+              value={email}
+              onChangeText={setEmail}
+              placeholder={t((s) => s.auth.emailPlaceholder)}
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect={false}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              editable={!bezig}
+              returnKeyType="next"
+            />
+
+            <AuthVeld
+              label={t((s) => s.auth.wachtwoord)}
+              value={wachtwoord}
+              onChangeText={setWachtwoord}
+              placeholder={t((s) => s.auth.wachtwoordPlaceholder)}
+              secureTextEntry
+              autoCapitalize="none"
+              autoComplete="current-password"
+              textContentType="password"
+              editable={!bezig}
+              returnKeyType="go"
+              onSubmitEditing={() => void handleLogin()}
+            />
+
+            <Pressable
+              onPress={handleWachtwoordVergeten}
+              accessibilityRole="button"
+              style={styles.vergetenKnop}>
+              <ThemedText type="link" themeColor="textSecondary">
+                {t((s) => s.auth.wachtwoordVergeten)}
+              </ThemedText>
+            </Pressable>
+
+            <AuthKnop
+              label={t((s) => s.auth.inloggen)}
+              onPress={() => void handleLogin()}
+              bezig={bezig}
+            />
+
+            <View style={styles.wisselRij}>
+              <ThemedText type="small" themeColor="textSecondary">
+                {t((s) => s.auth.geenAccount)}
+              </ThemedText>
+              <Pressable
+                onPress={() => router.push('/signup')}
+                accessibilityRole="link"
+                disabled={bezig}>
+                <ThemedText type="linkPrimary">{t((s) => s.auth.naarSignup)}</ThemedText>
+              </Pressable>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ThemedView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+  },
+  flex: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: Spacing.four,
+  },
+  kop: {
+    alignItems: 'center',
+    gap: Spacing.two,
+    marginBottom: Spacing.five,
+  },
+  foutvak: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    padding: Spacing.three,
+    borderRadius: Radii.small,
+    marginBottom: Spacing.three,
+  },
+  foutTekst: {
+    flex: 1,
+  },
+  vergetenKnop: {
+    alignSelf: 'flex-end',
+    marginBottom: Spacing.four,
+  },
+  wisselRij: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.two,
+    marginTop: Spacing.four,
+  },
+});
