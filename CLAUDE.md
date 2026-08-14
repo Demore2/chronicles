@@ -243,16 +243,36 @@ queries) — add cross-cutting queries there rather than inline in screens.
   AsyncStorage per device), and the dialog says so; don't reword it into a warning that isn't true.
   `Alert` doesn't exist in react-native-web, so the handler falls back to `window.confirm`.
 
-### Voortgang sync (R8.AUTH deel 3)
+### Voortgang sync (R8.AUTH deel 3, R8.SYNC-B)
 
-`voortgang-store` mirrors itself into `public.voortgang`. Everything else still lives only on the
-device — see "Known gaps".
+**Three stores mirror themselves into Supabase**, all following the same pattern:
+
+| Store | Tabel | Vorm |
+|---|---|---|
+| `voortgang-store` | `public.voortgang` | één rij per gebruiker |
+| `story-progress-store` | `public.story_progress` | **één rij per verhaal** (`unique (user_id, verhaal_id)`) |
+| `character-unlock-store` | `public.character_unlocks` | één rij per gebruiker, collectie als `jsonb` |
+
+Only the preference stores are still device-local — see "Known gaps".
 
 - **The debounce lives in the store, the triggers live in a hook.** Every mutating action calls
-  `plandeSync()`, which pushes one shared 2-second timer forward, so eight chapters in a row cost
-  one upsert. `useVoortgangSync()` in the root layout owns the cases where nothing changed but a
-  push is still due: a session appears, NetInfo reports a reconnect, or the app returns to the
-  foreground. Mount it once, next to `useAuth()`.
+  `plandeSync()` / `syncPlanner.plan()`, which pushes one shared 2-second timer forward, so eight
+  chapters in a row cost one upsert. `useVoortgangSync()` in the root layout owns the cases where
+  nothing changed but a push is still due: a session appears, NetInfo reports a reconnect, or the
+  app returns to the foreground. It drives **all three** stores from one `SYNC_STORES` list — add a
+  fourth store there, not as a fourth set of listeners. Mount it once, next to `useAuth()`.
+- **The shared pieces live in `src/store/sync-hulp.ts`**: `SYNC_DEBOUNCE_MS`, `foutTekst`,
+  `wachtOpHydratie(store)` and `maakSyncPlanner()`. They started as private helpers in
+  `voortgang-store`; three copies of the hydration guard is three chances to forget one.
+- **`story_progress` writes all stories in one `upsert(array, { onConflict: 'user_id,verhaal_id' })`**,
+  not a loop of nineteen. A loop is nineteen round-trips and leaves a half-written server state if
+  it aborts in the middle.
+- **`character_unlocks.unlocked_characters` is `jsonb`, not `text[]`** — the store keeps
+  `personageNaam` and `unlockedAt` next to the id, and an array of ids would drop both. It is read
+  back through `leesServerOntgrendelingen()`, which filters malformed entries instead of throwing:
+  `jsonb` has no shape Postgres enforces.
+- **The new tables' columns are snake_case** (`verhaal_id`, `completed_chapters`), unlike
+  `voortgang`'s folded-lowercase names. Same rule underneath — see the next bullet.
 - **Column names are lowercase** (`bekekenids`, `gelezenids`, `completedstories`,
   `laatsteactiviteitdatum`). Postgres folded the camelCase identifiers when the table was created,
   and supabase-js quotes whatever you type, so `bekekenIds` is a "column does not exist" error.
@@ -264,7 +284,9 @@ device — see "Known gaps".
 - **Login merges, it does not overwrite.** `voegServerVoortgangSamen` unions the three sets and
   keeps the streak with the most recent `laatsteActiviteitDatum`. The sets only ever grow, so a
   union can't lose anything — and it is what carries progress made *before* signing in into the
-  account. Don't "simplify" it back into an assignment.
+  account. Don't "simplify" it back into an assignment. The other two stores do the same:
+  chapters are unioned per story, and a character that exists on both sides keeps the **earliest**
+  `unlockedAt`. A story that exists only locally sets the dirty flag, so it still goes up.
 - **Sync waits for `persist` to hydrate** (`wachtOpHydratie`). Pushing before AsyncStorage has been
   read uploads the empty initial state and wipes the server row.
 - **The offline queue is one boolean**, `heeftOnverzondenWijzigingen`, persisted across restarts.
@@ -272,8 +294,13 @@ device — see "Known gaps".
   only grows and the latest stand supersedes every older snapshot. `isSyncing` / `syncError` are
   kept *out* of storage by `partialize` — a persisted `isSyncing: true` would deadlock every future
   sync.
-- `SyncIndicator` on Profiel renders the status. It shows amber "offline, will sync later" rather
-  than red: nothing is lost and the retry is automatic.
+- `SyncIndicator` on Profiel renders the status of **all three stores together** — one store
+  reporting "synced just now" while another sits offline is exactly the question the line exists to
+  answer. `lastSyncTime` still comes from `voortgang-store`; the three pushes leave together, so one
+  timestamp describes them all. Note the selectors are assigned to separate consts before being
+  combined: `a() || b()` would skip a hook call and break the hook order.
+  It shows amber "offline, will sync later" rather than red: nothing is lost and the retry is
+  automatic.
 
 `theme.ts` gained `gevaar` / `waarschuwing` / `succes` for form errors and the strength meter —
 use those, not a hardcoded red.
@@ -281,8 +308,9 @@ use those, not a hardcoded red.
 ### Reading progress & character unlocks
 
 - `src/store/story-progress-store.ts` + `src/hooks/use-story-progress.ts`: per-chapter progress,
-  Zustand + AsyncStorage, persists across restarts. Chapters unlock sequentially. Read time is
-  derived from word count (words ÷ 250).
+  Zustand + AsyncStorage, persists across restarts, and mirrors to Supabase since R8.SYNC-B (see
+  "Voortgang sync"). Chapters unlock sequentially. Read time is derived from word count
+  (words ÷ 250).
 - `src/store/character-unlock-store.ts` + `src/components/character-unlock-modal.tsx`: finishing a
   story unlocks its `personage`; the modal announces it with a spring-in portrait, glow ring,
   radial pulse and a haptic. **Unlocking is an explicit action, not automatic** — completing the
@@ -563,10 +591,10 @@ Known gaps:
   (~205 KB each). That is the single biggest thing in the bundle; if the download size ever needs
   to come down, lower the resolution or `output_quality` in `scripts/generate-scene-images.mjs` and
   regenerate, don't recompress files one by one.
-- **Only `voortgang-store` syncs.** `story-progress-store` (which chapters are done),
-  `character-unlock-store` and the preference stores are still device-local, so a second device
-  shows a story as *seen* but back at 0/8 chapters. Each needs a column or a table of its own; the
-  sync plumbing (debounce, retry, merge) is written to be reused as-is.
+- **The preference stores don't sync.** `voortgang-store`, `story-progress-store` and
+  `character-unlock-store` all do since R8.SYNC-B, so a second device gets the same chapters and
+  the same collection. Language, theme and the reminder setting are still device-local (the
+  `profiles` row has `language`/`theme` columns that nothing writes yet).
 - **The privacy policy still describes a device-only app** — an account and now reading progress
   live on a server. `docs/privacy-policy.html`, the Data Safety answers in `docs/README.md` and
   `src/constants/juridisch.ts` all predate auth and must be updated before the production build.

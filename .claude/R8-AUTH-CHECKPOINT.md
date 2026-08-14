@@ -15,6 +15,7 @@ over this file if they ever disagree.
 | DEEL 1 | Supabase client, `profiles`/`voortgang` tables + RLS, auth store, `useAuth` | done |
 | DEEL 2 | Login + signup screens, auth gate in the root layout, sign-out on Profiel | done, tested on the emulator |
 | DEEL 3 | Voortgang → Supabase sync, debounce, offline retry, merge on login, sync indicator | done, tested on the emulator (§8) |
+| SYNC-B | `story-progress-store` + `character-unlock-store` → Supabase, same pattern | done 2026-08-14, tested on the emulator (§11) |
 
 `npx tsc --noEmit` clean. `npx eslint` clean on every file listed in §2. `npm run lint` still
 reports 7 pre-existing errors in files neither part touched (`(tabs)/_layout.tsx` display-name,
@@ -252,3 +253,57 @@ throws on mount, in the root layout, i.e. the whole app.
 Metro from `expo run:android` keeps running after the command returns and will answer on 8081 in
 the *next* session with a stale bundle. Kill whatever owns port 8081 before starting a dev server,
 and remember the repo's watcher doesn't fire (`--clear`, restart after every edit).
+
+---
+
+## 11. SYNC-B — story-progress + character-unlocks (2026-08-14)
+
+Two more stores now mirror to Supabase, in the shape DEEL 3 established.
+
+### Schema
+
+```sql
+story_progress    (user_id, verhaal_id text, completed_chapters integer[], unique(user_id, verhaal_id))
+character_unlocks (user_id, unlocked_characters jsonb, unique(user_id))
+```
+
+RLS on both: select/insert/update, each `(select auth.uid()) = user_id`. An upsert runs
+`insert … on conflict do update`, so it needs the insert **and** the update policy — the update one
+carries a `with check` as well, otherwise a row could be updated into someone else's `user_id`.
+
+Three deliberate deviations from the plan this was built from:
+
+1. **Column names are snake_case, not camelCase.** `verhaalId` in unquoted DDL becomes `verhaalid`
+   in Postgres while supabase-js quotes what you type — the exact "column does not exist" trap from
+   DEEL 3 (§ column names). Named `verhaal_id` / `completed_chapters` so both sides read the same.
+2. **`completed_chapters` is `integer[]`**, not `text[]` — `Chapter.id` is a number.
+3. **`unlocked_characters` is `jsonb`**, not `text[]` of ids — the store keeps `personageNaam` and
+   `unlockedAt` too, and an id array would silently drop them.
+
+### Code
+
+`src/store/sync-hulp.ts` is new and holds what all three stores share: `SYNC_DEBOUNCE_MS`,
+`foutTekst`, `wachtOpHydratie(store)` (now takes the store) and `maakSyncPlanner()` (the
+module-level debounce timer plus an `annuleer()` for sign-out). `voortgang-store` was rewired onto
+it; its private copies are gone and `SYNC_DEBOUNCE_MS` is re-exported so existing imports still
+resolve.
+
+`useVoortgangSync` drives all three from one `SYNC_STORES` list — fetch-on-session, NetInfo
+reconnect, return-to-foreground, and `resetSyncStatus` on sign-out. `logout()` flushes all three
+before `signOut()`. `SyncIndicator` ORs the three statuses (with each selector in its own const —
+`a() || b()` skips a hook call and trips `rules-of-hooks`).
+
+### Verified on the emulator (Pixel_8, dev client on the R8 test account)
+
+- Sign-in push: 2 `story_progress` rows + the `character_unlocks` row appear within seconds.
+- Debounce: "Mark Complete" on chapter 2 → row becomes `{1,2}` about two seconds later.
+- Completing all 8 + "Unlock Julius Caesar" → `{1,2,3,4,5,6,7,8}` and
+  `[{"verhaalId":"julius-caesar","personageNaam":"Julius Caesar","unlockedAt":…}]`.
+- Pull/merge: chapters seeded server-side while the app was **out**, then sign-in → Profiel's
+  "chapters done" went 11 → 12. Nothing local was lost in either direction.
+- The upsert path was also exercised straight against Postgres as the `authenticated` role
+  (`set local role` + a JWT claim), inside a rolled-back transaction, to prove the policies and the
+  conflict targets before the app ever ran.
+
+Left as-is: the preference stores (language, theme, reminder). `profiles.language` / `.theme`
+exist but nothing writes them.

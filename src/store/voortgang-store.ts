@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/store/auth-store';
+import { foutTekst, maakSyncPlanner, SYNC_DEBOUNCE_MS, wachtOpHydratie } from '@/store/sync-hulp';
 
 type VoortgangState = {
   gelezenIds: Set<string>;
@@ -56,8 +57,12 @@ export type ServerVoortgang = {
  */
 const VOORTGANG_KOLOMMEN = 'gelezenids, bekekenids, completedstories, streak, laatsteactiviteitdatum';
 
-/** Hoe lang we wachten na een wijziging voordat we pushen (deel 3: 2 seconden). */
-export const SYNC_DEBOUNCE_MS = 2000;
+/**
+ * Hoe lang we wachten na een wijziging voordat we pushen (deel 3: 2 seconden).
+ * Woont sinds R8.SYNC-B in `sync-hulp.ts`, samen met de andere drie stores; hier alleen nog
+ * doorgegeven zodat bestaande imports uit deze module blijven werken.
+ */
+export { SYNC_DEBOUNCE_MS };
 
 /**
  * Datumsleutel in de **lokale** tijdzone (LAUNCH-PLAN.md B6).
@@ -124,33 +129,17 @@ function isSerializedSet(value: unknown): value is SerializedSet {
 }
 
 /**
- * De debounce-timer staat op moduleniveau, niet in de state.
- *
- * Een timer-id is geen state: hij hoort niet in AsyncStorage, hij mag geen render veroorzaken, en
- * er is er per app maar één nodig. Elke nieuwe wijziging schuift dezelfde timer op, dus tien
- * hoofdstukken achter elkaar afvinken levert één upsert op in plaats van tien.
- */
-let syncTimer: ReturnType<typeof setTimeout> | null = null;
-
-/**
  * Zet de sync 2 seconden vooruit. Aangeroepen door élke muterende actie hieronder.
  *
  * Bewust hier en niet via `store.subscribe`: `voegServerVoortgangSamen` wijzigt óók state, en een
  * abonnement op alles zou daar meteen een push op terugsturen — een echo van wat we net binnen
- * hebben gehaald.
+ * hebben gehaald. De timer zelf zit in `maakSyncPlanner` — op moduleniveau en niet in de state,
+ * want een timer-id hoort niet in AsyncStorage en mag geen render veroorzaken.
  */
-function plandeSync() {
-  if (syncTimer) clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => {
-    syncTimer = null;
-    void useVoortgangStore.getState().syncToSupabase();
-  }, SYNC_DEBOUNCE_MS);
-}
+const syncPlanner = maakSyncPlanner(() => useVoortgangStore.getState().syncToSupabase());
 
-function foutTekst(fout: unknown): string {
-  if (fout instanceof Error) return fout.message;
-  if (typeof fout === 'string') return fout;
-  return 'Onbekende synchronisatiefout.';
+function plandeSync() {
+  syncPlanner.plan();
 }
 
 export const useVoortgangStore = create<VoortgangState>()(
@@ -220,7 +209,7 @@ export const useVoortgangStore = create<VoortgangState>()(
       syncToSupabase: async () => {
         // Eerst wachten tot AsyncStorage is uitgelezen. Duwen we vóór de hydratie, dan sturen we
         // de *lege* beginstand omhoog en overschrijft die upsert de echte rij op de server.
-        await wachtOpHydratie();
+        await wachtOpHydratie(useVoortgangStore);
 
         const { isSyncing } = get();
         const user = useAuthStore.getState().user;
@@ -331,10 +320,7 @@ export const useVoortgangStore = create<VoortgangState>()(
        * login niets meer dat zegt dat er nog iets omhoog moet.
        */
       resetSyncStatus: () => {
-        if (syncTimer) {
-          clearTimeout(syncTimer);
-          syncTimer = null;
-        }
+        syncPlanner.annuleer();
         set({ isSyncing: false, syncError: null, lastSyncTime: null });
       },
     }),
@@ -381,25 +367,6 @@ export const useVoortgangStore = create<VoortgangState>()(
 );
 
 /**
- * Wacht tot `persist` klaar is met lezen uit AsyncStorage.
- *
- * De hydratie is asynchroon, dus vlak na het opstarten staat de store nog op zijn lege
- * beginwaarden. Wie dan al synchroniseert doet dat met de verkeerde gegevens: een push stuurt
- * lege verzamelingen omhoog en wist de serverrij, en een merge wordt een tel later alsnog
- * overschreven door wat er uit AsyncStorage komt. In de praktijk is de opslag altijd sneller dan
- * de eerste netwerkronde, maar "meestal sneller" is geen garantie en het verlies is stil.
- */
-function wachtOpHydratie(): Promise<void> {
-  if (useVoortgangStore.persist.hasHydrated()) return Promise.resolve();
-  return new Promise((resolve) => {
-    const stopLuisteren = useVoortgangStore.persist.onFinishHydration(() => {
-      stopLuisteren();
-      resolve();
-    });
-  });
-}
-
-/**
  * Haalt de serverrij op en voegt hem samen met de lokale state.
  *
  * `maybeSingle()` — een ontbrekende rij is geen fout maar een lege waarde: bij een signup met
@@ -407,7 +374,7 @@ function wachtOpHydratie(): Promise<void> {
  * voortgang staan, die de eerstvolgende push alsnog naar boven brengt.
  */
 export async function haalVoortgangOp(userId: string): Promise<void> {
-  await wachtOpHydratie();
+  await wachtOpHydratie(useVoortgangStore);
 
   const { data, error } = await supabase
     .from('voortgang')

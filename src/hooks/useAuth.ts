@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 
 import { supabase } from '@/lib/supabase';
 import { useAuthStore, type Profiel } from '@/store/auth-store';
+import { useCharacterUnlockStore } from '@/store/character-unlock-store';
+import { useStoryProgressStore } from '@/store/story-progress-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
 /**
@@ -141,9 +143,16 @@ export async function logout(): Promise<void> {
   // Laatste kans om openstaande voortgang weg te schrijven: na `signOut()` is er geen token meer
   // en geeft elke upsert een 401. Mislukt hij (offline), dan blijft de vlag lokaal staan en gaat
   // het alsnog omhoog zodra dezelfde gebruiker weer inlogt.
-  if (useVoortgangStore.getState().heeftOnverzondenWijzigingen) {
-    await useVoortgangStore.getState().syncToSupabase();
-  }
+  //
+  // Alle drie de stores, sinds R8.SYNC-B: wie het laatste hoofdstuk afmaakt en meteen uitlogt,
+  // doet dat ruim binnen de twee seconden debounce.
+  await Promise.all(
+    [useVoortgangStore, useStoryProgressStore, useCharacterUnlockStore].map(async (store) => {
+      if (store.getState().heeftOnverzondenWijzigingen) {
+        await store.getState().syncToSupabase();
+      }
+    })
+  );
 
   const { error } = await supabase.auth.signOut();
   if (error) {

@@ -8,6 +8,8 @@ import type { IoniconNaam } from '@/constants/types';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useAuthStore } from '@/store/auth-store';
+import { useCharacterUnlockStore } from '@/store/character-unlock-store';
+import { useStoryProgressStore } from '@/store/story-progress-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
 /**
@@ -34,10 +36,36 @@ export function SyncIndicator() {
   const theme = useTheme();
   const { t } = useVertaling();
   const isIngelogd = useAuthStore((state) => state.user !== null);
-  const isSyncing = useVoortgangStore((state) => state.isSyncing);
-  const syncError = useVoortgangStore((state) => state.syncError);
+
+  /**
+   * De status is die van de drie stores samen (R8.SYNC-B).
+   *
+   * Alleen naar `voortgang-store` kijken zou "gesynchroniseerd, zojuist" tonen terwijl de
+   * hoofdstukvoortgang nog offline op het toestel staat te wachten — precies de vraag die deze
+   * regel moet beantwoorden. `lastSyncTime` blijft van `voortgang-store` komen: de drie pushes
+   * vertrekken samen, dus één tijdstip beschrijft ze allemaal, en het is de enige store die het
+   * bijhoudt.
+   */
   const lastSyncTime = useVoortgangStore((state) => state.lastSyncTime);
-  const heeftOnverzonden = useVoortgangStore((state) => state.heeftOnverzondenWijzigingen);
+
+  // Eerst alle negen selectors los aanroepen, dan pas combineren: `a() || b()` slaat `b` over
+  // zodra `a` waar is, en een hook die de ene render wél en de andere niet draait breekt de
+  // hook-volgorde (react-hooks/rules-of-hooks vangt dit ook).
+  const voortgangBezig = useVoortgangStore((state) => state.isSyncing);
+  const hoofdstukkenBezig = useStoryProgressStore((state) => state.isSyncing);
+  const personagesBezig = useCharacterUnlockStore((state) => state.isSyncing);
+
+  const voortgangFout = useVoortgangStore((state) => state.syncError);
+  const hoofdstukkenFout = useStoryProgressStore((state) => state.syncError);
+  const personagesFout = useCharacterUnlockStore((state) => state.syncError);
+
+  const voortgangOpen = useVoortgangStore((state) => state.heeftOnverzondenWijzigingen);
+  const hoofdstukkenOpen = useStoryProgressStore((state) => state.heeftOnverzondenWijzigingen);
+  const personagesOpen = useCharacterUnlockStore((state) => state.heeftOnverzondenWijzigingen);
+
+  const isSyncing = voortgangBezig || hoofdstukkenBezig || personagesBezig;
+  const syncError = voortgangFout ?? hoofdstukkenFout ?? personagesFout;
+  const heeftOnverzonden = voortgangOpen || hoofdstukkenOpen || personagesOpen;
 
   const [nu, setNu] = useState(() => Date.now());
   useEffect(() => {
