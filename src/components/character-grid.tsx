@@ -1,7 +1,9 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
+import { AnimatedPressable } from '@/components/animated-pressable';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -26,20 +28,20 @@ export function CharacterGrid({ unlockedCharacters, totalCharacters }: Character
         const initial = verhaal.personage?.naam?.[0]?.toUpperCase() ?? '?';
 
         return (
-          <Pressable
+          <AnimatedPressable
             key={verhaal.id}
-            onPress={() => {
-              if (isUnlocked) {
-                router.push(`/verhaal/${verhaal.id}`);
-              }
-            }}
+            // `disabled` in plaats van een `if` in de handler: zo geeft een vergrendelde cirkel ook
+            // geen druk-animatie of haptische tik terug (LAUNCH-PLAN.md B4).
+            disabled={!isUnlocked}
+            onPress={() => router.push(`/verhaal/${verhaal.id}`)}
             style={styles.cardContainer}>
             {isUnlocked && verhaal.afbeelding ? (
               <View style={styles.portraitWrapper}>
                 <Image
-                  source={{ uri: verhaal.afbeelding }}
+                  source={verhaal.afbeelding}
                   style={styles.circle}
-                  resizeMode="cover"
+                  contentFit="cover"
+                  transition={200}
                 />
                 <View style={[styles.checkmark, { backgroundColor: theme.background }]}>
                   <Ionicons name="checkmark" size={12} color={theme.accent} />
@@ -94,7 +96,7 @@ export function CharacterGrid({ unlockedCharacters, totalCharacters }: Character
               ]}>
               {isUnlocked ? verhaal.personage?.naam ?? 'Character' : 'Locked'}
             </ThemedText>
-          </Pressable>
+          </AnimatedPressable>
         );
       })}
     </View>

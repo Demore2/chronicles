@@ -1,4 +1,6 @@
 import type { Verhaal } from '@/constants/types';
+import { CHARACTER_IMAGES } from '@/constants/character-images';
+import { SCENE_IMAGES } from '@/constants/scene-images';
 
 export const joanOfArc: Verhaal = {
   id: 'joan-of-arc',
@@ -8,19 +10,26 @@ export const joanOfArc: Verhaal = {
   jaar: 1431,
   periodeLabel: '1412 - 1431',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/oNCn4l7sIe0lDKooYL7MCTmJ6AyzbPRUOWpB397Z9RR5vAeWA/tmp__qgxst9.webp',
+  afbeelding: CHARACTER_IMAGES['joan-of-arc'],
   portretKleur: '#D4AF37',
   uitgelicht: false,
   volgorde: 1,
   tijdperkId: 'middeleeuwen',
   themas: ['oorlog', 'geloof', 'Frankrijk', 'jonge-leiders', 'moed'],
-  leestijdMinuten: 45,
+  leestijdMinuten: 9,
   personage: { naam: 'Joan of Arc' },
   chapters: [
     {
       id: 1,
       titel: { en: 'The Girl from Domrémy' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-1'],
+          alt: { en: 'A peasant girl tending sheep beside a village church in the Meuse valley.' },
+          bijschrift: { en: 'Domrémy, around 1425: a border village on the wrong side of a war that had already lasted ninety years.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In the small French village of Domrémy, a young girl named Jeanne was born around 1412 to a family of simple peasants. Her father, Jacques d\'Arc, was a respected farmer and village official, while her mother, Isabelle Romée, was deeply religious. Jeanne grew up in a world torn apart by war. The Hundred Years War between France and England had raged for nearly a century, devastating the countryside and draining the kingdom\'s resources. English forces controlled much of northern France, while the French king appeared powerless to stop them. For people like Jeanne\'s family, war meant danger, destruction, and constant uncertainty about the future.' }
@@ -34,7 +43,14 @@ export const joanOfArc: Verhaal = {
     {
       id: 2,
       titel: { en: 'The Voices Begin' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-2'],
+          alt: { en: 'A girl kneeling in a walled garden as light falls through the summer trees.' },
+          bijschrift: { en: 'She was about thirteen when the voices began — in her father’s garden, in broad daylight.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'When Jeanne was around thirteen years old, something remarkable happened that would transform her life forever. While sitting in her father\'s garden, she heard a voice calling to her. At first, she was frightened and confused. The voice was distinct and clear, accompanied by a brilliant light that seemed to shine from the direction of the local church. She heard it again and again on different occasions, always with the same message: she was chosen by God for a special purpose. Jeanne described the voices as beautiful and gentle, never cruel or demanding. She later reported hearing the voices of Saint Michael the Archangel, Saint Catherine of Alexandria, and Saint Margaret of Antioch.' }
@@ -52,7 +68,14 @@ export const joanOfArc: Verhaal = {
     {
       id: 3,
       titel: { en: 'The King\'s Court' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-3'],
+          alt: { en: 'A figure in men’s riding clothes standing before the royal court in a castle hall.' },
+          bijschrift: { en: 'Chinon, March 1429: a farmer’s daughter asking a disinherited king for an army.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Jeanne\'s journey to the royal court was perilous. The roads were dangerous, controlled by soldiers and bandits. Yet she traveled with an escort provided by Jean of Metz, a French nobleman who had been impressed by her conviction and her claim to carry God\'s message. When she finally reached the court of King Charles VII at Chinon, she faced skepticism from everyone around her. Nobles questioned whether a peasant girl could possibly be sent by God. Military leaders dismissed her as a fool or a fraud. The king himself was uncertain, having been told that his legitimacy to rule was questionable. However, Jeanne\'s absolute certainty and her direct manner impressed many at court. She spoke with authority that seemed far beyond her years and education.' }
@@ -66,7 +89,14 @@ export const joanOfArc: Verhaal = {
     {
       id: 4,
       titel: { en: 'The Miracle of Orléans' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-4'],
+          alt: { en: 'French soldiers storming an English siege fort outside a walled river city.' },
+          bijschrift: { en: 'Orléans held out for nine days after she arrived. The English had besieged it for seven months.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'The city of Orléans was the key to France\'s survival. English forces had surrounded it and were preparing for a final assault that would give them control of central France. The French were demoralized and exhausted. Many believed the city was doomed to fall. Yet when Jeanne arrived at the military camp, something shifted. The soldiers, who had been filled with despair, suddenly felt hope. This peasant girl, who claimed to carry God\'s message, walked among them with such confidence and conviction that their spirits lifted. She spoke of victory as though it were already certain. She told the soldiers that God had sent her to save France, and they believed her.' }
@@ -85,7 +115,14 @@ export const joanOfArc: Verhaal = {
     {
       id: 5,
       titel: { en: 'A Soldier\'s Rise' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-5'],
+          alt: { en: 'An armoured figure on a white horse leading men-at-arms past a Loire town.' },
+          bijschrift: { en: 'Jargeau, Meung, Beaugency, Patay — the whole Loire campaign took barely a week.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Following the victory at Orléans, Jeanne led the French army on a remarkable series of military campaigns. She was present at the capture of important cities including Jargeau, Meung-sur-Loire, and Beaugency. At each location, her presence seemed to inspire the French soldiers to fight with renewed determination and courage. The English, accustomed to victory, found themselves struggling against an army led by a peasant girl who seemed to have God on her side. Jeanne\'s tactics were sometimes unorthodox, but they were remarkably effective. She pushed for direct, aggressive action against the English, refusing to accept the cautious, defensive strategies that had characterized French warfare. Her boldness surprised everyone, including the experienced military commanders who fought beside her.' }
@@ -99,7 +136,14 @@ export const joanOfArc: Verhaal = {
     {
       id: 6,
       titel: { en: 'Capture and Trial' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-6'],
+          alt: { en: 'A prisoner standing before a bench of black-robed clerics in a vaulted hall.' },
+          bijschrift: { en: 'Rouen, 1431: seventy charges, months of interrogation, and no counsel for the defence.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In May 1430, Jeanne was captured by Burgundian forces fighting on the side of the English during a siege at Compiègne. She was sold to the English for a large sum of money. Instead of being treated as a soldier entitled to ransom, as was the custom for nobles and military leaders, Jeanne was imprisoned and charged with heresy. The English and their allies wanted to break her power and prove that her victories were not gifts from God but the result of witchcraft and demonic possession. They brought her to trial in the city of Rouen, where a hostile tribunal of English-allied clergy and French collaborators waited to judge her.' }
@@ -117,7 +161,14 @@ export const joanOfArc: Verhaal = {
     {
       id: 7,
       titel: { en: 'The Legacy of Courage' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-7'],
+          alt: { en: 'A crowd gathered around a stone cross in a French market square at dusk.' },
+          bijschrift: { en: 'Her death did not end the war — it hardened it. Within twenty-two years the English had lost France.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'After Jeanne\'s execution, the French were devastated. For a time, it seemed as if the English had succeeded in crushing the movement she had inspired. However, something remarkable happened. Instead of weakening French resolve, her martyrdom strengthened it. Stories of Jeanne\'s trial and execution spread throughout France, inspiring countless people to continue fighting for their country\'s freedom. The very act of dying for her beliefs made her cause seem even more just and noble. Jeanne had gone from being a controversial peasant girl to being a symbol of French independence and divine will. Within a generation, the French had completely pushed the English out of France, ending the Hundred Years War with a decisive French victory.' }
@@ -131,7 +182,14 @@ export const joanOfArc: Verhaal = {
     {
       id: 8,
       titel: { en: 'Forever Remembered' },
+      afbeelding: SCENE_IMAGES['joan-of-arc-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['joan-of-arc-8'],
+          alt: { en: 'A gilded equestrian statue of a young woman in armour above a Paris square.' },
+          bijschrift: { en: 'Condemned in 1431, declared innocent in 1456, canonised in 1920.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Today, more than five hundred years after her death, Joan of Arc remains one of the most famous figures in history. Her story has been told in countless books, plays, films, and paintings. She is remembered as a symbol of courage, faith, and national identity. In France, she is a national hero whose statue stands in many cities and squares. Young people continue to study her life and be inspired by her example. What makes Jeanne\'s story so powerful and enduring is that it challenges us to think about what is possible when we believe in ourselves and in something greater than ourselves. She showed that one person, armed with courage and conviction, can change the world.' }
@@ -153,19 +211,26 @@ export const charlemagne: Verhaal = {
   jaar: 814,
   periodeLabel: '748 - 814',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/6IZwK60qbkJmNd7ymIo5XsGT7u07kxFMiUHb8hsrcTmtYAvF/tmp8ttdsaa8.webp',
+  afbeelding: CHARACTER_IMAGES['charlemagne'],
   portretKleur: '#8B0000',
   uitgelicht: false,
   volgorde: 2,
   tijdperkId: 'middeleeuwen',
   themas: ['macht', 'oorlog', 'educatie', 'geloof', 'Europese-eenheid'],
-  leestijdMinuten: 48,
+  leestijdMinuten: 9,
   personage: { naam: 'Charlemagne' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Born to Rule' },
+      afbeelding: SCENE_IMAGES['charlemagne-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-1'],
+          alt: { en: 'A Frankish hall of carved timber where a boy watches warriors at a long table.' },
+          bijschrift: { en: 'The Franks were one Germanic people among many. Nothing yet marked them out.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In the year 748, in the realm of the Franks, a boy was born who would reshape the political landscape of Europe. Named Charles, later known as Charlemagne—Charles the Great—he was the son of Pepin the Short, the founder of the Carolingian dynasty. The Franks were a Germanic tribe that had gradually expanded their power across western Europe, but they remained relatively unknown compared to the great empires of Rome and Constantinople. Pepin the Short had consolidated Frankish power by overthrowing the weak Merovingian kings and establishing himself as the true ruler of the realm. He prepared his kingdom and his son for even greater accomplishments.' }
@@ -179,7 +244,14 @@ export const charlemagne: Verhaal = {
     {
       id: 2,
       titel: { en: 'Master of the Franks' },
+      afbeelding: SCENE_IMAGES['charlemagne-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-2'],
+          alt: { en: 'Frankish cavalry riding through a dark Saxon forest past a felled idol.' },
+          bijschrift: { en: 'The Saxon wars ran for thirty-two years — longer than most medieval reigns lasted altogether.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'The early years of Charles\'s rule were marked by constant military campaigns. He faced challenges on all sides: rebellious nobles, neighboring kingdoms seeking to expand their own territories, and Saxons to the north who resisted Frankish domination. In 772, Charles embarked on a military campaign against the Saxons that would continue, with varying intensity, for over thirty years. The Saxons were fierce warriors who refused to abandon their pagan religion and accept Christianity, which Charles saw as inseparable from his rule and his authority. These were brutal campaigns, with Charles showing little mercy to those who defied him. His methods were harsh by modern standards, but they were considered normal for medieval warfare and politics.' }
@@ -197,7 +269,14 @@ export const charlemagne: Verhaal = {
     {
       id: 3,
       titel: { en: 'The Emperor Crowned' },
+      afbeelding: SCENE_IMAGES['charlemagne-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-3'],
+          alt: { en: 'A Frankish king crowned by the pope before the altar of old Saint Peter’s.' },
+          bijschrift: { en: 'Christmas Day, 800: the first emperor in western Europe for more than three centuries.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'By the beginning of the ninth century, Charles had united nearly all of western Europe under his rule. His territories stretched from the Atlantic Ocean to beyond the Rhine River, and from the North Sea to Rome. No ruler in western Europe had controlled such vast lands since the fall of the Roman Empire more than three hundred years earlier. Charles had become more than a king; he was the dominant political and military force in Christian Europe. The Pope and the church hierarchy recognized his power and his importance to their own security and influence. In 799, when a revolt threatened Pope Leo III\'s authority in Rome, the Pope appealed to Charles for protection. Charles responded immediately, marching to Rome and restoring the Pope to his throne.' }
@@ -216,7 +295,14 @@ export const charlemagne: Verhaal = {
     {
       id: 4,
       titel: { en: 'The Builder of Empire' },
+      afbeelding: SCENE_IMAGES['charlemagne-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-4'],
+          alt: { en: 'The octagonal palace chapel of Aachen under construction.' },
+          bijschrift: { en: 'Aachen was built as a new Rome — with columns shipped north from the old one.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Charles did not simply conquer territory; he built the infrastructure and institutions that would hold his empire together. He established a system of government that combined centralized authority with local administration. He appointed counts and bishops to rule provinces on his behalf, keeping them accountable to him through regular inspections and communications. He created a system of roads and bridges that improved trade and military movement throughout his territories. He standardized weights, measures, and coinage to facilitate commerce. These practical innovations made his empire not just larger but stronger and more stable than anything that had existed in western Europe for centuries.' }
@@ -234,7 +320,14 @@ export const charlemagne: Verhaal = {
     {
       id: 5,
       titel: { en: 'The Warrior Never Rests' },
+      afbeelding: SCENE_IMAGES['charlemagne-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-5'],
+          alt: { en: 'An ageing king in mail riding at the head of a column through an alpine pass.' },
+          bijschrift: { en: 'He kept campaigning into his seventies, and moved his whole court with him.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Despite his vast empire and advanced age, Charles continued to lead military campaigns well into his seventies. He personally led armies into battle, enduring the same hardships as his soldiers. His health was robust and his will seemed unbreakable. He spent much of his time traveling throughout his empire, checking on his territories, meeting with local rulers and bishops, and making sure that his authority was respected. He established Aachen as his primary capital, creating a grand palace and cathedral there that reflected his power and vision. The palace complex at Aachen served as the administrative center of his empire and a symbol of his authority and sophistication. Diplomatic embassies from distant lands, including the Byzantine Empire and the Abbasid Caliphate, traveled to Aachen to conduct negotiations with the great emperor.' }
@@ -248,7 +341,14 @@ export const charlemagne: Verhaal = {
     {
       id: 6,
       titel: { en: 'Law, Order, and Faith' },
+      afbeelding: SCENE_IMAGES['charlemagne-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-6'],
+          alt: { en: 'Monks copying manuscripts at slanted desks in a Carolingian scriptorium.' },
+          bijschrift: { en: 'The script his scribes standardised is the distant ancestor of the letters you are reading now.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Charles understood that military conquest alone could not hold an empire together. He needed a system of laws and administration that would function efficiently and command loyalty. He issued numerous written laws and regulations that standardized legal practices throughout his empire. He ensured that his officials and military commanders followed consistent rules and procedures. He established a strong court system that allowed subjects to appeal to higher authorities if they believed they had been treated unjustly. These legal reforms created a sense of order and justice that had been absent from most of Europe for centuries. People believed that under Charles\'s rule, there was a real authority that would hold powerful nobles accountable if they abused their power.' }
@@ -262,7 +362,14 @@ export const charlemagne: Verhaal = {
     {
       id: 7,
       titel: { en: 'The Empire\'s Legacy' },
+      afbeelding: SCENE_IMAGES['charlemagne-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-7'],
+          alt: { en: 'Three crowned brothers seated apart around a divided map.' },
+          bijschrift: { en: 'Frankish custom split an inheritance between sons. An empire was no exception.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'When Charles died in 814, his empire did not survive intact. His son Louis, called Louis the Pious, inherited the throne but lacked his father\'s military genius and forceful personality. After Louis\'s death, his three sons divided the empire among themselves according to Frankish custom, creating separate kingdoms. Within a few generations, the great empire that Charles had built had fragmented into smaller kingdoms that would eventually become the nations of medieval and modern Europe. The Frankish empire itself did not last, but the impact of Charles\'s reign was permanent and transformative.' }
@@ -276,7 +383,14 @@ export const charlemagne: Verhaal = {
     {
       id: 8,
       titel: { en: 'Father of Europe' },
+      afbeelding: SCENE_IMAGES['charlemagne-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['charlemagne-8'],
+          alt: { en: 'An empty stone throne on the gallery above the octagon of Aachen chapel.' },
+          bijschrift: { en: 'Thirty German kings were crowned in this chapel after him.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'More than twelve hundred years after his death, Charlemagne is remembered as one of the most important figures in European history. He is often called "the Father of Europe" because he united the continent and established patterns and institutions that would define European civilization for centuries. Students of history study his reign to understand how medieval Europe developed and how the modern European nations emerged from the fragments of his empire. His palace at Aachen still stands as a symbol of his vision and his ambition. The German city of Aachen celebrates his legacy and hosts many visitors each year who come to see the magnificent cathedral he built.' }
@@ -298,19 +412,26 @@ export const richardTheLionheart: Verhaal = {
   jaar: 1199,
   periodeLabel: '1157 - 1199',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/nVQDWweMUmzkQK8SGededkjkwotsqFweW2ZfB1HFchiheYAvF/tmpbjkiy_0k.webp',
+  afbeelding: CHARACTER_IMAGES['richard-the-lionheart'],
   portretKleur: '#CD5C5C',
   uitgelicht: false,
   volgorde: 3,
   tijdperkId: 'middeleeuwen',
   themas: ['oorlog', 'ridderlijkheid', 'Kruistochten', 'Engeland', 'avontuur'],
-  leestijdMinuten: 46,
+  leestijdMinuten: 9,
   personage: { naam: 'Richard I' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Prince of a Great Dynasty' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-1'],
+          alt: { en: 'A boy riding through the vineyards of Aquitaine with the queen and her retinue.' },
+          bijschrift: { en: 'He grew up as his mother’s heir in Aquitaine, not as a future king of England.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In the year 1157, a boy was born who would become one of the most famous warriors in medieval history. Named Richard, he was the second son of King Henry II of England and Eleanor of Aquitaine. The English throne seemed destined for Richard\'s older brother, Henry, so Richard was initially expected to inherit his mother\'s vast territories in Aquitaine and southern France. He grew up in a world of power, politics, and endless warfare. The Angevin Empire, as it was called, stretched from Scotland to southern France, making the English king one of the most powerful rulers in Europe. However, family conflict and ambition would eventually thrust Richard onto the center stage of European politics.' }
@@ -324,7 +445,14 @@ export const richardTheLionheart: Verhaal = {
     {
       id: 2,
       titel: { en: 'The Path to the Crown' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-2'],
+          alt: { en: 'A red-haired prince crowned in a Romanesque abbey church.' },
+          bijschrift: { en: 'Westminster, 1189. In a ten-year reign he would spend roughly six months in England.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'As the young Prince Richard matured, tensions within the royal family increased. In 1183, Richard\'s older brother Henry died, suddenly changing Richard\'s circumstances. Richard was now the heir to the English throne. However, his father, King Henry II, favored Richard\'s younger brother John and seemed reluctant to give Richard the full authority and resources he felt he deserved. This conflict between father and son was not unusual in medieval royal families, but it created serious problems. In 1189, Richard joined with Philip II of France against his own father in a military campaign. The pressure proved too much for the aging King Henry II, who was forced to accept a peace treaty that granted Richard the territories and authority he demanded. Within weeks of the treaty, Henry died, and Richard became King of England.' }
@@ -338,7 +466,14 @@ export const richardTheLionheart: Verhaal = {
     {
       id: 3,
       titel: { en: 'The Crusade Begins' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-3'],
+          alt: { en: 'A crusader fleet beating through a Mediterranean storm past a rocky coast.' },
+          bijschrift: { en: 'The storm that scattered his fleet also handed him Cyprus, which he took and then sold.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1191, Richard embarked on the Third Crusade with thousands of knights, soldiers, and support personnel. The journey itself was dangerous and arduous. Richard\'s army traveled by sea and land, facing numerous obstacles and challenges. At one point, a storm wrecked Richard\'s fleet off the coast of Cyprus. Richard used the crisis as an opportunity to conquer the island, which he sold to finance his crusade. Nothing stopped the English king from pursuing his goal. When he arrived in the Holy Land, he found the crusade in disarray. The previous Crusade had been a disaster, with the Christian army destroyed and Jerusalem still in Muslim hands. The crusaders were demoralized and uncertain about their chances of success.' }
@@ -357,7 +492,14 @@ export const richardTheLionheart: Verhaal = {
     {
       id: 4,
       titel: { en: 'Truce and Retreat' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-4'],
+          alt: { en: 'A crusader king on a ridge above the distant walled city of Jerusalem.' },
+          bijschrift: { en: 'He came within sight of Jerusalem twice and turned back both times.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'After months of campaign in the Holy Land, Richard realized that while he could win battles, taking and holding Jerusalem was not practical with his current forces. In 1192, he negotiated a truce with Saladin that allowed Christian pilgrims to visit Jerusalem safely, though the city itself remained under Muslim control. It was not the complete victory that Richard had sought, but it was a remarkable achievement. He had taken control of much of the Palestinian coast and established Christian strongholds that would survive for years after his departure. He had proven himself a capable commander and a worthy opponent of the legendary Saladin. The crusade had accomplished more than anyone had expected when Richard arrived.' }
@@ -371,7 +513,14 @@ export const richardTheLionheart: Verhaal = {
     {
       id: 5,
       titel: { en: 'The Warrior\'s Legacy' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-5'],
+          alt: { en: 'A king in mail directing the siege of a small French castle.' },
+          bijschrift: { en: 'A crossbow bolt at an unremarkable siege in the Limousin killed him at forty-one.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'After his return from captivity, Richard spent several years fighting to restore his authority in England and his territories in France. He was remarkably successful, defeating his enemies and reclaiming the lands that his brother had taken. He earned a fearsome reputation as a military commander, and his enemies learned to respect his power. However, these years of fighting in Europe were less glamorous and less meaningful to Richard than his crusade had been. He longed for another great religious war, another opportunity to prove himself as a champion of Christianity. The peace and stability of a well-governed kingdom seemed less exciting to him than the glory of battle.' }
@@ -385,7 +534,14 @@ export const richardTheLionheart: Verhaal = {
     {
       id: 6,
       titel: { en: 'The Knight\'s Code' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-6'],
+          alt: { en: 'An armoured king listening to a troubadour in a candlelit hall.' },
+          bijschrift: { en: 'He wrote verse himself — two of his songs survive, one composed in captivity.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Richard the Lionheart became a legend partly because he seemed to embody the ideals of medieval chivalry. He was a warrior who was also educated and cultured. He appreciated poetry and music, and some of his own verses survive today. He was capable of both brutal violence in battle and mercy toward conquered enemies, showing the two sides of the knightly ideal. He treated his obligations to his allies seriously and expected the same from others. He believed that a true knight should be willing to suffer and sacrifice for just causes. He combined physical prowess with moral conviction in a way that captured the imagination of his contemporaries and has continued to fascinate people ever since.' }
@@ -399,7 +555,14 @@ export const richardTheLionheart: Verhaal = {
     {
       id: 7,
       titel: { en: 'After the King\'s Death' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-7'],
+          alt: { en: 'A crowned king surrounded by hostile barons in a river meadow.' },
+          bijschrift: { en: 'His brother John lost Normandy, Anjou and Maine within five years of his death.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'When Richard died, he left no legitimate children to inherit his throne. His brother John succeeded him as King of England, though he lacked Richard\'s military skill and charisma. John\'s reign was marked by conflicts with the French king, the English nobility, and the Church. John lost most of the Angevin territories in France that Richard had fought to maintain. He was forced to grant the Magna Carta in 1215, a document that limited royal power and established principles of rule of law that would become fundamental to English and later American democracy. In many ways, the contrast between Richard\'s glory and John\'s failures highlighted what an exceptional leader Richard had been.' }
@@ -413,7 +576,14 @@ export const richardTheLionheart: Verhaal = {
     {
       id: 8,
       titel: { en: 'An Eternal Hero' },
+      afbeelding: SCENE_IMAGES['richard-the-lionheart-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['richard-the-lionheart-8'],
+          alt: { en: 'A painted stone effigy of a crowned king on a tomb in an abbey church.' },
+          bijschrift: { en: 'His body lies at Fontevraud, his heart at Rouen, and the rest of him at Châlus.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'More than eight hundred years after his death, Richard the Lionheart remains one of the most famous medieval warriors. His story has been retold in countless books, plays, films, and legends. In popular culture, he has been depicted as everything from a noble Christian hero to a greedy warmonger, depending on the perspective of the storyteller. What cannot be disputed is that Richard was an exceptional military commander, a devoted crusader by the standards of his time, and a man whose brief life had an outsized impact on European history. He represented the ideals of the medieval warrior: physical courage, martial skill, religious devotion, and a willingness to risk everything for glory and just causes.' }

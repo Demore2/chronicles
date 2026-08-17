@@ -1,17 +1,28 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
+import { useState } from 'react';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  FadeInDown,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AdBanner } from '@/components/ad-banner';
+import { AnimatedPressable } from '@/components/animated-pressable';
 import { BlokWeergave } from '@/components/blok-weergave';
 import { CharacterUnlockModal } from '@/components/character-unlock-modal';
 import { LegeStaat } from '@/components/lege-staat';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { haptics } from '@/constants/haptics';
+import { Motion, staggerVertraging } from '@/constants/motion';
 import { Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
 import { getVerhaal } from '@/content/verhalen';
+import { biedHerinneringAan } from '@/hooks/use-dagelijkse-herinnering';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
 import { useVertaling } from '@/hooks/use-vertaling';
@@ -22,13 +33,26 @@ export default function ReaderScreen() {
   const { id, chapterId: chapterIdParam } = useLocalSearchParams<{ id: string; chapterId: string }>();
   const router = useRouter();
   const theme = useTheme();
-  const { v } = useVertaling();
+  const insets = useSafeAreaInsets();
+  const { t, v } = useVertaling();
   const characterStore = useCharacterUnlockStore();
   const voortgangStore = useVoortgangStore();
 
-  const [scrollPercentage, setScrollPercentage] = useState(0);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
-  const hasAutoUnlockedRef = useRef(false);
+
+  // Scrollvoortgang leeft op de UI-thread (LAUNCH-PLAN.md B4). Hier stond een `useState` die op
+  // elk scroll-event met `scrollEventThrottle={16}` werd gezet — dat rerenderde het hele
+  // hoofdstuk op 60fps terwijl alleen een balkje van 3px hoog hoefde te bewegen.
+  const scrollVoortgang = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    const max = event.contentSize.height - event.layoutMeasurement.height;
+    scrollVoortgang.set(max > 0 ? Math.min(1, Math.max(0, event.contentOffset.y / max)) : 0);
+  });
+
+  const voortgangsbalkStijl = useAnimatedStyle(() => ({
+    width: `${scrollVoortgang.get() * 100}%` as `${number}%`,
+  }));
 
   const verhaal = getVerhaal(id);
   const chapterId = chapterIdParam ? parseInt(chapterIdParam, 10) : 1;
@@ -39,26 +63,26 @@ export default function ReaderScreen() {
   const characterUnlocked = verhaal ? characterStore.isCharacterUnlocked(verhaal.id) : false;
   const shouldShowUnlockButton = allChaptersRead && !characterUnlocked;
 
-  useEffect(() => {
-    if (chapter && scrollPercentage >= 0.8) {
-      progress.completeChapter(chapterId);
-    }
-  }, [scrollPercentage, chapter, chapterId, progress]);
+  // Let op (LAUNCH-PLAN.md B5): hier stond ook een useEffect die het hoofdstuk automatisch
+  // afvinkte bij 80% scroll. Samen met de "Mark Complete"-knop waren dat twee mechanismen — de
+  // knop veranderde onder je duim in "Next Chapter" voordat je 'm indrukte. De knop is nu de
+  // enige trigger; dat is ook de flow die de verificatieprocedure in CLAUDE.md beschrijft.
+  // De scrollpositie voedt alleen nog de voortgangsbalk bovenaan (`scrollVoortgang`).
 
-  useEffect(() => {
-    if (allChaptersRead && !characterUnlocked && !hasAutoUnlockedRef.current && verhaal) {
-      hasAutoUnlockedRef.current = true;
-      voortgangStore.markStoryCompleted(verhaal.id);
-      characterStore.unlockCharacter(verhaal.id, verhaal.personage.naam);
-      setShowUnlockModal(true);
-    }
-  }, [allChaptersRead, characterUnlocked, verhaal, voortgangStore, characterStore]);
+  // Let op (LAUNCH-PLAN.md B4): hier stond een `useEffect` met een `hasAutoUnlockedRef` die het
+  // personage automatisch ontgrendelde zodra het laatste hoofdstuk af was. Daardoor verscheen de
+  // "Unlock <naam>"-knop in de footer in de praktijk nooit — de modal was er al voordat je 'm kon
+  // indrukken. Ontgrendelen is de kernbeloning van de app en hoort een handeling te zijn, dus
+  // `handleUnlockCharacter` is nu de enige trigger. `markStoryCompleted` is daarheen verhuisd.
 
   if (!verhaal) {
     return (
       <ThemedView style={styles.container}>
-        <Stack.Screen options={{ title: 'Niet gevonden' }} />
-        <LegeStaat titel="Niet gevonden" beschrijving="Dit verhaal bestaat niet." />
+        <Stack.Screen options={{ title: t((s) => s.verhaal.nietGevondenTitel) }} />
+        <LegeStaat
+          titel={t((s) => s.verhaal.nietGevondenTitel)}
+          beschrijving={t((s) => s.verhaal.nietGevondenBeschrijving)}
+        />
       </ThemedView>
     );
   }
@@ -66,8 +90,11 @@ export default function ReaderScreen() {
   if (!chapter) {
     return (
       <ThemedView style={styles.container}>
-        <Stack.Screen options={{ title: 'Niet gevonden' }} />
-        <LegeStaat titel="Niet gevonden" beschrijving="Dit chapter bestaat niet." />
+        <Stack.Screen options={{ title: t((s) => s.hoofdstuk.nietGevondenTitel) }} />
+        <LegeStaat
+          titel={t((s) => s.hoofdstuk.nietGevondenTitel)}
+          beschrijving={t((s) => s.hoofdstuk.nietGevondenBeschrijving)}
+        />
       </ThemedView>
     );
   }
@@ -76,23 +103,42 @@ export default function ReaderScreen() {
   const isLastChapter = chapterId === verhaal!.chapters.length;
   const nextChapterUnlocked = progress.isChapterUnlocked(chapterId + 1);
 
-  function handleScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
-    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-    const max = contentSize.height - layoutMeasurement.height;
-    setScrollPercentage(max > 0 ? Math.min(1, Math.max(0, contentOffset.y / max)) : 0);
+  function handleCompleteChapter() {
+    haptics.succes();
+    progress.completeChapter(chapterId);
+    // Een afgerond hoofdstuk is de enige actie die als "vandaag gelezen" telt (B6). Het openen
+    // van een verhaal deed dat eerst ook, waardoor je een streak kon opbouwen zonder te lezen.
+    voortgangStore.registreerLeesactiviteit();
+    // Nú is het moment om naar notificatie-toestemming te vragen: er is net iets afgerond, dus
+    // een herinnering betekent iets. Eén keer per installatie; de functie bewaakt dat zelf.
+    biedHerinneringAan();
   }
 
   function handleNextChapter() {
     if (!isLastChapter && nextChapterUnlocked) {
-      router.push({
+      // `replace`, geen `push`: anders staan er na acht hoofdstukken acht readers op de stack en
+      // loopt de terugknop ze allemaal langs in plaats van terug te gaan naar het overzicht.
+      router.replace({
         pathname: '/verhaal/[id]/reader',
         params: { id: verhaal!.id, chapterId: String(chapterId + 1) },
       });
     }
   }
 
+  function handleTerugNaarOverzicht() {
+    // Terug in plaats van een nieuw overzicht bovenop de stack duwen. Nu "Next Chapter" met
+    // `replace` werkt, ligt het hoofdstukoverzicht altijd één stap terug — behalve bij een
+    // deeplink rechtstreeks naar de reader, en daar vangt `canGoBack()` het op.
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace({ pathname: '/verhaal/[id]/chapters', params: { id: verhaal!.id } });
+  }
+
   function handleUnlockCharacter() {
     if (verhaal) {
+      voortgangStore.markStoryCompleted(verhaal.id);
       characterStore.unlockCharacter(verhaal.id, verhaal.personage.naam);
       setShowUnlockModal(true);
     }
@@ -100,88 +146,109 @@ export default function ReaderScreen() {
 
   function handleCloseUnlockModal() {
     setShowUnlockModal(false);
-    router.push('/');
+    // Alles wat er voor dit verhaal op de stack ligt afpellen in plaats van Home er bovenop te
+    // duwen; anders loopt de terugknop na het ontgrendelen weer door de reader heen.
+    if (router.canDismiss()) {
+      router.dismissAll();
+      return;
+    }
+    router.replace('/');
   }
 
   return (
     <ThemedView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
 
-      <View style={[styles.header, { backgroundColor: theme.background }]}>
+      {/*
+        De statusbalk-inset staat hier en niet op een `SafeAreaView`: het scherm heeft
+        `headerShown: false`, dus zonder deze padding valt "Back to Chapters" onder de klok en de
+        systeem-iconen — zichtbaar in drie van de acht store-screenshots (LAUNCH-PLAN.md, Fase 7).
+      */}
+      <View
+        style={[styles.header, { backgroundColor: theme.background, paddingTop: insets.top + Spacing.three }]}>
         <View style={styles.headerTop}>
           <Pressable
-            onPress={() =>
-              router.push({
-                pathname: '/verhaal/[id]/chapters',
-                params: { id: verhaal!.id },
-              })
-            }
+            onPress={handleTerugNaarOverzicht}
             style={[styles.headerButton, { backgroundColor: theme.backgroundElement }]}>
             <Ionicons name="arrow-back" size={16} color={theme.text} />
-            <ThemedText type="smallBold">Back to Chapters</ThemedText>
+            <ThemedText type="smallBold">{t((s) => s.hoofdstuk.terugNaarOverzicht)}</ThemedText>
           </Pressable>
         </View>
       </View>
 
       <View style={[styles.voortgangsbalkTrack, { backgroundColor: theme.backgroundElement }]}>
-        <View
+        <Animated.View
           style={[
             styles.voortgangsbalkVulling,
-            { backgroundColor: tijdperk?.kleur ?? theme.accent, width: `${scrollPercentage * 100}%` },
+            { backgroundColor: tijdperk?.kleur ?? theme.accent },
+            voortgangsbalkStijl,
           ]}
         />
       </View>
 
-      <ScrollView onScroll={handleScroll} scrollEventThrottle={16} contentContainerStyle={styles.scrollContent}>
-        <View style={styles.scrollHeader}>
+      {/* Geen `scrollEventThrottle`: Reanimated levert de events zelf op de UI-thread aan. */}
+      <Animated.ScrollView onScroll={scrollHandler} contentContainerStyle={styles.scrollContent}>
+        <Animated.View
+          style={styles.scrollHeader}
+          entering={FadeInDown.duration(Motion.duration.normaal)}>
           <ThemedText type="small" themeColor="textSecondary">
-            Chapter {chapterId} of {verhaal.chapters.length}
+            {t((s) => s.hoofdstuk.teller)(chapterId, verhaal.chapters.length)}
           </ThemedText>
           <ThemedText type="display">{v(chapter.titel)}</ThemedText>
-        </View>
+        </Animated.View>
 
         <View style={styles.blokken}>
           {chapter.blokken.map((blok, index) => (
-            <BlokWeergave
+            <Animated.View
               key={index}
-              blok={blok}
-              tijdperkKleur={tijdperk?.kleur ?? theme.inactive}
-            />
+              entering={FadeInDown.delay(staggerVertraging(index + 1)).duration(
+                Motion.duration.normaal
+              )}>
+              <BlokWeergave blok={blok} tijdperkKleur={tijdperk?.kleur ?? theme.inactive} />
+            </Animated.View>
           ))}
         </View>
 
         <View style={styles.advertentie}>
           <AdBanner />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
 
-      <View style={[styles.footer, { backgroundColor: theme.background }]}>
+      <View
+        style={[
+          styles.footer,
+          { backgroundColor: theme.background, paddingBottom: insets.bottom + Spacing.three },
+        ]}>
+        {/* `haptisch={false}` waar de knop zelf al een zwaardere haptic afvuurt (voltooien) of de
+            modal dat doet (ontgrendelen) — anders voel je twee tikjes achter elkaar. */}
         {!progress.isChapterCompleted(chapterId) ? (
-          <Pressable
-            onPress={() => progress.completeChapter(chapterId)}
+          <AnimatedPressable
+            onPress={handleCompleteChapter}
+            haptisch={false}
             style={[
               styles.footerKnop,
               { backgroundColor: tijdperk?.kleur ?? theme.accent, flex: 1 },
             ]}>
             <ThemedText type="smallBold" style={{ color: theme.background }}>
-              Mark Complete
+              {t((s) => s.hoofdstuk.markeerVoltooid)}
             </ThemedText>
             <Ionicons name="checkmark-circle" size={16} color={theme.background} />
-          </Pressable>
+          </AnimatedPressable>
         ) : shouldShowUnlockButton ? (
-          <Pressable
+          <AnimatedPressable
             onPress={handleUnlockCharacter}
+            haptisch={false}
             style={[
               styles.footerKnop,
               { backgroundColor: tijdperk?.kleur ?? theme.accent, flex: 1 },
             ]}>
             <ThemedText type="smallBold" style={{ color: theme.background }}>
-              Unlock {verhaal!.personage.naam}
+              {t((s) => s.hoofdstuk.ontgrendelPersonage)(verhaal!.personage.naam)}
             </ThemedText>
             <Ionicons name="star" size={16} color={theme.background} />
-          </Pressable>
+          </AnimatedPressable>
         ) : (
-          <Pressable
+          <AnimatedPressable
             onPress={handleNextChapter}
             disabled={isLastChapter}
             style={[
@@ -189,14 +256,16 @@ export default function ReaderScreen() {
               { backgroundColor: tijdperk?.kleur ?? theme.accent, flex: 1 },
             ]}>
             <ThemedText type="smallBold" style={{ color: theme.background }}>
-              {isLastChapter ? 'All Chapters Complete' : 'Next Chapter'}
+              {isLastChapter
+                ? t((s) => s.hoofdstuk.allesVoltooid)
+                : t((s) => s.hoofdstuk.volgende)}
             </ThemedText>
             <Ionicons
               name={isLastChapter ? 'checkmark-circle' : 'arrow-forward'}
               size={16}
               color={theme.background}
             />
-          </Pressable>
+          </AnimatedPressable>
         )}
       </View>
 

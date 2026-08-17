@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Chronicles — Play feature graphic</title>
+    <style>
+      /*
+        Source for the 1024x500 Play Store feature graphic.
+        Rendered to PNG by `npm run generate:store-assets` (headless Chrome/Edge).
+        Edit here, re-run the script — never touch the PNG by hand.
+
+        Palette is Colors.light from src/constants/theme.ts, so the listing and
+        the app cannot drift apart.
+      */
+      :root {
+        --bg: #f7f1e4;
+        --text: #211f1a;
+        --text-secondary: #6b6355;
+        --accent: #3b6e7d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1024px;
+        height: 500px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        background: var(--bg);
+        font-family: Georgia, 'Times New Roman', serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* The scene fills the whole canvas; the scrim below reclaims the left. */
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 74% 52%;
+        /* The generated art is deliberately hazy; without this the half that
+           survives the scrim reads as a grey smudge at listing size. */
+        filter: saturate(1.1) contrast(1.06);
+      }
+
+      /*
+        Two scrims. The horizontal one carries the text side and has to reach
+        full opacity well before the text starts, or the serif hairlines start
+        fighting the columns behind them. The vertical one just keeps the top
+        and bottom edges from looking cut off.
+      */
+      .scrim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          #f7f1e4 0%,
+          #f7f1e4 34%,
+          rgba(247, 241, 228, 0.88) 44%,
+          rgba(247, 241, 228, 0.3) 54%,
+          rgba(247, 241, 228, 0) 64%
+        );
+      }
+
+      .vignette {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(33, 31, 26, 0.18) 0%,
+          rgba(33, 31, 26, 0) 28%,
+          rgba(33, 31, 26, 0) 68%,
+          rgba(33, 31, 26, 0.22) 100%
+        );
+      }
+
+      .content {
+        position: absolute;
+        left: 72px;
+        top: 0;
+        height: 100%;
+        width: 470px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .mark {
+        width: 96px;
+        height: 96px;
+        border-radius: 22px;
+        display: block;
+        box-shadow: 0 6px 20px rgba(33, 31, 26, 0.16);
+      }
+
+      h1 {
+        margin-top: 26px;
+        font-size: 72px;
+        line-height: 1;
+        letter-spacing: 0.5px;
+        color: var(--text);
+        font-weight: 400;
+      }
+
+      .rule {
+        margin-top: 20px;
+        width: 52px;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+
+      .tagline {
+        margin-top: 20px;
+        font-size: 25px;
+        line-height: 1.35;
+        color: var(--text-secondary);
+      }
+
+      .meta {
+        margin-top: 18px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        font-size: 14px;
+        letter-spacing: 2.4px;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <img class="scene" src="../assets/images/scenes/rome-rise-6.webp" alt="" />
+    <div class="scrim"></div>
+    <div class="vignette"></div>
+    <div class="content">
+      <img class="mark" src="../assets/images/app-icon.png" alt="" />
+      <h1>Chronicles</h1>
+      <div class="rule"></div>
+      <p class="tagline">History, one chapter at a time.</p>
+      <p class="meta">19 stories &middot; 6 eras &middot; no ads</p>
+    </div>
+  </body>
+</html>

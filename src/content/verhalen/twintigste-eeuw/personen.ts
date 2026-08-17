@@ -1,5 +1,6 @@
 import type { Verhaal } from '@/constants/types';
 import { CHARACTER_IMAGES } from '@/constants/character-images';
+import { SCENE_IMAGES } from '@/constants/scene-images';
 
 // Content generated from 20th Century agent (3 stories with 8 chapters each)
 // Full details: Marie Curie, Winston Churchill, Martin Luther King Jr.
@@ -12,19 +13,26 @@ export const marieCurie: Verhaal = {
   jaar: 1934,
   periodeLabel: '1867 - 1934',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/PenNQBeHkfC10pxKkFwVk1jiKzjTaqcSCrlVx7fLfedVf7AeWA/tmpinmosfrw.webp',
+  afbeelding: CHARACTER_IMAGES['marie-curie'],
   portretKleur: '#6B8E4F',
   uitgelicht: false,
   volgorde: 1,
   tijdperkId: 'twintigste-eeuw',
   themas: ['wetenschap', 'radioactiviteit', 'vrouwen', 'Frankrijk', 'atoom'],
-  leestijdMinuten: 45,
+  leestijdMinuten: 9,
   personage: { naam: 'Marie Curie' },
   chapters: [
     {
       id: 1,
       titel: { en: 'A Polish Girl Dreams of Science' },
+      afbeelding: SCENE_IMAGES['marie-curie-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-1'],
+          alt: { en: 'A girl reading by candlelight in a modest Warsaw apartment.' },
+          bijschrift: { en: 'Russian-ruled Warsaw did not admit women to university. She studied at an illegal one instead.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Maria Skłodowska was born in Warsaw, Poland, in 1867, during a time when few girls were permitted to pursue science. Her childhood was marked by tragedy. When she was only eight years old, her eldest sister died of typhus. Two years later, her mother succumbed to tuberculosis. These losses shaped Maria\'s character, giving her a fierce determination to achieve something meaningful with her life. Despite her grief, she was captivated by the world of science—by chemistry, physics, and the mysteries of nature that seemed to hold infinite answers.' }
@@ -38,7 +46,14 @@ export const marieCurie: Verhaal = {
     {
       id: 2,
       titel: { en: 'From Warsaw to Paris' },
+      afbeelding: SCENE_IMAGES['marie-curie-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-2'],
+          alt: { en: 'A student working by candlelight in a freezing Paris attic room.' },
+          bijschrift: { en: 'She finished first in her physics degree, and second in mathematics the year after.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1891, at the age of 23, Maria arrived in Paris with almost no money in her pockets. She enrolled at the University of Paris, one of the first female physics students in the institution\'s history. Life was difficult. She lived in a small, freezing room in the Latin Quarter, surviving on bread, chocolate, and eggs. Sometimes she had so little food that she would faint during her studies. Despite these hardships, Maria threw herself into her work with remarkable intensity. She attended lectures, performed experiments, and read everything she could find about the latest discoveries in physics and chemistry.' }
@@ -52,7 +67,14 @@ export const marieCurie: Verhaal = {
     {
       id: 3,
       titel: { en: 'The Mystery of Rays' },
+      afbeelding: SCENE_IMAGES['marie-curie-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-3'],
+          alt: { en: 'A shed laboratory where a couple stir a vat of pitchblende residue.' },
+          bijschrift: { en: 'A tonne of pitchblende yielded about a tenth of a gram of radium chloride.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1896, Marie chose an exciting topic for her doctoral research. Just one year earlier, Wilhelm Röntgen had discovered X-rays, and Henri Becquerel had noticed that uranium emitted mysterious rays. The scientific world was ablaze with curiosity. Marie decided to investigate these rays more thoroughly using an electrometer—a sensitive instrument that Pierre and his brother had invented. This device could measure tiny electrical currents with remarkable precision, making it perfect for studying these invisible radiations.' }
@@ -70,7 +92,14 @@ export const marieCurie: Verhaal = {
     {
       id: 4,
       titel: { en: 'Fame and Tragedy' },
+      afbeelding: SCENE_IMAGES['marie-curie-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-4'],
+          alt: { en: 'A woman in black walking away down a rain-wet Paris street.' },
+          bijschrift: { en: 'Pierre was killed by a horse-drawn wagon in 1906. She was thirty-eight.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'The discovery of radium and polonium made the Curies world-famous. In 1903, Marie became the first woman to earn a doctorate in physics in France. That same year, she and Pierre, along with Henri Becquerel, shared the Nobel Prize in Physics—one of the world\'s highest scientific honors. Remarkably, the Nobel Prize committee initially had not intended to include Marie, planning to honor only Pierre and Becquerel. It was Pierre himself who insisted that his wife\'s contributions be recognized equally. Marie and Pierre had become symbols of scientific progress and intellectual partnership.' }
@@ -84,7 +113,14 @@ export const marieCurie: Verhaal = {
     {
       id: 5,
       titel: { en: 'Continuing the Work' },
+      afbeelding: SCENE_IMAGES['marie-curie-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-5'],
+          alt: { en: 'A woman lecturing to a packed amphitheatre of students at the Sorbonne.' },
+          bijschrift: { en: 'She took over his chair and became the first woman ever to teach at the Sorbonne.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Marie faced a choice. She could retreat from science and focus on her daughters, as many people expected a widow to do. Instead, she made a remarkable decision: she would continue the work. The University of Paris offered her Pierre\'s professorship—the first time a French university had appointed a woman to such a position. In her first lecture, before a packed hall of scientists and curious onlookers, Marie spoke about radium and its properties. When she reached the point in her notes where Pierre\'s work ended, she paused, too overcome with emotion to continue. The audience sat in respectful silence. It was a powerful moment, but Marie recovered and finished her lecture. She would not be stopped by grief.' }
@@ -98,7 +134,14 @@ export const marieCurie: Verhaal = {
     {
       id: 6,
       titel: { en: 'War and Dedication' },
+      afbeelding: SCENE_IMAGES['marie-curie-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-6'],
+          alt: { en: 'A motor van fitted as a mobile X-ray unit at a field hospital.' },
+          bijschrift: { en: 'She equipped some twenty radiology vans and drove one herself, with her daughter Irène.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'When World War I erupted in 1914, Europe was plunged into unprecedented conflict. Marie recognized that X-ray machines could save lives on the battlefield by helping doctors locate bullets and identify internal injuries in wounded soldiers. The French military, however, had very few radiography units, and many were far from the front lines. Marie could not sit idle while soldiers suffered. Using her own money and donations, she purchased X-ray equipment and installed it in a van she nicknamed "Petite Curies"—little Curies—after her two daughters. She drove to the front lines herself, operating the equipment and training others to use it.' }
@@ -116,7 +159,14 @@ export const marieCurie: Verhaal = {
     {
       id: 7,
       titel: { en: 'The Price of Discovery' },
+      afbeelding: SCENE_IMAGES['marie-curie-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-7'],
+          alt: { en: 'A worn notebook, glassware and fogged photographic plates on a bench.' },
+          bijschrift: { en: 'Her notebooks are still radioactive. They are kept in lead-lined boxes.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In her final years, Marie\'s health deteriorated. The cumulative effects of radiation exposure were taking their toll. She suffered from anemia, joint pain, and other ailments that made it difficult to work. In 1934, at the age of 66, she was admitted to a hospital near Paris. Doctors diagnosed her with aplastic anemia—a rare blood disorder almost certainly caused by decades of exposure to radiation. At this time, very little was known about how to treat radiation sickness, and there was no cure. Marie knew, better than anyone, what was happening to her body. The very element she had devoted her life to studying was destroying her.' }
@@ -135,7 +185,14 @@ export const marieCurie: Verhaal = {
     {
       id: 8,
       titel: { en: 'A Revolutionary Legacy' },
+      afbeelding: SCENE_IMAGES['marie-curie-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['marie-curie-8'],
+          alt: { en: 'Young women in white coats at work in a bright institute laboratory.' },
+          bijschrift: { en: 'She remains the only person to have won Nobel Prizes in two different sciences.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Marie Curie\'s impact on science and society extended far beyond her discoveries of polonium and radium. She shattered the barrier that had prevented women from entering the world of scientific research at the highest levels. Before Marie, it was almost unthinkable for a woman to win a Nobel Prize, to hold a university professorship, or to direct a major scientific institute. She proved that scientific brilliance knows no gender. Today, countless women in physics, chemistry, biology, and medicine cite Marie Curie as their inspiration. She showed the world that a woman could be just as dedicated, just as brilliant, and just as transformative as any man in science.' }
@@ -157,19 +214,26 @@ export const winstonChurchill: Verhaal = {
   jaar: 1965,
   periodeLabel: '1874 - 1965',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/0vjAmhan4yawNVUAsOB4K6gcJVZkqL1jNPp5upTfVfLs4B8WA/tmp5nph1j3l.webp',
+  afbeelding: CHARACTER_IMAGES['winston-churchill'],
   portretKleur: '#4A5A6B',
   uitgelicht: false,
   volgorde: 2,
   tijdperkId: 'twintigste-eeuw',
   themas: ['politiek', 'wereldoorlog', 'leiderschap', 'groot-brittannie', 'strategie'],
-  leestijdMinuten: 48,
+  leestijdMinuten: 7,
   personage: { naam: 'Winston Churchill' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Born to Privilege, Driven by Ambition' },
+      afbeelding: SCENE_IMAGES['winston-churchill-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-1'],
+          alt: { en: 'A boy arranging rows of lead soldiers in a vast palace room.' },
+          bijschrift: { en: 'Born at Blenheim, near the bottom of his class, and a soldier before he was a politician.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Winston Leonard Spencer Churchill was born on November 30, 1874, into one of Britain\'s most aristocratic families. His father, Lord Randolph Churchill, was a prominent Conservative politician, and his mother was an American heiress. Despite his privileged birth, young Winston\'s childhood was marked by emotional distance from his parents. He attended elite schools but was considered a mediocre student, struggling with subjects that bored him. However, he possessed an unshakeable determination and an exceptional talent for writing and public speaking that would define his career.' },
@@ -183,7 +247,14 @@ export const winstonChurchill: Verhaal = {
     {
       id: 2,
       titel: { en: 'Rising Through the Political Ranks' },
+      afbeelding: SCENE_IMAGES['winston-churchill-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-2'],
+          alt: { en: 'A politician studying naval charts with admirals in an Admiralty room.' },
+          bijschrift: { en: 'Gallipoli cost him the Admiralty. He went to the Western Front as a battalion commander.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Churchill rapidly climbed the political ladder, serving as President of the Board of Trade, Home Secretary, and First Lord of the Admiralty before turning forty. His tenure at the Admiralty during World War I was marked by ambitious initiatives, including his support for the ill-fated Gallipoli Campaign, which resulted in heavy British casualties. This failure damaged his reputation and led to his resignation. For several years, Churchill was something of a political outcast, blamed for the disaster and struggling to rebuild his standing in Parliament and with the public.' },
@@ -197,7 +268,14 @@ export const winstonChurchill: Verhaal = {
     {
       id: 3,
       titel: { en: 'War and Leadership' },
+      afbeelding: SCENE_IMAGES['winston-churchill-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-3'],
+          alt: { en: 'An underground map room beneath wartime London.' },
+          bijschrift: { en: 'He became prime minister on 10 May 1940 — the day Germany invaded the Low Countries.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In May 1940, as Nazi Germany invaded France and seemed poised to conquer all of Europe, Churchill became Prime Minister of Britain at age sixty-five. The nation was in crisis, facing possible invasion and seemingly inevitable defeat. In his first speech as Prime Minister, Churchill told the British people he had nothing to offer but "blood, toil, tears and sweat." He refused to consider surrender or negotiation with Hitler, declaring that Britain would defend itself alone if necessary and that ultimate victory would belong to those who never surrendered.' },
@@ -211,7 +289,14 @@ export const winstonChurchill: Verhaal = {
     {
       id: 4,
       titel: { en: 'Victory and Defeat' },
+      afbeelding: SCENE_IMAGES['winston-churchill-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-4'],
+          alt: { en: 'Three Allied leaders seated for a photograph before a colonnaded palace.' },
+          bijschrift: { en: 'Yalta, February 1945. Britain was still fighting, and negotiating from growing weakness.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'As the war progressed, Churchill worked tirelessly to maintain the alliance between Britain, America, and the Soviet Union. He met with Franklin D. Roosevelt and Joseph Stalin at key conferences to coordinate strategy and plan for the postwar world. Churchill negotiated from a position of declining British power—Britain was fighting for survival but increasingly dependent on American economic and military support. Nevertheless, he fought hard to protect British interests and to shape the peace that would follow the war.' },
@@ -225,7 +310,14 @@ export const winstonChurchill: Verhaal = {
     {
       id: 5,
       titel: { en: 'The Iron Curtain and the Cold War' },
+      afbeelding: SCENE_IMAGES['winston-churchill-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-5'],
+          alt: { en: 'An elderly statesman speaking from a podium in an American college hall.' },
+          bijschrift: { en: 'Fulton, Missouri, 1946: an iron curtain, he said, had descended across the continent.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Out of power, Churchill warned of new dangers. In a famous 1946 speech in Fulton, Missouri, he spoke of an "Iron Curtain" that had descended across Eastern Europe, dividing the free West from the Soviet-dominated East. This speech, delivered in collaboration with President Truman, helped articulate what would become known as the Cold War—the ideological and strategic competition between the capitalist West and the communist Soviet Union that would dominate global politics for the next four decades.' },
@@ -239,7 +331,14 @@ export const winstonChurchill: Verhaal = {
     {
       id: 6,
       titel: { en: 'Return to Power and Continued Service' },
+      afbeelding: SCENE_IMAGES['winston-churchill-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-6'],
+          alt: { en: 'An old prime minister at the cabinet table in a panelled Downing Street room.' },
+          bijschrift: { en: 'He returned to office at seventy-six and stayed until a stroke forced him out.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1951, Churchill returned to power as Prime Minister at age seventy-six. Rather than fading into retirement, he embarked on a second term as Britain\'s leader. His government focused on maintaining Britain\'s status as a great power and managing the transition to a new postwar world. Churchill also commissioned the building of nuclear weapons to ensure Britain would not be eclipsed by American nuclear superiority. He worked to maintain the Anglo-American alliance and to contain Soviet expansion while also managing Britain\'s declining empire.' },
@@ -253,7 +352,14 @@ export const winstonChurchill: Verhaal = {
     {
       id: 7,
       titel: { en: 'Words and Legacy' },
+      afbeelding: SCENE_IMAGES['winston-churchill-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-7'],
+          alt: { en: 'A writer’s study with manuscript pages, a cigar and a green-shaded lamp.' },
+          bijschrift: { en: 'He won the Nobel Prize in Literature in 1953 — for history and oratory, not fiction.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Throughout his long life, Churchill was a master of rhetoric and language. His speeches were carefully crafted, full of vivid imagery, classical references, and memorable phrases. He won the Nobel Prize in Literature in 1953 for his war memoirs and historical writings. Churchill believed in the power of words to inspire, persuade, and shape history. His speeches during World War II are still studied for their oratorical brilliance and their ability to move people to action. He demonstrated that political leadership is not just about making decisions—it\'s about communicating a vision that people can believe in.' },
@@ -267,7 +373,14 @@ export const winstonChurchill: Verhaal = {
     {
       id: 8,
       titel: { en: 'An Enduring Legacy' },
+      afbeelding: SCENE_IMAGES['winston-churchill-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['winston-churchill-8'],
+          alt: { en: 'A coffin on a launch passing dockside cranes that dip in salute.' },
+          bijschrift: { en: 'The Thames cranes lowered their jibs as he passed. Nobody had ordered them to.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Winston Churchill died on January 24, 1965, at age ninety. His death was mourned worldwide as the end of an era. He is remembered as one of the greatest leaders of the twentieth century—a man who rallied his nation in its darkest hour and helped defeat Nazi tyranny. His stubbornness, determination, and refusal to accept defeat when others counseled surrender were exactly the qualities Britain needed during World War II. Churchill proved that individual leadership matters, that moral courage is essential in times of crisis, and that words can be as powerful as weapons in shaping the course of history.' },
@@ -289,19 +402,26 @@ export const martinLutherKingJr: Verhaal = {
   jaar: 1968,
   periodeLabel: '1929 - 1968',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/PI4Nj4DgTWL1FRk8NLCsxexaUabP5qYo5yKuLKp3mIJn8AeWA/tmpwzftbu8k.webp',
+  afbeelding: CHARACTER_IMAGES['martin-luther-king-jr'],
   portretKleur: '#6B4A3A',
   uitgelicht: false,
   volgorde: 3,
   tijdperkId: 'twintigste-eeuw',
   themas: ['burgerrechten', 'rascisme', 'geweldloosheid', 'amerikaanse samenleving', 'gelijkheid'],
-  leestijdMinuten: 47,
+  leestijdMinuten: 7,
   personage: { naam: 'Martin Luther King Jr.' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Growing Up in the Jim Crow South' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-1'],
+          alt: { en: 'A southern American street with two drinking fountains side by side.' },
+          bijschrift: { en: 'Segregation was not merely custom but law, enforced in schools, buses, courts and waiting rooms.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Martin Luther King Jr. was born on January 15, 1929, in Atlanta, Georgia, in the American South during the era of Jim Crow segregation. His father was a prominent minister, and young Martin grew up in a relatively privileged African American household. However, no amount of family wealth or education could shield him from the brutal reality of racial segregation. Jim Crow laws mandated the separation of blacks and whites in schools, restaurants, public transportation, and almost every aspect of public life. The signs reading "Whites Only" and "Colored" were constant reminders of the inferior status to which African Americans were relegated.' },
@@ -315,7 +435,14 @@ export const martinLutherKingJr: Verhaal = {
     {
       id: 2,
       titel: { en: 'Becoming a Minister and Finding a Philosophy' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-2'],
+          alt: { en: 'A young minister preaching from the pulpit of a red-brick Baptist church.' },
+          bijschrift: { en: 'Montgomery, 1954. He was twenty-five, with a new doctorate and a first congregation.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Martin Luther King Jr. was ordained as a minister at age eighteen and later earned a doctorate in systematic theology. He became pastor of the Dexter Avenue Baptist Church in Montgomery, Alabama, in 1954. King\'s early ministry focused on the spiritual and moral dimensions of faith, but he was increasingly aware of the gap between Christian teachings about love and equality and the reality of racial injustice in American society. He studied the teachings of Mahatma Gandhi, whose philosophy of nonviolent resistance through civil disobedience offered a practical approach to fighting injustice without resorting to violence.' },
@@ -329,7 +456,14 @@ export const martinLutherKingJr: Verhaal = {
     {
       id: 3,
       titel: { en: 'The Montgomery Bus Boycott' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-3'],
+          alt: { en: 'Residents walking to work at dawn as an empty city bus passes.' },
+          bijschrift: { en: '381 days of walking. The bus company lost roughly three-quarters of its riders.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'On December 1, 1955, Rosa Parks, a seamstress and civil rights activist, refused to give up her seat to a white passenger on a Montgomery bus, an act that violated local segregation laws. She was arrested. This simple act of courage sparked the Montgomery Bus Boycott, a sustained protest that lasted 381 days. The black community of Montgomery organized a complete boycott of the bus system, coordinated by a group of ministers including the young Martin Luther King Jr. King\'s church became headquarters for the boycott movement.' },
@@ -343,7 +477,14 @@ export const martinLutherKingJr: Verhaal = {
     {
       id: 4,
       titel: { en: 'The Sit-Ins and Freedom Rides' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-4'],
+          alt: { en: 'Students sitting at a segregated lunch counter as a crowd presses behind.' },
+          bijschrift: { en: 'The rule was absolute: whatever was done to you, you did not hit back.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Throughout the late 1950s and early 1960s, King led and supported a series of nonviolent protests against segregation. In 1960, African American college students began sit-ins at segregated lunch counters in Greensboro, North Carolina, and the movement spread rapidly. Young people, black and white, sat peacefully at lunch counters and endured verbal abuse, threats, and physical violence, never fighting back. King supported these sit-ins and encouraged students to maintain nonviolent discipline, believing that their refusal to respond with violence would ultimately expose the immorality of their oppressors\' actions.' },
@@ -357,7 +498,14 @@ export const martinLutherKingJr: Verhaal = {
     {
       id: 5,
       titel: { en: 'The Dream and the March on Washington' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-5'],
+          alt: { en: 'A vast crowd filling the reflecting pool between a memorial and an obelisk.' },
+          bijschrift: { en: 'August 1963. The most famous passage of the speech was not in the prepared text.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'On August 28, 1963, more than 200,000 people gathered in Washington, DC, for the March on Washington for Jobs and Freedom. It was the largest political demonstration in American history to that date. Martin Luther King Jr. stood on the steps of the Lincoln Memorial and delivered the speech that would define his legacy: "I Have a Dream." In this soaring oration, King articulated a vision of a future America where racial segregation would be gone and where people would be judged not by the color of their skin but by the content of their character.' },
@@ -371,7 +519,14 @@ export const martinLutherKingJr: Verhaal = {
     {
       id: 6,
       titel: { en: 'Nobel Prize and the Struggle Continues' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-6'],
+          alt: { en: 'A laureate receiving a medal in a grand Scandinavian civic hall.' },
+          bijschrift: { en: 'At thirty-five, the youngest Nobel Peace laureate up to that point. He gave the money away.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1964, at age thirty-five, Martin Luther King Jr. became the youngest man at that time to win the Nobel Peace Prize. The award recognized his leadership in the civil rights movement and his commitment to nonviolent resistance. In his Nobel Prize acceptance speech, King spoke of peace and called on humanity to abolish war. However, he also acknowledged that the struggle for racial justice in America was far from over. Despite the Civil Rights Act of 1964, African Americans still faced discrimination in employment, housing, education, and voting rights.' },
@@ -385,7 +540,14 @@ export const martinLutherKingJr: Verhaal = {
     {
       id: 7,
       titel: { en: 'The Widening Vision' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-7'],
+          alt: { en: 'Striking sanitation workers marching down a wet Memphis street.' },
+          bijschrift: { en: 'By 1968 he was speaking about poverty and Vietnam — and losing allies over both.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'By the mid-1960s, King\'s focus had expanded beyond legal segregation to address the deeper structural problems of poverty, inequality, and militarism. He began the Poor People\'s Campaign to address economic injustice affecting not just African Americans but poor people of all races. He became a vocal opponent of the Vietnam War, arguing that America should not be spending billions on warfare when millions of its citizens lived in poverty. King\'s message evolved to encompass a broader vision of human rights and dignity, connected to struggles for justice around the world.' },
@@ -399,7 +561,14 @@ export const martinLutherKingJr: Verhaal = {
     {
       id: 8,
       titel: { en: 'A Dream Deferred But Not Defeated' },
+      afbeelding: SCENE_IMAGES['martin-luther-king-jr-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['martin-luther-king-jr-8'],
+          alt: { en: 'A candlelight vigil beneath a motel balcony at night.' },
+          bijschrift: { en: 'Memphis, 4 April 1968. He was thirty-nine years old.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'On April 4, 1968, Martin Luther King Jr. was assassinated in Memphis, Tennessee, at age thirty-nine. His death shocked the world and sparked both mourning and anger. He did not live to see the full realization of his dream, and in many ways, the struggle for racial justice and equality continues to this day. Yet the impact of his life and work was immeasurable. The civil rights legislation he helped inspire transformed American society and provided legal protections that continue to benefit millions.' },

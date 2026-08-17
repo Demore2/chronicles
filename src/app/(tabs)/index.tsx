@@ -17,6 +17,7 @@ import type { Verhaal } from '@/constants/types';
 import { collecties } from '@/content/collecties';
 import { getNieuwToegevoegd, getUitgelichteVerhalenVoorTijdperk, getUitgelichtVerhaal } from '@/content/queries';
 import { getVerhaal, verhalen as allVerhalen } from '@/content/verhalen';
+import { useStreak } from '@/hooks/use-streak';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useVoortgangStore } from '@/store/voortgang-store';
@@ -31,7 +32,7 @@ export default function OntdekScreen() {
   const gelezenIds = useVoortgangStore((state) => state.gelezenIds);
   const bekekenIds = useVoortgangStore((state) => state.bekekenIds);
   const completedStories = useVoortgangStore((state) => state.completedStories);
-  const streakDagen = useVoortgangStore((state) => state.streakDagen);
+  const streakDagen = useStreak();
 
   const uitgelicht = getUitgelichtVerhaal();
   const verderLezen = [...bekekenIds]
@@ -46,10 +47,12 @@ export default function OntdekScreen() {
           <ScrollView contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 80 }]} showsVerticalScrollIndicator={false}>
             <View style={styles.headerRow}>
               <ThemedText type="display">{t((s) => s.tabs.ontdek)}</ThemedText>
-              <View style={[styles.streak, { backgroundColor: theme.backgroundElement }]}>
-                <Ionicons name="flame" size={18} color={theme.accent} />
-                <ThemedText type="smallBold">{streakDagen}</ThemedText>
-              </View>
+              {streakDagen > 0 && (
+                <View style={[styles.streak, { backgroundColor: theme.backgroundElement }]}>
+                  <Ionicons name="flame" size={18} color={theme.accent} />
+                  <ThemedText type="smallBold">{streakDagen}</ThemedText>
+                </View>
+              )}
             </View>
             <LegeStaat
               icoonNaam="book-outline"
@@ -72,10 +75,13 @@ export default function OntdekScreen() {
         <ScrollView contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 80 }]} showsVerticalScrollIndicator={false}>
           <View style={styles.headerRow}>
             <ThemedText type="display">{t((s) => s.tabs.ontdek)}</ThemedText>
-            <View style={[styles.streak, { backgroundColor: theme.backgroundElement }]}>
-              <Ionicons name="flame" size={18} color={theme.accent} />
-              <ThemedText type="smallBold">{streakDagen}</ThemedText>
-            </View>
+            {/* Geen vlammetje met een 0 ernaast: zonder streak is er niets te tonen (B6). */}
+            {streakDagen > 0 && (
+              <View style={[styles.streak, { backgroundColor: theme.backgroundElement }]}>
+                <Ionicons name="flame" size={18} color={theme.accent} />
+                <ThemedText type="smallBold">{streakDagen}</ThemedText>
+              </View>
+            )}
           </View>
 
           <Pressable

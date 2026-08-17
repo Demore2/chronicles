@@ -13,6 +13,7 @@ expo-env.d.ts
 .kotlin/
 *.orig.*
 *.jks
+*.keystore
 *.p8
 *.p12
 *.key
@@ -33,6 +34,10 @@ yarn-error.*
 # local env files
 .env*.local
 
+# Google Play service-account key used by `eas submit` (see eas.json ->
+# submit.*.android.serviceAccountKeyPath). Never commit this.
+play-service-account.json
+
 # typescript
 *.tsbuildinfo
 
@@ -45,6 +50,11 @@ example
 # local scratch output from ad-hoc `expo export` checks
 .tmp-export-check*
 
+# scratch output from the asset scripts and screenshot sessions: the source of
+# truth is the SVG/HTML the script reads, not what it happened to spit out here
+.tmp-notification-icon.html
+.tmp-shots/
+
 # personal Claude Code permission cache (machine-specific)
 .claude/settings.local.json
 
@@ -52,3 +62,5 @@ example
 # machine (this is literally what `git.exe` resolves to here) — not project
 # source, must never be committed
 /Git/
+# EAS build cache
+.agents

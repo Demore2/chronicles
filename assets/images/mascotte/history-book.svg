@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="History Book">
+  <!--
+    Vector reconstruction of "HIstory book" (the 1024x1024 WebP).
+    Geometry measured off the original, then squared up: one line weight (32),
+    true mirror symmetry around x=512, and the mark optically centred.
+
+    Mark only, transparent background, drawn in `currentColor` — pass the colour
+    in from the outside so it can follow the theme:
+      <HistoryBook width={96} height={96} color={theme.accent} />
+  -->
+  <g fill="none" stroke="currentColor" stroke-width="32" stroke-linejoin="miter">
+    <!-- cover -->
+    <path d="M 310.5 339 L 256 339 L 256 711 L 768 711 L 768 339 L 713.5 339"/>
+    <!-- left page -->
+    <path d="M 512 371 C 500 320 420 295 310.5 290 L 310.5 648 C 380 660 450 690 512 711"/>
+    <!-- right page -->
+    <path d="M 512 371 C 524 320 604 295 713.5 290 L 713.5 648 C 644 660 574 690 512 711"/>
+  </g>
+  <g fill="currentColor">
+    <!-- H -->
+    <rect x="414" y="382" width="44" height="224"/>
+    <rect x="566" y="382" width="44" height="224"/>
+    <rect x="414" y="470" width="196" height="40"/>
+    <!-- clasp -->
+    <circle cx="512" cy="730" r="22"/>
+  </g>
+</svg>

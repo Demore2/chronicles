@@ -1,5 +1,6 @@
 import type { ComponentProps } from 'react';
 import type { Ionicons } from '@expo/vector-icons';
+import type { ImageSourcePropType } from 'react-native';
 
 export type IoniconNaam = ComponentProps<typeof Ionicons>['name'];
 
@@ -34,15 +35,36 @@ export type Tijdperk = {
   actief: boolean;
 };
 
+/**
+ * Een blok is één zichtbaar element in een hoofdstuk, gerenderd door `blok-weergave.tsx`.
+ *
+ * `kop`, `weetje` en `sleutelmoment` zijn toegevoegd in LAUNCH-PLAN.md B3: met alleen `tekst`,
+ * `afbeelding` en `citaat` las een hoofdstuk als een muur van identieke alinea's. Een nieuw type
+ * toevoegen betekent altijd drie plekken: hier, een tak in `blok-weergave.tsx`, én een case in
+ * `scripts/validate-content.mjs` (anders faalt `npm run validate:content` erop) — plus
+ * `telWoordenInBlok` in `src/content/leestijd.ts` als het blok leesbare tekst toont.
+ */
 export type Blok =
+  /** Gewone alinea. */
   | { type: 'tekst'; inhoud: VertaaldVeld }
-  | { type: 'afbeelding'; bron: string; alt: VertaaldVeld; bijschrift?: VertaaldVeld }
-  | { type: 'citaat'; tekst: VertaaldVeld; bron: VertaaldVeld };
+  /**
+   * Scènebeeld. `bron` is een gebundeld asset (`SCENE_IMAGES['<verhaal-id>-<hoofdstuk>']`), geen
+   * URL — zelfde reden als bij `Verhaal.afbeelding` (LAUNCH-PLAN.md B1/B2).
+   */
+  | { type: 'afbeelding'; bron: ImageSourcePropType; alt: VertaaldVeld; bijschrift?: VertaaldVeld }
+  | { type: 'citaat'; tekst: VertaaldVeld; bron: VertaaldVeld }
+  /** Tussenkop; breekt een lange reeks alinea's op. */
+  | { type: 'kop'; tekst: VertaaldVeld }
+  /** "Wist je dat"-callout in de tijdperkkleur. */
+  | { type: 'weetje'; tekst: VertaaldVeld }
+  /** Jaartal in de kantlijn met één zin erbij. Negatief = voor Christus. */
+  | { type: 'sleutelmoment'; jaar: number; tekst: VertaaldVeld };
 
 export type Chapter = {
   id: number;
   titel: VertaaldVeld;
-  afbeelding?: string;
+  /** Scènebeeld voor de hoofdstuktegel — `SCENE_IMAGES['<verhaal-id>-<hoofdstuk>']`. */
+  afbeelding?: ImageSourcePropType;
   blokken: Blok[];
 };
 
@@ -55,8 +77,13 @@ export type Verhaal = {
   periodeLabel: string;
   /** Whether this story is about a person or an event (REFACTOR-PLAN.md R8). */
   soort: 'persoon' | 'gebeurtenis';
-  /** Portrait/cover image source for the figure, used by the era-row card (REFACTOR-PLAN.md R4). Optional placeholder until AI-generated portraits exist (R8). */
-  afbeelding?: string;
+  /**
+   * Portrait/cover image source for the figure, used by the era-row card (REFACTOR-PLAN.md R4).
+   * Vul dit met `CHARACTER_IMAGES['<verhaal-id>']` — een gebundeld `require()`-asset, geen URL
+   * (LAUNCH-PLAN.md B1). `ImageSourcePropType` laat een remote `{ uri }` nog steeds toe, maar
+   * dat is bewust niet meer wat de content gebruikt.
+   */
+  afbeelding?: ImageSourcePropType;
   /** Fallback hex color for the portrait card when afbeelding is absent (REFACTOR-PLAN.md R8). */
   portretKleur: string;
   /** Whether this story is eligible for the Home "uitgelicht" hero slot. */

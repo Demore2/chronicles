@@ -1,13 +1,10 @@
 /**
- * R9 PoC: Generated portrait images via Replicate
+ * @deprecated Vervangen door `CHARACTER_IMAGES` in `./character-images` (LAUNCH-PLAN.md B1).
  *
- * TEST MODE: Using placeholder URLs for UI testing
- * Replace these with real Replicate-generated URLs when API is available
+ * Hier stonden 4 `replicate.delivery`-URL's voor de Oudheid-verhalen. Die verlopen, dus in een
+ * gepubliceerde build zouden ze breken. De bytes staan nu in `assets/images/characters/` en
+ * worden via `require()` meegebundeld. Deze file blijft als re-export-shim bestaan omdat de
+ * no-delete-conventie geldt (zie CLAUDE.md) — importeer in nieuwe code `CHARACTER_IMAGES`.
  */
 
-export const GENERATED_IMAGES = {
-  'julius-caesar': 'https://replicate.delivery/xezq/bPgRyPpqQqKQPBEytnUBihPcWemTReeeo6gx9F4PujdNoovbB/tmpe6sblazo.webp',
-  'spartacus': 'https://replicate.delivery/xezq/nv26lfDfoFuEzEv1YqXsKUP0osgGuo5zl5dU5Isn98Wl467WA/tmp6s7a3445.webp',
-  'rome-rise': 'https://replicate.delivery/xezq/MeedhIz4m7vxZkIfHKJZUm3BseB2PIeVGELUiTV1MJaH9WfuF/tmp3g74poxz.webp',
-  'pompeii-disaster': 'https://replicate.delivery/xezq/B4MVyEzfeXtEwkkkEIlIeYkUe7FQipPs0eUjoyxMPMafTuedLA/tmpo2_104pz.webp',
-} as const;
+export { CHARACTER_IMAGES as GENERATED_IMAGES } from './character-images';

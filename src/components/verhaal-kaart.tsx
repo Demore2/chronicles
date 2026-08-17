@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Illustratie } from '@/components/illustratie';
 import { ThemedText } from '@/components/themed-text';
 import type { Verhaal } from '@/constants/types';
-import { getTijdperk } from '@/constants/tijdperken';
 import { CardDimensions, Radii, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
@@ -20,7 +20,6 @@ export function VerhaalKaart({
 }) {
   const theme = useTheme();
   const { v } = useVertaling();
-  const tijdperk = getTijdperk(verhaal.tijdperkId);
 
   return (
     <Pressable
@@ -29,9 +28,10 @@ export function VerhaalKaart({
       <View style={styles.card}>
         {verhaal.afbeelding ? (
           <Image
-            source={{ uri: verhaal.afbeelding }}
+            source={verhaal.afbeelding}
             style={styles.portraitImage}
-            resizeMode="cover"
+            contentFit="cover"
+            transition={200}
           />
         ) : (
           <Illustratie

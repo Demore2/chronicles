@@ -1,5 +1,6 @@
 import type { Verhaal } from '@/constants/types';
 import { CHARACTER_IMAGES } from '@/constants/character-images';
+import { SCENE_IMAGES } from '@/constants/scene-images';
 
 // Contemporary Era: Steve Jobs, Malala Yousafzai, Nelson Mandela
 // Note: Full 8-chapter stories from agents; showing condensed structure for brevity
@@ -13,19 +14,26 @@ export const steveJobs: Verhaal = {
   jaar: 2011,
   periodeLabel: '1955 - 2011',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/1zZVRnmfKHRvfknjDCOwQgpeyDczqfUlpF4Mh1apmWdjXHwbB/tmpxaoclki2.webp',
+  afbeelding: CHARACTER_IMAGES['steve-jobs'],
   portretKleur: '#5A6B8C',
   uitgelicht: false,
   volgorde: 1,
   tijdperkId: 'hedendaags',
   themas: ['technologie', 'apple', 'innovatie', 'design', 'usa'],
-  leestijdMinuten: 45,
+  leestijdMinuten: 8,
   personage: { naam: 'Steve Jobs' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Adopted Dreamer' },
+      afbeelding: SCENE_IMAGES['steve-jobs-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-1'],
+          alt: { en: 'A boy and his father taking apart a radio in a suburban Californian garage.' },
+          bijschrift: { en: 'The valley was still orchards. His father taught him that the back of the cabinet matters too.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Steven Paul Jobs was born on February 24, 1955, in San Francisco, California, during the height of the postwar baby boom. His biological parents, Joanne Schieble and Abdulfattah "John" Jandali, were unmarried and gave him up for adoption. Paul and Clara Jobs, a middle-class couple from Silicon Valley, adopted the infant and named him Steven Paul Jobs. The Jobs family was not wealthy—Paul was a machinist and Clara was an accountant—but they provided Steve with a stable, loving home and encouraged his curiosity and creativity. Growing up in the San Francisco Bay Area during the 1950s and 1960s, Steve was surrounded by the culture of technology and innovation that would define Silicon Valley.' }
@@ -39,7 +47,14 @@ export const steveJobs: Verhaal = {
     {
       id: 2,
       titel: { en: 'The Garage Years' },
+      afbeelding: SCENE_IMAGES['steve-jobs-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-2'],
+          alt: { en: 'Two young men soldering circuit boards in a cluttered garage.' },
+          bijschrift: { en: '1976: Wozniak designed the machine, Jobs decided it should be a product.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1976, Steve Jobs and Stephen Wozniak decided to start a computer company. At the time, computers were large, expensive machines used primarily by businesses and research institutions. No one had computers in their homes. Wozniak had designed a small personal computer that was far simpler and cheaper than anything available at the time. Jobs saw the business potential immediately. He convinced Wozniak to go into business with him, and they founded Apple Computer Company in the garage of Steve\'s parents\' home in Los Altos, California. Despite the humble beginnings, both Jobs and Wozniak possessed something that most computer engineers of the time lacked: an understanding that computers could be more than technical instruments—they could be accessible to ordinary people, and they should be elegantly designed.' }
@@ -53,7 +68,14 @@ export const steveJobs: Verhaal = {
     {
       id: 3,
       titel: { en: 'Building a Company' },
+      afbeelding: SCENE_IMAGES['steve-jobs-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-3'],
+          alt: { en: 'Engineers gathered around a beige desktop computer in an early-1980s office.' },
+          bijschrift: { en: 'He wanted a computer that behaved like an appliance, not like a kit of parts.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'As Apple grew, Jobs\'s vision for the company became clearer. He believed that technology should be beautiful, intuitive, and seamlessly integrated into people\'s daily lives. He was obsessed with every detail—the way a computer felt, the way it looked, the way it sounded when it turned on, the way its software worked. He was often dismissive of features that he thought were unnecessary complexity. He pushed designers and engineers to simplify and refine their work until it was perfect. This approach was sometimes difficult for his employees to deal with—Jobs could be harsh in his criticism and demanding in his expectations—but it produced remarkable results. Apple computers became known for their elegant design and intuitive operation.' }
@@ -67,7 +89,14 @@ export const steveJobs: Verhaal = {
     {
       id: 4,
       titel: { en: 'Exile and Wilderness' },
+      afbeelding: SCENE_IMAGES['steve-jobs-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-4'],
+          alt: { en: 'A founder alone in a large empty new office at dusk.' },
+          bijschrift: { en: 'Pushed out in 1985, he spent twelve years on NeXT and Pixar. Both of them mattered later.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In the late 1980s, Jobs increasingly clashed with the professional managers that Apple\'s board of directors had brought in to run the company. Jobs wanted to continue pursuing his vision of elegant, integrated technology. The professional managers were more focused on quarterly earnings and market share. In 1985, Jobs was forced out of the company he had founded. He left Apple—a bitter experience that he would later describe as one of the most painful moments of his life. For the next twelve years, Jobs was no longer the public face of Apple, and the company he had founded began to lose its way.' }
@@ -81,7 +110,14 @@ export const steveJobs: Verhaal = {
     {
       id: 5,
       titel: { en: 'Return to Apple' },
+      afbeelding: SCENE_IMAGES['steve-jobs-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-5'],
+          alt: { en: 'A man in jeans presenting a translucent all-in-one computer on stage.' },
+          bijschrift: { en: '1997: Apple was months from insolvency. He cut the product line back to four machines.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'By the late 1990s, Apple was struggling. The company had lost its focus and was competing with many other computer makers on price and specifications. The personal computer had become a commodity. Jobs saw an opportunity to return to Apple. In 1997, he engineered a deal that brought him back to the company. His initial plan was to save Apple, but what he actually did was to reinvent it completely. Jobs recognized that the personal computer market had matured and that the future lay in mobile computing and digital entertainment.' }
@@ -95,7 +131,14 @@ export const steveJobs: Verhaal = {
     {
       id: 6,
       titel: { en: 'The iPhone Revolution' },
+      afbeelding: SCENE_IMAGES['steve-jobs-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-6'],
+          alt: { en: 'A figure in a black turtleneck holding up a small glass-fronted phone on stage.' },
+          bijschrift: { en: '9 January 2007. The demo unit could only survive one carefully scripted path.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'On January 9, 2007, Steve Jobs introduced the iPhone at the Macworld conference. With characteristic showmanship, he walked on stage and announced that Apple was going to reinvent the phone. The iPhone combined a phone, an iPod, and an internet communicator into one elegant device. It had a touchscreen interface that allowed users to interact with the phone by touching the screen directly, without physical buttons or styluses. The iPhone was beautiful, intuitive, and revolutionary. Within a few years, it had transformed the entire mobile phone industry. Every phone manufacturer was forced to reconsider their approach to phone design and user interface in response to the iPhone. The iPhone also created an entirely new category of computing—the smartphone—that would become more important than personal computers within a decade.' }
@@ -109,7 +152,14 @@ export const steveJobs: Verhaal = {
     {
       id: 7,
       titel: { en: 'Perfectionist and Visionary' },
+      afbeelding: SCENE_IMAGES['steve-jobs-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-7'],
+          alt: { en: 'Aluminium and glass prototypes along a long table in a white design studio.' },
+          bijschrift: { en: 'The arguments were about millimetres, corner radii and which grey was the right grey.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Steve Jobs was known for his obsessive attention to detail and his willingness to make decisions based on his aesthetic sense rather than market research or consensus. He was ruthless in eliminating features he thought were unnecessary. He would spend hours discussing the exact shade of a color or the specific typeface used in an interface. He believed that simplicity was the ultimate sophistication, and that adding more features to a product was often a sign of failure to think deeply enough about what was really needed. This approach made him difficult to work with, but it also produced products that were remarkable.' }
@@ -123,7 +173,14 @@ export const steveJobs: Verhaal = {
     {
       id: 8,
       titel: { en: 'Legacy of Simplicity' },
+      afbeelding: SCENE_IMAGES['steve-jobs-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['steve-jobs-8'],
+          alt: { en: 'Flowers and candles left outside a glass-walled store at night.' },
+          bijschrift: { en: 'He died in October 2011, six weeks after resigning as chief executive.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Steve Jobs died on October 5, 2011, at the age of fifty-six. His death was mourned throughout the world. He had become more than just a technology entrepreneur; he had become a symbol of human creativity and the possibility of using technology to improve people\'s lives. Tributes poured in from around the world acknowledging his contributions to technology, design, and business. What Jobs had accomplished in his fifty-six years was extraordinary. He had founded not one but two successful companies (Apple and Pixar). He had created products that fundamentally changed how people work, communicate, and entertain themselves. He had transformed multiple industries: personal computers, animated film, music, phones, and tablets. More than any other single person, he shaped the technological landscape of the late twentieth and early twenty-first centuries.' }
@@ -145,19 +202,26 @@ export const malala: Verhaal = {
   jaar: 2014,
   periodeLabel: '1997 - Present',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/pgRS5dhUbzbvBNJaJn2uDmmWVkRIpMRG4b1gvXqWDrzldAvF/tmp0x4wfhnz.webp',
+  afbeelding: CHARACTER_IMAGES['malala-yousafzai'],
   portretKleur: '#5A6B8C',
   uitgelicht: false,
   volgorde: 2,
   tijdperkId: 'hedendaags',
   themas: ['onderwijs', 'mensenrechten', 'pakistan', 'jeugd', 'vrouwen'],
-  leestijdMinuten: 46,
+  leestijdMinuten: 7,
   personage: { naam: 'Malala Yousafzai' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Growing Up in Swat' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-1'],
+          alt: { en: 'Schoolgirls walking home along a river road in a green Himalayan valley.' },
+          bijschrift: { en: 'Swat was a holiday valley with a reputation for its schools. Her father ran one of them.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Malala Yousafzai was born on July 12, 1997, in Mingora, a city in Swat Valley in Pakistan. Swat was a beautiful region known for its natural scenery and for being a center of learning and culture. Her father, Ziauddin Yousafzai, was an educator and an activist who was passionate about education and human rights. Her mother came from a conservative family. Malala grew up in an environment where education was highly valued. Her father had established a school for girls, which was unusual in the conservative region of Swat. From a young age, Malala understood that her father was committed to education and to fighting for the rights of those who did not have power.' }
@@ -171,7 +235,14 @@ export const malala: Verhaal = {
     {
       id: 2,
       titel: { en: 'The Rise of Extremism' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-2'],
+          alt: { en: 'An empty village classroom with overturned benches and a broken window.' },
+          bijschrift: { en: 'By the end of 2008 the Taliban had destroyed hundreds of schools in the valley.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'When Malala was about eleven years old, the Taliban began to take control of Swat Valley. The Taliban is an extremist militant organization that interprets Islam in a very strict way and believes that women should be denied education and confined to their homes. As the Taliban\'s control over Swat grew, they issued decrees that girls could not go to school. Schools for girls were closed. Women were forbidden to work outside their homes or to appear in public without a male relative. The region that Malala had known as a center of learning and culture became dark and oppressive.' }
@@ -185,7 +256,14 @@ export const malala: Verhaal = {
     {
       id: 3,
       titel: { en: 'A Schoolgirl\'s Voice' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-3'],
+          alt: { en: 'A schoolgirl writing in a notebook by lamplight at night.' },
+          bijschrift: { en: 'She was eleven when the diary began, published under the pen name Gul Makai.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Malala\'s blog posts were powerful and moving. She wrote about schools being closed, about girls being forced to stay home, about her own education being disrupted. She wrote about her dreams for the future and her determination to continue her studies despite the obstacles. The blog attracted attention from journalists and activists around the world. People who read her words were moved by her courage and her eloquence. Here was a girl, just twelve years old, speaking out against the Taliban and demanding the right to education. As Malala\'s blog gained attention, she began to give interviews to international media. She appeared on documentaries and in newspaper articles, always speaking with remarkable clarity and conviction. She was not angry or bitter; she spoke about the Taliban as people who had made terrible choices, but she never lost her humanity or her hope.' }
@@ -199,7 +277,14 @@ export const malala: Verhaal = {
     {
       id: 4,
       titel: { en: 'A Shooting and a Coma' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-4'],
+          alt: { en: 'A family waiting on plastic chairs in a hospital corridor.' },
+          bijschrift: { en: 'October 2012: shot on the school bus, flown to Birmingham, awake within the week.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'But Malala\'s vocal advocacy came at a terrible price. On October 9, 2012, as Malala was riding home from school on a bus, armed men stopped the bus and opened fire. They were Taliban members, and they were targeting Malala specifically because of her activism. Malala was shot in the head. Two other girls on the bus were also injured. Malala lost consciousness and was rushed to a hospital. Her condition was life-threatening. She had a bullet wound in her brain, and doctors were not sure if she would survive or, if she did, what kind of physical and cognitive damage she would have.' }
@@ -213,7 +298,14 @@ export const malala: Verhaal = {
     {
       id: 5,
       titel: { en: 'A Global Voice' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-5'],
+          alt: { en: 'A young woman in a pink shawl speaking from a podium to a great assembly hall.' },
+          bijschrift: { en: 'She addressed the United Nations on her sixteenth birthday, wearing Benazir Bhutto’s shawl.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'The attack on Malala made her an international symbol of resistance to extremism and a champion of education for all children. Her survival and her continued commitment to her cause inspired millions of people around the world. She became more famous than ever, but the fame came with enormous responsibility. Malala understood that her voice could reach people and could potentially change minds and influence policy. She was determined to use this platform to advocate not just for girls\' education in Pakistan, but for all children around the world who were denied education because of poverty, discrimination, conflict, or extremism.' }
@@ -227,7 +319,14 @@ export const malala: Verhaal = {
     {
       id: 6,
       titel: { en: 'The Nobel Prize' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-6'],
+          alt: { en: 'A teenage laureate holding a gold medal in a marble Scandinavian hall.' },
+          bijschrift: { en: 'At seventeen, the youngest Nobel laureate in any category, in any year.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 2014, at age seventeen, Malala Yousafzai became the youngest person ever to win the Nobel Peace Prize. She shared the prize with Kailash Satyarthi, an Indian activist who has worked to end child labor. The Nobel Committee recognized Malala\'s "struggle against the suppression of children and young people and for the right of all children to education." The award was a validation of her life\'s work and a recognition that her advocacy had made a real difference in the world.' }
@@ -241,7 +340,14 @@ export const malala: Verhaal = {
     {
       id: 7,
       titel: { en: 'Education as a Right' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-7'],
+          alt: { en: 'Open-air classrooms in three different lands seen together.' },
+          bijschrift: { en: 'More than 250 million children worldwide are out of school altogether.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Malala\'s advocacy has focused on education as a fundamental human right, not a privilege. She has pointed out that over 250 million children around the world are out of school due to poverty, conflict, discrimination, and other barriers. She has highlighted the particular challenges that girls face in accessing education. She has emphasized that education is not just about learning academic subjects; it is about gaining the knowledge, skills, and confidence to participate in society and to shape your own future.' }
@@ -255,7 +361,14 @@ export const malala: Verhaal = {
     {
       id: 8,
       titel: { en: 'Continuing the Fight' },
+      afbeelding: SCENE_IMAGES['malala-yousafzai-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['malala-yousafzai-8'],
+          alt: { en: 'A young woman crossing an ancient English university quadrangle with books.' },
+          bijschrift: { en: 'She read philosophy, politics and economics at Oxford and graduated in 2020.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'As Malala has grown older, she has remained committed to her mission of ensuring that every child has access to quality education. She has continued her studies, attending university in Oxford, England. She has worked with organizations around the world to support education programs in developing countries and in conflict zones. She has spoken at international conferences and has met with world leaders to advocate for policies that support education.' }
@@ -277,19 +390,26 @@ export const nelson: Verhaal = {
   jaar: 2013,
   periodeLabel: '1918 - 2013',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/yPkm1RWnWG57OdQt9wRTHVYyzLaBkOMonbo4Af11vsXZ7AeWA/tmpbjjlf0gb.webp',
+  afbeelding: CHARACTER_IMAGES['nelson-mandela'],
   portretKleur: '#5A6B8C',
   uitgelicht: false,
   volgorde: 3,
   tijdperkId: 'hedendaags',
   themas: ['apartheid', 'zuid-afrika', 'vrijheid', 'mensenrechten', 'verzoening'],
-  leestijdMinuten: 48,
+  leestijdMinuten: 8,
   personage: { naam: 'Nelson Mandela' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Born into a Royal Family' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-1'],
+          alt: { en: 'A boy herding cattle across the rolling green hills of the Transkei.' },
+          bijschrift: { en: 'Rolihlahla was his birth name. A teacher gave him "Nelson" on his first day of school.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Nelson Rolihlahla Mandela was born on July 18, 1918, in the village of Qunu in the Eastern Cape Province of South Africa. He was born into the royal family of the Thembu people, a Bantu ethnic group in South Africa. His father was a chief and a counselor to the Thembu royal family. As a member of the royal family, Nelson had advantages that most African people in South Africa did not have, but he also grew up acutely aware of the injustices and inequalities that structured South African society. Even members of the royal family had limited power and were subject to restrictions because of their race.' }
@@ -303,7 +423,14 @@ export const nelson: Verhaal = {
     {
       id: 2,
       titel: { en: 'The Struggle Begins' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-2'],
+          alt: { en: 'A crowded township meeting hall in 1950s Johannesburg.' },
+          bijschrift: { en: 'Apartheid was formalised in 1948. He had joined the ANC Youth League four years earlier.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1944, Nelson Mandela joined the African National Congress (ANC), an organization that was fighting for the rights of African people in South Africa. At first, the ANC pursued non-violent methods of protest and negotiation, following the example of Mahatma Gandhi. They organized peaceful protests, boycotts, and negotiations with the white government. Nelson Mandela was a prominent figure in these non-violent campaigns. He gave speeches, organized protests, and worked to build support for the cause of equality and justice.' }
@@ -317,7 +444,14 @@ export const nelson: Verhaal = {
     {
       id: 3,
       titel: { en: 'Armed Struggle' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-3'],
+          alt: { en: 'A clandestine night meeting around a kitchen table in a suburban farmhouse.' },
+          bijschrift: { en: 'Rivonia, 1963. One police raid caught the movement’s leadership and its plans together.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1961, Mandela and other ANC leaders made a difficult decision. They would begin a campaign of armed resistance against the apartheid government. Mandela co-founded Umkhonto we Sizwe (Spear of the Nation), an armed wing of the ANC. The organization began to plan acts of sabotage against government installations and symbols of apartheid, while trying to avoid harming civilians. This was not a decision Mandela made lightly. He had been deeply influenced by non-violent philosophy, but he came to believe that when a government refuses to listen to peaceful protest and responds with violence, armed resistance becomes justified.' }
@@ -331,7 +465,14 @@ export const nelson: Verhaal = {
     {
       id: 4,
       titel: { en: 'Robben Island' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-4'],
+          alt: { en: 'Prisoners breaking limestone in a blinding quarry on a windswept island.' },
+          bijschrift: { en: 'The glare off the quarry permanently damaged his eyes. He spent eighteen years there.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Mandela was sent to Robben Island, a prison located on an island off the coast of Cape Town. For eighteen of his twenty-seven years in prison, he was held on Robben Island in brutal conditions. Prisoners were forced to do hard labor, breaking limestone in a quarry under the hot sun. Mandela worked in this quarry day after day, his eyes damaged by the glare of the limestone and the sun. The prison conditions were designed to break the spirits of the inmates and to make them forget their sense of purpose.' }
@@ -345,7 +486,14 @@ export const nelson: Verhaal = {
     {
       id: 5,
       titel: { en: 'The Price and the Faith' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-5'],
+          alt: { en: 'A narrow prison cell with a folded blanket, law books and a barred window.' },
+          bijschrift: { en: 'He learned Afrikaans in prison, on the argument that you negotiate in the other side’s language.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'During his years in prison, Mandela learned Afrikaans (the language of the white minority government) and studied his jailers. He came to understand their fears and their perspectives. He did not hate them, even though they were oppressing him. He understood that if apartheid was ever to end, it would only be through reconciliation—through bringing together people of different races and helping them to see their common humanity. This was an extraordinary level of compassion and wisdom, developed through years of reflection and suffering.' }
@@ -359,7 +507,14 @@ export const nelson: Verhaal = {
     {
       id: 6,
       titel: { en: 'Release and Reconciliation' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-6'],
+          alt: { en: 'An elderly man walking out through prison gates into a cheering crowd.' },
+          bijschrift: { en: '11 February 1990, after twenty-seven years — and he walked the last stretch on his own feet.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'By the late 1980s, apartheid was becoming economically and politically unsustainable. The South African government, facing international isolation and internal resistance, began to consider negotiations with the ANC. In 1989, a new president, F.W. de Klerk, took office, and he began to move toward ending apartheid. In February 1990, after twenty-seven years in prison, Nelson Mandela was released. He was seventy-one years old. As he walked out of prison, Mandela was met by crowds of supporters who had been waiting for decades to see this moment. He was no longer a prisoner; he was now recognized as a leader and a symbol of hope.' }
@@ -373,7 +528,14 @@ export const nelson: Verhaal = {
     {
       id: 7,
       titel: { en: 'President of a New South Africa' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-7'],
+          alt: { en: 'A queue of South Africans winding across open veld to a rural polling station.' },
+          bijschrift: { en: 'April 1994: the first election every South African could vote in. Queues ran for kilometres.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1994, South Africa held its first free and fair elections, in which all people, regardless of race, could vote. Nelson Mandela won the election by a large margin and became the president of South Africa. For five years, he served as president, working to heal the wounds of apartheid and to build a new society based on equality and justice. He established the Truth and Reconciliation Commission, a unique institution that allowed people who had committed atrocities under apartheid to confess their crimes and be forgiven, while allowing victims to tell their stories and be heard. This approach acknowledged the suffering that had occurred while trying to prevent future cycles of revenge and violence.' }
@@ -387,7 +549,14 @@ export const nelson: Verhaal = {
     {
       id: 8,
       titel: { en: 'A Legacy of Freedom and Dignity' },
+      afbeelding: SCENE_IMAGES['nelson-mandela-8'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['nelson-mandela-8'],
+          alt: { en: 'A bronze statue of a statesman with a raised fist above rolling hills at sunset.' },
+          bijschrift: { en: 'He served a single term and stepped down. That was the point he most wanted to make.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'After his presidency, Mandela continued to be involved in South African life and in global politics and humanitarian causes. He worked with various organizations on issues like HIV/AIDS prevention, poverty reduction, and conflict resolution. He traveled the world, speaking about the importance of human rights, education, and dignity. He remained active and engaged even as he aged, showing an ongoing commitment to making the world a more just place.' }

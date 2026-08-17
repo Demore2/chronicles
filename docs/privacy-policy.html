@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chronicles — Privacy Policy</title>
+<style>
+  :root {
+    --text: #211F1A;
+    --text-secondary: #6B6355;
+    --background: #F7F1E4;
+    --element: #EEE4D0;
+    --accent: #3B6E7D;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text: #F3ECDC;
+      --text-secondary: #A89E89;
+      --background: #1C1A16;
+      --element: #26231D;
+      --accent: #6FA8B8;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2.5rem 1.25rem 4rem;
+    background: var(--background);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+    font-size: 17px;
+  }
+  main { max-width: 42rem; margin: 0 auto; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .35rem; }
+  h2 { font-size: 1.2rem; margin: 2.25rem 0 .6rem; }
+  p, li { color: var(--text); }
+  ul { padding-left: 1.25rem; }
+  li { margin-bottom: .4rem; }
+  a { color: var(--accent); }
+  .meta { color: var(--text-secondary); font-size: .9rem; margin: 0 0 2rem; }
+  .callout {
+    background: var(--element);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    margin: 1.5rem 0;
+  }
+  .callout p { margin: 0; }
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--element);
+    color: var(--text-secondary);
+    font-size: .9rem;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Chronicles &mdash; last updated 13 August 2026</p>
+
+  <div class="callout">
+    <p><strong>In short: Chronicles collects nothing.</strong> There are no accounts, no analytics,
+    no advertising and no tracking. Everything the app remembers about you stays on your own
+    device.</p>
+  </div>
+
+  <h2>Who we are</h2>
+  <p>Chronicles is an offline reading app about historical figures and events, published for
+  Android on Google Play. This policy explains what the app does and does not do with data.</p>
+
+  <h2>Data we collect</h2>
+  <p><strong>None.</strong> Chronicles does not collect, transmit or share any personal data. In
+  particular, the app does not:</p>
+  <ul>
+    <li>ask you to create an account or sign in;</li>
+    <li>ask for your name, e-mail address, phone number or location;</li>
+    <li>use analytics, crash reporting or advertising SDKs;</li>
+    <li>use cookies, advertising identifiers or any other tracking technology;</li>
+    <li>share anything with third parties, because there is nothing to share.</li>
+  </ul>
+
+  <h2>Data stored on your device</h2>
+  <p>To keep your place in a story, the app saves a small amount of information in its own private
+  storage on your device:</p>
+  <ul>
+    <li>which chapters you have completed and which stories you have opened;</li>
+    <li>which characters you have unlocked;</li>
+    <li>your reading streak;</li>
+    <li>your theme (light, dark or system) and language preference.</li>
+  </ul>
+  <p>This information never leaves your device and is not readable by us or by anyone else. It is
+  removed when you clear the app's data or uninstall the app.</p>
+
+  <h2>Notifications</h2>
+  <p>Chronicles can send you one optional reminder a day, at 7 pm, to read your next chapter. It
+  is off unless you turn it on, you can switch it off again at any time under
+  <em>Profile &rarr; Settings &rarr; Daily reminder</em>, and it is scheduled entirely by your own
+  device. No push service is involved, nothing is sent to or from a server, and we have no way of
+  knowing whether the reminder appeared or whether you opened it.</p>
+
+  <h2>Permissions</h2>
+  <p>None of the permissions Chronicles requests give access to your data, your files, your
+  contacts or your location:</p>
+  <ul>
+    <li><code>VIBRATE</code> &mdash; the short haptic feedback when you tap a chapter or unlock a
+    character. A normal permission; it asks for no confirmation.</li>
+    <li><code>POST_NOTIFICATIONS</code> &mdash; needed to show the daily reminder described above.
+    Android asks you for this one, and only after you have finished your first chapter. If you say
+    no, the rest of the app is unaffected.</li>
+    <li><code>RECEIVE_BOOT_COMPLETED</code> and <code>WAKE_LOCK</code> &mdash; let a reminder you
+    enabled survive a restart of your phone and arrive on time. Without them the reminder would
+    silently stop after every reboot.</li>
+    <li><code>INTERNET</code> and <code>ACCESS_NETWORK_STATE</code> &mdash; part of the app
+    framework. Chronicles works fully offline and contacts no server of ours; see below.</li>
+  </ul>
+  <p>The notification component that schedules the daily reminder is built on Google's messaging
+  library, so the app also declares
+  <code>com.google.android.c2dm.permission.RECEIVE</code>, the permission an app needs to receive
+  push messages. <strong>Chronicles sends no push messages and is not registered to receive
+  any.</strong> There is no messaging configuration in the app, no push token is ever requested,
+  and the reminder is scheduled by your own device's alarm clock. The permission is listed because
+  the library declares it, not because the app uses it.</p>
+
+  <h2>Internet access</h2>
+  <p>All story text and all images are bundled inside the app, so Chronicles works fully offline.
+  The app does not contact any server of ours, and we operate no server that receives data
+  from it.</p>
+
+  <h2>Children</h2>
+  <p>Chronicles is suitable for all ages and contains no user-generated content, no chat and no
+  purchases. Because it collects no data at all, it collects no data from children either.</p>
+
+  <h2>Advertising</h2>
+  <p>This version of Chronicles contains no advertising. If advertising or a paid subscription is
+  ever added in a future version, this policy will be updated before that version is published,
+  and the change will be described here.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If this policy changes, the updated version is published on this page with a new date at the
+  top. The version that applies to you is the one published here.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy? E-mail
+  <a href="mailto:quintenraats@gmail.com">quintenraats@gmail.com</a>.</p>
+
+  <footer>
+    <p>Chronicles &mdash; Privacy Policy &mdash; 13 August 2026</p>
+  </footer>
+</main>
+</body>
+</html>

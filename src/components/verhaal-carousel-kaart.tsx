@@ -1,10 +1,10 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import type { Verhaal } from '@/constants/types';
 import { Radii, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 
 export function VerhaalCarouselKaart({
@@ -38,9 +38,10 @@ export function VerhaalCarouselKaart({
         ]}>
         {verhaal.afbeelding ? (
           <Image
-            source={{ uri: verhaal.afbeelding }}
+            source={verhaal.afbeelding}
             style={styles.portraitImage}
-            resizeMode="cover"
+            contentFit="cover"
+            transition={200}
           />
         ) : (
           <ThemedText style={styles.initiaalText}>

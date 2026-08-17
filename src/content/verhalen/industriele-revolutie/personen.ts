@@ -1,5 +1,6 @@
-﻿import type { Verhaal } from '@/constants/types';
+import type { Verhaal } from '@/constants/types';
 import { CHARACTER_IMAGES } from '@/constants/character-images';
+import { SCENE_IMAGES } from '@/constants/scene-images';
 
 export const james: Verhaal = {
   id: 'james-watt',
@@ -9,40 +10,54 @@ export const james: Verhaal = {
   jaar: 1819,
   periodeLabel: '1736 - 1819',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/ry22aUEHMELpIZfves3Ue0qWAWbCFepNTh5w2dNeeFhVFdAvF/tmp_ho2rgn4.webp',
+  afbeelding: CHARACTER_IMAGES['james-watt'],
   portretKleur: '#5B6B73',
   uitgelicht: false,
   volgorde: 1,
   tijdperkId: 'industriele-revolutie',
   themas: ['stoom', 'uitvinding', 'industrie', 'schotland', 'technologie'],
-  leestijdMinuten: 45,
+  leestijdMinuten: 8,
   personage: { naam: 'James Watt' },
   chapters: [
     {
       id: 1,
       titel: { en: 'A Boy Who Asked Questions' },
+      afbeelding: SCENE_IMAGES['james-watt-1'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-1'],
+          alt: { en: 'A boy watching steam lift a kettle lid in a Scottish shipwright’s workshop.' },
+          bijschrift: { en: 'Greenock, in the 1740s. He was schooled mostly at home, and learned his hands in his father’s shop.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'James Watt was born on January 19, 1736, in Greenock, Scotland, during a time when the world was beginning to transform through mechanical innovation. His father, James Watt Sr., was a ship carpenter and merchant. His mother, Agnes Muirhead, came from a respected family. Young James showed an early curiosity about how things worked. He would spend hours observing the mechanical devices around him, asking questions that sometimes puzzled the adults in his life. Unlike many children his age who were content to accept things as they were, James wanted to understand the principles behind them.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'James received a basic education in reading, writing, and mathematics, but his greatest teacher was his own curiosity and observation. He watched blacksmiths, carpenters, and other craftsmen at work, learning the practical skills of making and repairing things. He developed an interest in mathematics and the sciences, studying them on his own when formal instruction was not available. When he was a teenager, James decided he wanted to become an instrument makerâ€”someone who would build precision instruments for scientific research and navigation. To pursue this ambition, he traveled to London to apprentice with a renowned instrument maker. After a year of study, he returned to Scotland with the skills and knowledge he needed to establish himself in this trade.' }
+          inhoud: { en: 'James received a basic education in reading, writing, and mathematics, but his greatest teacher was his own curiosity and observation. He watched blacksmiths, carpenters, and other craftsmen at work, learning the practical skills of making and repairing things. He developed an interest in mathematics and the sciences, studying them on his own when formal instruction was not available. When he was a teenager, James decided he wanted to become an instrument maker—someone who would build precision instruments for scientific research and navigation. To pursue this ambition, he traveled to London to apprentice with a renowned instrument maker. After a year of study, he returned to Scotland with the skills and knowledge he needed to establish himself in this trade.' }
         }
       ]
     },
     {
       id: 2,
       titel: { en: 'The Problem of Inefficiency' },
+      afbeelding: SCENE_IMAGES['james-watt-2'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-2'],
+          alt: { en: 'A brass model of an atmospheric steam engine on an instrument maker’s bench.' },
+          bijschrift: { en: 'The university’s Newcomen model wasted most of its heat reheating the cylinder every single stroke.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'In the 1760s, James Watt was working as an instrument maker and repairer at the University of Glasgow. One day, he was asked to repair a model of a Newcomen steam engineâ€”a device that had been invented by Thomas Newcomen decades earlier and was used to pump water out of mines. The Newcomen engine worked, but it was terribly inefficient. It wasted enormous amounts of fuel because it was constantly being heated and then cooled in the same chamber, requiring continuous firing of the furnace to keep it running.' },
+          inhoud: { en: 'In the 1760s, James Watt was working as an instrument maker and repairer at the University of Glasgow. One day, he was asked to repair a model of a Newcomen steam engine—a device that had been invented by Thomas Newcomen decades earlier and was used to pump water out of mines. The Newcomen engine worked, but it was terribly inefficient. It wasted enormous amounts of fuel because it was constantly being heated and then cooled in the same chamber, requiring continuous firing of the furnace to keep it running.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'As Watt examined the engine, he began to think about the problem. Why did it waste so much fuel? The issue, he realized, was that every cycle required heating a massive cylinder and then cooling itâ€”an enormously wasteful process. He began to calculate and think about how the engine might be improved. What if, instead of cooling the entire cylinder, only a small section was cooled? What if the hot and cold parts of the engine were separated? These thoughts occupied him for weeks as he worked on other tasks and pursued his daily life.' },
+          inhoud: { en: 'As Watt examined the engine, he began to think about the problem. Why did it waste so much fuel? The issue, he realized, was that every cycle required heating a massive cylinder and then cooling it—an enormously wasteful process. He began to calculate and think about how the engine might be improved. What if, instead of cooling the entire cylinder, only a small section was cooled? What if the hot and cold parts of the engine were separated? These thoughts occupied him for weeks as he worked on other tasks and pursued his daily life.' },
       },
         {
           type: 'tekst',
@@ -53,7 +68,14 @@ export const james: Verhaal = {
     {
       id: 3,
       titel: { en: 'Innovation and Partnership' },
+      afbeelding: SCENE_IMAGES['james-watt-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-3'],
+          alt: { en: 'A great beam engine being assembled in a Birmingham manufactory yard.' },
+          bijschrift: { en: 'Watt had the idea in 1765. It took Matthew Boulton’s capital to turn it into a product.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Watt built a model of his improved steam engine and tested it. The results exceeded his expectations. His new design used only about a quarter of the fuel that a Newcomen engine would require for the same amount of work. But building a working engine and getting it manufactured were very different challenges. Watt had the knowledge and creativity to invent, but he lacked the capital and business acumen to bring his invention to market. This is where fortune intervened. Watt met Matthew Boulton, a successful industrialist who owned a manufacturing enterprise near Birmingham. Boulton recognized the potential of Watt\'s invention immediately and proposed a partnership.' },
@@ -71,7 +93,14 @@ export const james: Verhaal = {
     {
       id: 4,
       titel: { en: 'The Power Revolution' },
+      afbeelding: SCENE_IMAGES['james-watt-4'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-4'],
+          alt: { en: 'A steam engine driving line shafts and belts in an early cotton mill.' },
+          bijschrift: { en: 'Once power no longer had to come from a river, a factory could be built anywhere at all.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'As Watt\'s improved steam engines became available, they revolutionized manufacturing and transportation. Factories no longer needed to be built near water sources to power their machinery with waterwheels. They could be built anywhere, powered by steam engines. This flexibility transformed manufacturing, allowing industrial development to spread far beyond the locations that had natural water power. The engines were used in textile mills, iron foundries, breweries, and countless other industrial facilities. Output increased dramatically as industries could increase production beyond what had previously been possible.' },
@@ -90,7 +119,14 @@ export const james: Verhaal = {
     {
       id: 5,
       titel: { en: 'The Mind Never Rests' },
+      afbeelding: SCENE_IMAGES['james-watt-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-5'],
+          alt: { en: 'An inventor’s workshop of retorts, ore samples and a copying press.' },
+          bijschrift: { en: 'Among his patents: the letter copying press, which offices went on using for a century.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Despite the success of his steam engine business, Watt\'s curiosity never ceased. He investigated chemistry, geology, and metallurgy. He experimented with various processes and materials. He studied the properties of steam itself to better understand how to make engines more efficient. He took out numerous patents for improvements and new applications of steam power. By the end of his life, he held so many patents that he was recognized as one of the most prolific inventors in British history.' },
@@ -104,42 +140,63 @@ export const james: Verhaal = {
     {
       id: 6,
       titel: { en: 'Honors and Recognition' },
+      afbeelding: SCENE_IMAGES['james-watt-6'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-6'],
+          alt: { en: 'An elderly engineer honoured before a gathering of gentlemen scientists.' },
+          bijschrift: { en: 'The unit of power carries his name — the only SI unit named after a Scot.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'By the end of his life, James Watt was widely recognized as one of the greatest engineers and inventors of his age. Universities awarded him honorary degrees. The Royal Society of London, the most prestigious scientific organization in Britain, recognized his achievements. The unit of power called the "watt"â€”used to measure electrical and mechanical powerâ€”was named in his honor, ensuring that his name would be associated with power and energy for all time.' },
+          inhoud: { en: 'By the end of his life, James Watt was widely recognized as one of the greatest engineers and inventors of his age. Universities awarded him honorary degrees. The Royal Society of London, the most prestigious scientific organization in Britain, recognized his achievements. The unit of power called the "watt"—used to measure electrical and mechanical power—was named in his honor, ensuring that his name would be associated with power and energy for all time.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'Watt retired from his business around 1800, turning over the operation of the company to his son and others. He continued to be active in research and invention until his death in 1819 at the age of eighty-three. By the time he died, the world had been transformed by the industrial revolution that his improvements to the steam engine had made possible. The economy had shifted from an agricultural base to an industrial one. Production had increased exponentially. Trade had expanded globally. Watt had lived to see the beginning of a new ageâ€”the age of steam and industry.' }
+          inhoud: { en: 'Watt retired from his business around 1800, turning over the operation of the company to his son and others. He continued to be active in research and invention until his death in 1819 at the age of eighty-three. By the time he died, the world had been transformed by the industrial revolution that his improvements to the steam engine had made possible. The economy had shifted from an agricultural base to an industrial one. Production had increased exponentially. Trade had expanded globally. Watt had lived to see the beginning of a new age—the age of steam and industry.' }
         }
       ]
     },
     {
       id: 7,
       titel: { en: 'An Industrial World' },
+      afbeelding: SCENE_IMAGES['james-watt-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-7'],
+          alt: { en: 'A panorama of mill chimneys, canal barges and coal wagons under a smoky sky.' },
+          bijschrift: { en: 'He did not start the Industrial Revolution. He removed the thing that was holding it back.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'James Watt\'s improvements to the steam engine were not just technical achievements; they were the foundation of the Industrial Revolution. Without his innovation, the transformation of society that occurred in the eighteenth and nineteenth centuries might not have happened, or might have developed much more slowly. The steam engine powered the factories that produced goods on an unprecedented scale. It drove the railroads that connected cities and nations. It propelled the ships that carried goods and people around the world. Every major development in the industrial age was either directly or indirectly powered by engines based on Watt\'s principles.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'The industrial revolution brought tremendous benefits to humanity. It created wealth, enabled technological progress, and improved living standards (eventually, after initial hardships). It also brought challengesâ€”urban overcrowding, pollution, child labor in factories, and the social dislocation of traditional ways of life. But it transformed the world permanently, bringing humanity into the modern age. At the center of this transformation stood James Watt\'s steam engine, a machine that changed everything.' }
+          inhoud: { en: 'The industrial revolution brought tremendous benefits to humanity. It created wealth, enabled technological progress, and improved living standards (eventually, after initial hardships). It also brought challenges—urban overcrowding, pollution, child labor in factories, and the social dislocation of traditional ways of life. But it transformed the world permanently, bringing humanity into the modern age. At the center of this transformation stood James Watt\'s steam engine, a machine that changed everything.' }
         }
       ]
     },
     {
       id: 8,
       titel: { en: 'The Engineer\'s Legacy' },
+      afbeelding: SCENE_IMAGES['james-watt-8'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['james-watt-8'],
+          alt: { en: 'A towering polished beam engine preserved in a museum hall.' },
+          bijschrift: { en: 'Boulton & Watt built around 500 engines before the patent ran out in 1800.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'James Watt embodied the spirit of the engineer and inventor. He was not a dreamer who imagined grand possibilities without understanding practical reality. Nor was he merely a craftsman who made things work without understanding the principles behind them. He was a man who combined practical knowledge with scientific understanding, who could identify a problem, think through potential solutions mathematically, and then work with others to bring those solutions to practical reality. His approachâ€”identifying inefficiency, thinking systematically about solutions, and implementing improvementsâ€”became the foundation of engineering as a discipline.' },
+          inhoud: { en: 'James Watt embodied the spirit of the engineer and inventor. He was not a dreamer who imagined grand possibilities without understanding practical reality. Nor was he merely a craftsman who made things work without understanding the principles behind them. He was a man who combined practical knowledge with scientific understanding, who could identify a problem, think through potential solutions mathematically, and then work with others to bring those solutions to practical reality. His approach—identifying inefficiency, thinking systematically about solutions, and implementing improvements—became the foundation of engineering as a discipline.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'More than two hundred years after his death, James Watt is remembered as one of the most important figures in the history of technology and industry. His portrait appears in textbooks. His name is known around the world as the unit of electrical power. His inventions are studied in every engineering curriculum. But perhaps his greatest legacy is less his specific inventions than the attitude they representâ€”the belief that human ingenuity, combined with systematic thinking and hard work, can solve problems and create tools that transform the world. That belief, more than any specific engine, is what James Watt gave to the world.' }
+          inhoud: { en: 'More than two hundred years after his death, James Watt is remembered as one of the most important figures in the history of technology and industry. His portrait appears in textbooks. His name is known around the world as the unit of electrical power. His inventions are studied in every engineering curriculum. But perhaps his greatest legacy is less his specific inventions than the attitude they represent—the belief that human ingenuity, combined with systematic thinking and hard work, can solve problems and create tools that transform the world. That belief, more than any specific engine, is what James Watt gave to the world.' }
         }
       ]
     }
@@ -154,50 +211,71 @@ export const florence: Verhaal = {
   jaar: 1910,
   periodeLabel: '1820 - 1910',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/gJvdejppwMU3aqw3RxhiseEafXFqmWmAzAduqNrmyTn9pD4tA/tmpgz7i7vah.webp',
+  afbeelding: CHARACTER_IMAGES['florence-nightingale'],
   portretKleur: '#8B6B47',
   uitgelicht: false,
   volgorde: 2,
   tijdperkId: 'industriele-revolutie',
   themas: ['verpleegkunde', 'geneeskunde', 'oorlog', 'hervorming', 'vrouwen'],
-  leestijdMinuten: 46,
+  leestijdMinuten: 7,
   personage: { naam: 'Florence Nightingale' },
   chapters: [
     {
       id: 1,
       titel: { en: 'Born to Wealth, Called to Service' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-1'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-1'],
+          alt: { en: 'A young woman at the window of an English country house drawing room.' },
+          bijschrift: { en: 'Nursing in 1840s Britain was untrained, disreputable work. Her family were appalled.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'Florence Nightingale was born on May 12, 1820, into a wealthy and respected English family. Her mother was fashionable and concerned with social status; her father was a landowner with progressive ideas. Florence grew up in luxury, surrounded by comfort and opportunity. She was well-educatedâ€”unusual for girls of her timeâ€”and learned languages, history, music, and mathematics. She was expected to make an advantageous marriage to a gentleman of appropriate social standing and to spend her life managing a household and raising children, as was typical for women of her class.' },
+          inhoud: { en: 'Florence Nightingale was born on May 12, 1820, into a wealthy and respected English family. Her mother was fashionable and concerned with social status; her father was a landowner with progressive ideas. Florence grew up in luxury, surrounded by comfort and opportunity. She was well-educated—unusual for girls of her time—and learned languages, history, music, and mathematics. She was expected to make an advantageous marriage to a gentleman of appropriate social standing and to spend her life managing a household and raising children, as was typical for women of her class.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'But Florence had other dreams. When she was young, she felt what she later described as a "calling"â€”a sense that God wanted her to dedicate her life to serving others. Specifically, she felt drawn to nursing. In the 1840s, nursing was not a respectable profession for women of good family. Nurses were often seen as rough, uneducated women of questionable character. The idea that Florence would want to work in hospitals tending to the sick was shocking to her family. They opposed her plans firmly and repeatedly. They urged her to abandon these ambitions and accept her place in respectable society.' }
+          inhoud: { en: 'But Florence had other dreams. When she was young, she felt what she later described as a "calling"—a sense that God wanted her to dedicate her life to serving others. Specifically, she felt drawn to nursing. In the 1840s, nursing was not a respectable profession for women of good family. Nurses were often seen as rough, uneducated women of questionable character. The idea that Florence would want to work in hospitals tending to the sick was shocking to her family. They opposed her plans firmly and repeatedly. They urged her to abandon these ambitions and accept her place in respectable society.' }
         }
       ]
     },
     {
       id: 2,
       titel: { en: 'Against All Odds' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-2'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-2'],
+          alt: { en: 'An Englishwoman walking a ward of a German charitable hospital.' },
+          bijschrift: { en: 'Kaiserswerth, 1850: three months of training that her mother was told almost nothing about.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'Florence\'s determination was extraordinary. Despite her family\'s opposition, she pursued her goal of becoming a nurse. She found ways to gain practical experience. She studied at a training institution in Germany. She visited hospitals and learned about different approaches to patient care and hospital management. She read everything she could find about nursing, medicine, and hospital administration. Her family remained opposed, but Florence persisted. At age thirty-one, after years of conflict with her family, Florence accepted a position as superintendent of a small private hospital in London. This was a major achievementâ€”she now had authority to implement her ideas about patient care and hospital management.' },
+          inhoud: { en: 'Florence\'s determination was extraordinary. Despite her family\'s opposition, she pursued her goal of becoming a nurse. She found ways to gain practical experience. She studied at a training institution in Germany. She visited hospitals and learned about different approaches to patient care and hospital management. She read everything she could find about nursing, medicine, and hospital administration. Her family remained opposed, but Florence persisted. At age thirty-one, after years of conflict with her family, Florence accepted a position as superintendent of a small private hospital in London. This was a major achievement—she now had authority to implement her ideas about patient care and hospital management.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'Florence\'s opportunity to make her greatest impact came in 1853 when the Crimean War broke out. Britain, France, and the Ottoman Empire were fighting against Russia. British soldiers were dying not primarily from combat wounds but from diseaseâ€”typhus, dysentery, typhoid, and cholera were killing more soldiers than enemy bullets. Conditions in the military hospitals were terrible: overcrowded, dirty, poorly ventilated, and inadequately supplied. When reports of these conditions reached Britain, public outrage grew. Florence read the reports and knew this was where she needed to be. She offered her services, and with official permission, she traveled to the Crimea with a small group of nurses she had trained.' }
+          inhoud: { en: 'Florence\'s opportunity to make her greatest impact came in 1853 when the Crimean War broke out. Britain, France, and the Ottoman Empire were fighting against Russia. British soldiers were dying not primarily from combat wounds but from disease—typhus, dysentery, typhoid, and cholera were killing more soldiers than enemy bullets. Conditions in the military hospitals were terrible: overcrowded, dirty, poorly ventilated, and inadequately supplied. When reports of these conditions reached Britain, public outrage grew. Florence read the reports and knew this was where she needed to be. She offered her services, and with official permission, she traveled to the Crimea with a small group of nurses she had trained.' }
         }
       ]
     },
     {
       id: 3,
       titel: { en: 'The Lady with the Lamp' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-3'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-3'],
+          alt: { en: 'A nurse with an oil lamp in a dim hospital corridor of wounded soldiers.' },
+          bijschrift: { en: 'Scutari, 1854. Far more soldiers were dying of infection there than of their wounds.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'When Florence Nightingale and her nurses arrived at the Barrack Hospital in Scutari in November 1853, they found appalling conditions. The hospital was filthy, lice-infested, and overrun with rats. Patients lay on straw mattresses that were never changed. The mortality rate was shockingly highâ€”in some months, more than one in four of the patients admitted died. Florence and her nurses immediately set about trying to improve conditions. They scrubbed floors, washed bedding, improved ventilation, and organized supply systems. They provided basic care and comfort to the wounded and dying soldiers.' },
+          inhoud: { en: 'When Florence Nightingale and her nurses arrived at the Barrack Hospital in Scutari in November 1853, they found appalling conditions. The hospital was filthy, lice-infested, and overrun with rats. Patients lay on straw mattresses that were never changed. The mortality rate was shockingly high—in some months, more than one in four of the patients admitted died. Florence and her nurses immediately set about trying to improve conditions. They scrubbed floors, washed bedding, improved ventilation, and organized supply systems. They provided basic care and comfort to the wounded and dying soldiers.' },
       },
         {
           type: 'tekst',
@@ -205,17 +283,24 @@ export const florence: Verhaal = {
         },
         {
           type: 'tekst',
-          inhoud: { en: 'Florence\'s data-driven approach was revolutionary for its time. She used statistics to prove that improving sanitation and hygiene could dramatically reduce mortality. She created detailed charts and diagrams showing the relationship between sanitary conditions and patient outcomes. Her work demonstrated that systematic observation, careful record-keeping, and analysis of data could identify problems and solutions. This approachâ€”using statistics to understand and improve healthcareâ€”became the foundation of modern hospital administration and public health.' }
+          inhoud: { en: 'Florence\'s data-driven approach was revolutionary for its time. She used statistics to prove that improving sanitation and hygiene could dramatically reduce mortality. She created detailed charts and diagrams showing the relationship between sanitary conditions and patient outcomes. Her work demonstrated that systematic observation, careful record-keeping, and analysis of data could identify problems and solutions. This approach—using statistics to understand and improve healthcare—became the foundation of modern hospital administration and public health.' }
         }
       ]
     },
     {
       id: 4,
       titel: { en: 'Data Saves Lives' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-4'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-4'],
+          alt: { en: 'A Victorian desk with mortality tables and a coloured circular diagram.' },
+          bijschrift: { en: 'Her polar-area diagrams were designed for one audience: ministers who would not read a table.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'As Florence implemented improvements in sanitation at the Barrack Hospital, something remarkable happened. The mortality rate began to fall dramatically. Patients who might have died from typhoid, dysentery, or cholera began to recover. The improvements she madeâ€”better ventilation, cleaner bedding, improved water supply, and organized waste disposalâ€”had a measurable impact on patient survival. Her careful records proved it beyond doubt.' },
+          inhoud: { en: 'As Florence implemented improvements in sanitation at the Barrack Hospital, something remarkable happened. The mortality rate began to fall dramatically. Patients who might have died from typhoid, dysentery, or cholera began to recover. The improvements she made—better ventilation, cleaner bedding, improved water supply, and organized waste disposal—had a measurable impact on patient survival. Her careful records proved it beyond doubt.' },
       },
         {
           type: 'citaat',
@@ -231,7 +316,14 @@ export const florence: Verhaal = {
     {
       id: 5,
       titel: { en: 'Establishing Modern Nursing' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-5'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-5'],
+          alt: { en: 'Probationer nurses taking notes as a matron teaches beside a hospital bed.' },
+          bijschrift: { en: 'St Thomas’, 1860 — the first school to treat nursing as a profession you train for.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'In 1860, Florence Nightingale established the Nightingale Training School at St. Thomas\' Hospital in London. This was the first systematic training program for nurses, designed to elevate nursing from an unskilled occupation to a respected profession. The program included classroom instruction in anatomy, physiology, hygiene, and disease, combined with supervised practical experience. Graduates of the school became known for their high standards of care and professional competence. The Nightingale model influenced nursing education around the world. Schools based on her principles were established in America, Europe, and elsewhere, creating a global profession of trained nurses.' },
@@ -245,7 +337,14 @@ export const florence: Verhaal = {
     {
       id: 6,
       titel: { en: 'A Life Dedicated to Reform' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-6'],
+          alt: { en: 'An invalid woman writing at a bed-desk piled with government reports.' },
+          bijschrift: { en: 'She spent most of her last fifty years housebound, and wrote some 14,000 letters from that bed.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'After the Crimean War, Florence lived a relatively private life, but she remained intensely active in her work. She suffered from a chronic illness that limited her ability to leave her home, but this did not slow her productivity. She wrote reports, advised government officials, corresponded with leaders in the field of nursing and public health, and continued to gather and analyze data about healthcare outcomes. She was a prolific author, and her writings were widely read and influential. Her book "Notes on Nursing" became a classic text that shaped how care is understood and provided.' },
@@ -259,28 +358,42 @@ export const florence: Verhaal = {
     {
       id: 7,
       titel: { en: 'An Evolving World' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-7'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-7'],
+          alt: { en: 'A bright Victorian hospital ward with open windows and well-spaced beds.' },
+          bijschrift: { en: 'She never fully accepted germ theory. Her sanitary reforms saved lives regardless.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'As Florence Nightingale aged, she saw the world changing in ways that validated her work and vision. Germ theory, which had been emerging during her time in the Crimea, became established scientific knowledge. The understanding of how disease spreads through contamination and poor sanitation became widely accepted. The improvements she had advocatedâ€”better sanitation, cleaner conditions, organized waste disposalâ€”became standard practice in hospitals and public health. The profession of nursing, which she had helped to establish and elevate, became increasingly respected and professionalized.' },
+          inhoud: { en: 'As Florence Nightingale aged, she saw the world changing in ways that validated her work and vision. Germ theory, which had been emerging during her time in the Crimea, became established scientific knowledge. The understanding of how disease spreads through contamination and poor sanitation became widely accepted. The improvements she had advocated—better sanitation, cleaner conditions, organized waste disposal—became standard practice in hospitals and public health. The profession of nursing, which she had helped to establish and elevate, became increasingly respected and professionalized.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'Florence Nightingale died on August 13, 1910, at the age of ninety. She had lived a long life, seeing tremendous changes in healthcare and society. Many of the conditions she had fought to improveâ€”poor sanitation, lack of professional nursing care, absence of systematic record-keeping in hospitalsâ€”had been significantly addressed. Her influence extended far beyond her own time, as her principles and methods continued to guide healthcare practice for generations.' }
+          inhoud: { en: 'Florence Nightingale died on August 13, 1910, at the age of ninety. She had lived a long life, seeing tremendous changes in healthcare and society. Many of the conditions she had fought to improve—poor sanitation, lack of professional nursing care, absence of systematic record-keeping in hospitals—had been significantly addressed. Her influence extended far beyond her own time, as her principles and methods continued to guide healthcare practice for generations.' }
         }
       ]
     },
     {
       id: 8,
       titel: { en: 'Data, Compassion, and Care' },
+      afbeelding: SCENE_IMAGES['florence-nightingale-8'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['florence-nightingale-8'],
+          alt: { en: 'A brass oil lamp beside a folded nurse’s apron and a statistical chart.' },
+          bijschrift: { en: 'She was the first woman elected to the Royal Statistical Society, in 1858.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'Florence Nightingale\'s legacy is extraordinary in its breadth and depth. She revolutionized nursing, transforming it from an unskilled, disreputable occupation into a respected profession. She demonstrated the power of data and systematic analysis in healthcare, pioneering the use of statistics to improve patient outcomes. She showed that the physical environmentâ€”cleanliness, ventilation, light, spaceâ€”directly affects health and recovery. She proved that one person, armed with determination and knowledge, could change systems and improve the lives of thousands of people.' },
+          inhoud: { en: 'Florence Nightingale\'s legacy is extraordinary in its breadth and depth. She revolutionized nursing, transforming it from an unskilled, disreputable occupation into a respected profession. She demonstrated the power of data and systematic analysis in healthcare, pioneering the use of statistics to improve patient outcomes. She showed that the physical environment—cleanliness, ventilation, light, space—directly affects health and recovery. She proved that one person, armed with determination and knowledge, could change systems and improve the lives of thousands of people.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'What makes Florence Nightingale\'s story particularly inspiring is that she overcame tremendous obstacles to pursue her vision. She defied her family, challenged social conventions, and persisted in her goals despite opposition. She combined practical compassion for individual patients with systematic thinking about how to improve healthcare systems more broadly. She used data to support her arguments and convince skeptics that her reforms were necessary and effective. She established institutions and practices that outlasted her and influenced how healthcare is understood and provided to this day. Florence Nightingale showed that caring for others and pursuing systematic improvement are not contradictory goalsâ€”they reinforce each other. Her life reminds us that meaningful change requires both heart and mind, both compassion and analysis.' }
+          inhoud: { en: 'What makes Florence Nightingale\'s story particularly inspiring is that she overcame tremendous obstacles to pursue her vision. She defied her family, challenged social conventions, and persisted in her goals despite opposition. She combined practical compassion for individual patients with systematic thinking about how to improve healthcare systems more broadly. She used data to support her arguments and convince skeptics that her reforms were necessary and effective. She established institutions and practices that outlasted her and influenced how healthcare is understood and provided to this day. Florence Nightingale showed that caring for others and pursuing systematic improvement are not contradictory goals—they reinforce each other. Her life reminds us that meaningful change requires both heart and mind, both compassion and analysis.' }
         }
       ]
     }
@@ -295,22 +408,29 @@ export const thomas: Verhaal = {
   jaar: 1931,
   periodeLabel: '1847 - 1931',
   soort: 'persoon',
-  afbeelding: 'https://replicate.delivery/xezq/9EU9F5ZzoGrOPJJbsM0k2WP3FEvO8RpoaBMfiWPx6rPu6AeWA/tmpb5zdeibf.webp',
+  afbeelding: CHARACTER_IMAGES['thomas-edison'],
   portretKleur: '#6B5B4A',
   uitgelicht: false,
   volgorde: 3,
   tijdperkId: 'industriele-revolutie',
   themas: ['uitvinding', 'elektriciteit', 'licht', 'Amerika', 'innovatie'],
-  leestijdMinuten: 47,
+  leestijdMinuten: 7,
   personage: { naam: 'Thomas Edison' },
   chapters: [
     {
       id: 1,
       titel: { en: 'The Boy Who Experimented' },
+      afbeelding: SCENE_IMAGES['thomas-edison-1'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-1'],
+          alt: { en: 'A boy’s makeshift chemical laboratory in an Ohio farmhouse cellar.' },
+          bijschrift: { en: 'He had a few months of formal schooling. His mother, a teacher, did the rest.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'Thomas Alva Edison was born on February 11, 1847, in Milan, Ohio. His father was a jack-of-all-trades who had fled Canada for political reasons; his mother was a schoolteacher. Young Tom showed an early curiosity about how things worked. He was a curious child, always asking questions and experimenting. His formal schooling was briefâ€”he attended school for only three months before his teacher decided he was a difficult student and his mother took him out to teach him at home. But this turned out to be fortunate. His mother\'s patient, thoughtful approach to education suited Tom\'s learning style far better than traditional schooling.' },
+          inhoud: { en: 'Thomas Alva Edison was born on February 11, 1847, in Milan, Ohio. His father was a jack-of-all-trades who had fled Canada for political reasons; his mother was a schoolteacher. Young Tom showed an early curiosity about how things worked. He was a curious child, always asking questions and experimenting. His formal schooling was brief—he attended school for only three months before his teacher decided he was a difficult student and his mother took him out to teach him at home. But this turned out to be fortunate. His mother\'s patient, thoughtful approach to education suited Tom\'s learning style far better than traditional schooling.' },
       },
         {
           type: 'tekst',
@@ -321,42 +441,63 @@ export const thomas: Verhaal = {
     {
       id: 2,
       titel: { en: 'Telegraph Operator and Young Inventor' },
+      afbeelding: SCENE_IMAGES['thomas-edison-2'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-2'],
+          alt: { en: 'A young telegraph operator at a brass key in a night railway office.' },
+          bijschrift: { en: 'Deafness made him a better night operator: nothing else in the room distracted him.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'At age sixteen, Edison worked as a telegraph operator for Western Union. The telegraph was one of the most important communication technologies of the time, transmitting electrical signals over long distances. Working with the telegraph gave Edison an intimate knowledge of electrical systems and how they could be used to transmit information. While working as a telegraph operator, Edison made his first significant invention: an automatic repeater that allowed telegraph signals to be relayed over long distances without an operator. This invention caught the attention of other businessmen and inventors, and Edison began to consider making invention his primary occupation.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'Edison moved to New York and then to Boston, working on telegraph systems while continuing to develop his own inventions. In 1869, he moved to New York permanently and began to establish himself as an independent inventor. He founded a company to develop and sell his electrical innovations. His work on telegraph technology led him to develop the stock tickerâ€”a device that would print stock prices on paper tape using electrical signals. This device was highly valued on Wall Street, and it made Edison financially successful for the first time.' }
+          inhoud: { en: 'Edison moved to New York and then to Boston, working on telegraph systems while continuing to develop his own inventions. In 1869, he moved to New York permanently and began to establish himself as an independent inventor. He founded a company to develop and sell his electrical innovations. His work on telegraph technology led him to develop the stock ticker—a device that would print stock prices on paper tape using electrical signals. This device was highly valued on Wall Street, and it made Edison financially successful for the first time.' }
         }
       ]
     },
     {
       id: 3,
       titel: { en: 'Menlo Park: The Invention Factory' },
+      afbeelding: SCENE_IMAGES['thomas-edison-3'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-3'],
+          alt: { en: 'A wooden laboratory in rural New Jersey lit up at night.' },
+          bijschrift: { en: 'Menlo Park was the first industrial research lab — invention run as an organised business.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'With his success from the stock ticker, Edison had the financial resources to pursue his larger vision. In 1876, he established a laboratory in Menlo Park, New Jersey. This laboratory was unlike any research facility that had existed before. Edison brought together skilled mechanics, craftsmen, and experimenters to work on his ideas. The laboratory had machinery for making metal and other materials, electrical equipment, chemical apparatus, and everything else needed to turn ideas into working prototypes. Edison called it his "invention factory," and it was designed to produce innovations systematically, almost like a manufacturing plant produces goods.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'At Menlo Park, Edison and his team developed several important innovations in rapid succession. In 1877, he invented the phonographâ€”a device that could record sound on a tin foil cylinder and play it back. It was the first device ever able to capture and reproduce human voice and music. The achievement astounded the world. Edison became a celebrity, and the phonograph made him wealthy. But Edison was already focused on his next project: creating a practical, long-lasting electric light bulb.' },
+          inhoud: { en: 'At Menlo Park, Edison and his team developed several important innovations in rapid succession. In 1877, he invented the phonograph—a device that could record sound on a tin foil cylinder and play it back. It was the first device ever able to capture and reproduce human voice and music. The achievement astounded the world. Edison became a celebrity, and the phonograph made him wealthy. But Edison was already focused on his next project: creating a practical, long-lasting electric light bulb.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'The challenge of the light bulb was not inventing the basic principleâ€”scientists already understood that passing electric current through a wire could produce light. The challenge was finding a material that would glow bright enough to be useful, last long enough to be practical, and operate in a way that could be controlled. Edison attacked this problem systematically. He tested hundreds of different materials as filaments. He designed experiments carefully, kept detailed records, and analyzed results. His approach combined scientific knowledge with practical problem-solving and stubborn determination.' }
+          inhoud: { en: 'The challenge of the light bulb was not inventing the basic principle—scientists already understood that passing electric current through a wire could produce light. The challenge was finding a material that would glow bright enough to be useful, last long enough to be practical, and operate in a way that could be controlled. Edison attacked this problem systematically. He tested hundreds of different materials as filaments. He designed experiments carefully, kept detailed records, and analyzed results. His approach combined scientific knowledge with practical problem-solving and stubborn determination.' }
         }
       ]
     },
     {
       id: 4,
       titel: { en: 'Let There Be Light' },
+      afbeelding: SCENE_IMAGES['thomas-edison-4'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-4'],
+          alt: { en: 'Men watching a single glowing filament bulb on a laboratory bench.' },
+          bijschrift: { en: 'October 1879: thirteen and a half hours. The filament was never the hard part — the vacuum was.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'On October 21, 1879, after months of experimentation, Edison tested a light bulb with a carbonized cotton filament. The bulb burned continuously for over thirteen hoursâ€”far longer than any previous attempt. Edison continued to refine the design. He tested different filaments and discovered that carbonized bamboo could last much longer than cotton. By 1880, Edison had developed a practical light bulb that could burn for over 1,200 hours. Most importantly, he had done more than invent a light bulb; he had created a complete electrical system to support it.' },
+          inhoud: { en: 'On October 21, 1879, after months of experimentation, Edison tested a light bulb with a carbonized cotton filament. The bulb burned continuously for over thirteen hours—far longer than any previous attempt. Edison continued to refine the design. He tested different filaments and discovered that carbonized bamboo could last much longer than cotton. By 1880, Edison had developed a practical light bulb that could burn for over 1,200 hours. Most importantly, he had done more than invent a light bulb; he had created a complete electrical system to support it.' },
       },
         {
           type: 'tekst',
@@ -372,10 +513,17 @@ export const thomas: Verhaal = {
     {
       id: 5,
       titel: { en: 'Competition and Innovation' },
+      afbeelding: SCENE_IMAGES['thomas-edison-5'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-5'],
+          alt: { en: 'Engineers inspecting competing switchboards in a dynamo station.' },
+          bijschrift: { en: 'The War of Currents ended badly for him. Alternating current simply travels further.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'Edison\'s success with electric light did not go unchallenged. Other inventors and companies were working on electrical systems and lighting. George Westinghouse and Nikola Tesla developed an alternating current (AC) system that competed with Edison\'s direct current (DC) system. A period of intense competition, later called the "War of Currents," ensued. Edison fought aggressively to promote his system and discredit his rivals\' approaches. While Edison was brilliant at innovation, he was also willing to use questionable tactics in business competitionâ€”including conducting public demonstrations of electrocution to show the dangers of AC current.' },
+          inhoud: { en: 'Edison\'s success with electric light did not go unchallenged. Other inventors and companies were working on electrical systems and lighting. George Westinghouse and Nikola Tesla developed an alternating current (AC) system that competed with Edison\'s direct current (DC) system. A period of intense competition, later called the "War of Currents," ensued. Edison fought aggressively to promote his system and discredit his rivals\' approaches. While Edison was brilliant at innovation, he was also willing to use questionable tactics in business competition—including conducting public demonstrations of electrocution to show the dangers of AC current.' },
       },
         {
           type: 'tekst',
@@ -386,7 +534,14 @@ export const thomas: Verhaal = {
     {
       id: 6,
       titel: { en: 'The Prolific Inventor' },
+      afbeelding: SCENE_IMAGES['thomas-edison-6'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-6'],
+          alt: { en: 'A workshop of phonographs, cameras, batteries and stacks of drawings.' },
+          bijschrift: { en: '1,093 US patents in his name — a record that stood for more than a century.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'Throughout his long career, Edison patented over 1,000 inventions. Beyond the light bulb and the phonograph, he developed the electrical storage battery, improvements to telephone technology, motion picture camera, and countless other devices. Some of his inventions changed the world; others were less significant. But collectively, they demonstrated an extraordinary capacity for innovation and practical problem-solving. Edison had established a method of systematic invention that has influenced how research and development is conducted ever since.' },
@@ -400,7 +555,14 @@ export const thomas: Verhaal = {
     {
       id: 7,
       titel: { en: 'The Later Years' },
+      afbeelding: SCENE_IMAGES['thomas-edison-7'],
       blokken: [
+        {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-7'],
+          alt: { en: 'An elderly inventor at a laboratory bench with young assistants.' },
+          bijschrift: { en: 'He worked into his eighties, chasing a domestic American source of rubber.' }
+        },
         {
           type: 'tekst',
           inhoud: { en: 'As Edison aged, he became something of an elder statesman of innovation and industry. He was celebrated as one of the great inventors of all time. Presidents and important people sought his counsel. Universities wanted to honor him. Yet Edison never stopped working. Well into his eighties, he continued to conduct experiments and work on new projects. He developed improved storage batteries, investigated electrical railway systems, and pursued numerous other projects.' },
@@ -414,14 +576,21 @@ export const thomas: Verhaal = {
     {
       id: 8,
       titel: { en: 'The Legacy of Practical Innovation' },
+      afbeelding: SCENE_IMAGES['thomas-edison-8'],
       blokken: [
         {
+          type: 'afbeelding',
+          bron: SCENE_IMAGES['thomas-edison-8'],
+          alt: { en: 'An American city at night glowing with electric light.' },
+          bijschrift: { en: 'On the evening of his funeral, American cities dimmed their lights for one minute.' }
+        },
+        {
           type: 'tekst',
-          inhoud: { en: 'Thomas Edison\'s contributions to modern civilization are difficult to overstate. He did not work aloneâ€”he built teams of talented people and fostered an environment of creativity and systematic innovation. He was not always rightâ€”some of his ideas failed, and some of his business practices were questionable. But his fundamental approach to innovationâ€”identify a problem, systematically investigate possible solutions, conduct experiments, learn from failures, refine designs, and create practical applicationsâ€”became the model for modern research and development.' },
+          inhoud: { en: 'Thomas Edison\'s contributions to modern civilization are difficult to overstate. He did not work alone—he built teams of talented people and fostered an environment of creativity and systematic innovation. He was not always right—some of his ideas failed, and some of his business practices were questionable. But his fundamental approach to innovation—identify a problem, systematically investigate possible solutions, conduct experiments, learn from failures, refine designs, and create practical applications—became the model for modern research and development.' },
       },
         {
           type: 'tekst',
-          inhoud: { en: 'Edison proved that innovation could be more than the work of isolated geniuses having sudden insights. It could be systematic, methodical, and organized. It could be conducted in laboratories equipped with the necessary tools and staffed with skilled people. It could be focused on practical problems and create products that people could use and that would improve their lives. This vision of innovationâ€”practical, systematic, and focused on human benefitâ€”is one of Edison\'s greatest legacies, perhaps even more important than his specific inventions. In an age of rapid technological change, the Edisonian approach to innovation remains relevant and valuable. Thomas Edison showed that light comes from sustained effort, systematic thinking, and the refusal to accept failure as final.' }
+          inhoud: { en: 'Edison proved that innovation could be more than the work of isolated geniuses having sudden insights. It could be systematic, methodical, and organized. It could be conducted in laboratories equipped with the necessary tools and staffed with skilled people. It could be focused on practical problems and create products that people could use and that would improve their lives. This vision of innovation—practical, systematic, and focused on human benefit—is one of Edison\'s greatest legacies, perhaps even more important than his specific inventions. In an age of rapid technological change, the Edisonian approach to innovation remains relevant and valuable. Thomas Edison showed that light comes from sustained effort, systematic thinking, and the refusal to accept failure as final.' }
         }
       ]
     }

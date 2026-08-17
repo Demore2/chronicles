@@ -1,32 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
 
+import { AnimatedPressable } from '@/components/animated-pressable';
+import { HoofdstukTegel } from '@/components/hoofdstuk-tegel';
 import { LegeStaat } from '@/components/lege-staat';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Motion } from '@/constants/motion';
 import { Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
+import { berekenLeestijdMinuten } from '@/content/leestijd';
 import { getVerhaal } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
 import { useVertaling } from '@/hooks/use-vertaling';
-
-const ROMAN_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
-
-function calculateReadTime(blokken: any[]): number {
-  let totalWords = 0;
-  blokken.forEach((blok) => {
-    if (blok.tekst) {
-      const text = typeof blok.tekst === 'string' ? blok.tekst : blok.tekst.en || '';
-      totalWords += text.split(/\s+/).length;
-    } else if (blok.citaat) {
-      const text = typeof blok.citaat === 'string' ? blok.citaat : blok.citaat.en || '';
-      totalWords += text.split(/\s+/).length;
-    }
-  });
-  return Math.max(1, Math.ceil(totalWords / 250));
-}
 
 export default function ChaptersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -36,6 +31,27 @@ export default function ChaptersScreen() {
 
   const verhaal = getVerhaal(id);
   const progress = useStoryProgress(verhaal?.id ?? '', verhaal?.chapters.length ?? 0);
+
+  // Zonder verhaal is `progressPercentage` een NaN (0/0) — die mag niet in een animatie belanden.
+  const voortgangPercentage = Number.isFinite(progress.progressPercentage)
+    ? progress.progressPercentage
+    : 0;
+  const voortgangBreedte = useSharedValue(0);
+
+  useEffect(() => {
+    // Start op 0 en loop vol. Dit scherm wordt via `router.push` steeds opnieuw gemonteerd, dus
+    // een overgang tussen twee waardes zou je nooit zien; het vollopen bij openen wel.
+    voortgangBreedte.set(
+      withDelay(
+        Motion.duration.normaal,
+        withTiming(voortgangPercentage, { duration: Motion.duration.traag })
+      )
+    );
+  }, [voortgangPercentage, voortgangBreedte]);
+
+  const voortgangStijl = useAnimatedStyle(() => ({
+    width: `${voortgangBreedte.get()}%` as `${number}%`,
+  }));
 
   if (!verhaal) {
     return (
@@ -51,6 +67,11 @@ export default function ChaptersScreen() {
 
   const tijdperk = getTijdperk(verhaal.tijdperkId);
 
+  // Het eerste hoofdstuk dat open staat maar nog niet af is — daar was de lezer gebleven.
+  const volgendHoofdstukId = verhaal.chapters.find(
+    (chapter) => progress.isChapterUnlocked(chapter.id) && !progress.isChapterCompleted(chapter.id)
+  )?.id;
+
   function handleChapterPress(chapterId: number) {
     if (progress.isChapterUnlocked(chapterId)) {
       router.push({
@@ -65,9 +86,11 @@ export default function ChaptersScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <View style={styles.headerBar}>
-        <Pressable onPress={() => router.push('/')} style={[styles.homeButton, { backgroundColor: theme.backgroundElement }]}>
-          <ThemedText type="smallBold">Home</ThemedText>
-        </Pressable>
+        <AnimatedPressable
+          onPress={() => router.push('/')}
+          style={[styles.homeButton, { backgroundColor: theme.backgroundElement }]}>
+          <ThemedText type="smallBold">{t((s) => s.tabs.ontdek)}</ThemedText>
+        </AnimatedPressable>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -76,101 +99,41 @@ export default function ChaptersScreen() {
 
         <View style={styles.progressSection}>
           <View style={styles.progressBar}>
-            <View
+            <Animated.View
               style={[
                 styles.progressFill,
-                {
-                  width: `${progress.progressPercentage}%`,
-                  backgroundColor: tijdperk?.kleur ?? theme.accent,
-                },
+                { backgroundColor: tijdperk?.kleur ?? theme.accent },
+                voortgangStijl,
               ]}
             />
           </View>
           <ThemedText type="small" themeColor="textSecondary">
-            {progress.completedChapters.length} / {verhaal.chapters.length} chapters
+            {t((s) => s.hoofdstuk.voortgang)(progress.completedChapters.length, verhaal.chapters.length)}
           </ThemedText>
         </View>
 
         <View style={styles.chaptersGrid}>
-          {verhaal.chapters.map((chapter) => {
-            const isUnlocked = progress.isChapterUnlocked(chapter.id);
-            const isCompleted = progress.isChapterCompleted(chapter.id);
-            const readTime = calculateReadTime(chapter.blokken);
-
-            return (
-              <Pressable
-                key={chapter.id}
-                onPress={() => handleChapterPress(chapter.id)}
-                disabled={!isUnlocked}
-                style={[
-                  styles.chapterTile,
-                  {
-                    backgroundColor: isCompleted
-                      ? tijdperk?.kleur ?? theme.accent
-                      : isUnlocked
-                        ? theme.backgroundElement
-                        : theme.inactive,
-                    opacity: isUnlocked ? 1 : 0.5,
-                  },
-                ]}>
-                <View style={styles.tileImage}>
-                  <ThemedText
-                    type="display"
-                    style={{
-                      color: isCompleted ? theme.background : theme.text,
-                    }}>
-                    {ROMAN_NUMERALS[chapter.id - 1]}
-                  </ThemedText>
-                </View>
-
-                <View style={styles.tileContent}>
-                  <ThemedText
-                    type="smallBold"
-                    numberOfLines={2}
-                    style={{
-                      color: isCompleted ? theme.background : theme.text,
-                    }}>
-                    {`Chapter ${chapter.id}: `}
-                    {v(chapter.titel)}
-                  </ThemedText>
-
-                  <ThemedText
-                    type="small"
-                    themeColor="textSecondary"
-                    style={{
-                      color: isCompleted ? 'rgba(255, 255, 255, 0.7)' : theme.textSecondary,
-                      marginTop: Spacing.one,
-                    }}>
-                    {readTime} min read
-                  </ThemedText>
-                </View>
-
-                {!isUnlocked && (
-                  <Ionicons
-                    name="lock-closed"
-                    size={16}
-                    color={theme.textSecondary}
-                    style={styles.lockIcon}
-                  />
-                )}
-
-                {isCompleted && (
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={16}
-                    color={theme.background}
-                    style={styles.checkIcon}
-                  />
-                )}
-              </Pressable>
-            );
-          })}
+          {verhaal.chapters.map((chapter, index) => (
+            <HoofdstukTegel
+              key={chapter.id}
+              nummer={chapter.id}
+              titel={v(chapter.titel)}
+              afbeelding={chapter.afbeelding}
+              leestijdMinuten={berekenLeestijdMinuten(chapter.blokken, v)}
+              isUnlocked={progress.isChapterUnlocked(chapter.id)}
+              isCompleted={progress.isChapterCompleted(chapter.id)}
+              isVolgende={chapter.id === volgendHoofdstukId}
+              tijdperkKleur={tijdperk?.kleur ?? theme.accent}
+              index={index}
+              onPress={() => handleChapterPress(chapter.id)}
+            />
+          ))}
         </View>
 
         <View style={styles.infoBox}>
           <Ionicons name="information-circle-outline" size={20} color={theme.accent} />
           <ThemedText type="small" style={styles.infoText}>
-            Complete chapters in order to unlock the next one.
+            {t((s) => s.hoofdstuk.volgordeUitleg)}
           </ThemedText>
         </View>
       </ScrollView>
@@ -220,31 +183,8 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
     marginTop: Spacing.three,
   },
-  chapterTile: {
-    width: '48%',
-    borderRadius: Radii.card,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  tileImage: {
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tileContent: {
-    padding: Spacing.two,
-    paddingTop: Spacing.one,
-  },
-  lockIcon: {
-    position: 'absolute',
-    bottom: Spacing.two,
-    right: Spacing.two,
-  },
-  checkIcon: {
-    position: 'absolute',
-    top: Spacing.two,
-    right: Spacing.two,
-  },
+  // De tegelstijlen (chapterTile/tileImage/tileContent/lockIcon/checkIcon) staan nu in
+  // `components/hoofdstuk-tegel.tsx`, samen met de tegel zelf.
   infoBox: {
     flexDirection: 'row',
     gap: Spacing.two,

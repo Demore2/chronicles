@@ -14,6 +14,7 @@
 // .ts content files directly.
 import { register } from 'node:module';
 import { pathToFileURL } from 'node:url';
+import './asset-require-shim.mjs';
 
 register(pathToFileURL('./scripts/ts-content-loader.mjs').href, pathToFileURL('./'));
 
@@ -55,8 +56,16 @@ function validateBlok(blok, path) {
       isVertaaldVeld(blok.inhoud, `${path}.inhoud`);
       break;
     case 'afbeelding':
-      if (typeof blok.bron !== 'string' || blok.bron.trim() === '') {
-        errors.push(`${path}.bron: expected a non-empty string`);
+      // `bron` is een ImageSourcePropType: in de app een `require()`-module-id (number), hier een
+      // pad-string omdat asset-require-shim.mjs `require` teruggeeft wat het binnenkrijgt. Een
+      // remote `{ uri }` is typerechtelijk ook toegestaan, dus alle drie de vormen tellen als
+      // geldig — alleen leeg of ontbrekend is fout (LAUNCH-PLAN.md B2).
+      if (
+        blok.bron === undefined ||
+        blok.bron === null ||
+        (typeof blok.bron === 'string' && blok.bron.trim() === '')
+      ) {
+        errors.push(`${path}.bron: missing image source`);
       }
       isVertaaldVeld(blok.alt, `${path}.alt`);
       if (blok.bijschrift !== undefined) isVertaaldVeld(blok.bijschrift, `${path}.bijschrift`);
@@ -64,6 +73,18 @@ function validateBlok(blok, path) {
     case 'citaat':
       isVertaaldVeld(blok.tekst, `${path}.tekst`);
       isVertaaldVeld(blok.bron, `${path}.bron`);
+      break;
+    // LAUNCH-PLAN.md B3 — nieuwe blok-types. Zonder een case hier faalt validatie op "unknown
+    // Blok type", dat is met opzet: het dwingt af dat elk type ook echt gevalideerd wordt.
+    case 'kop':
+    case 'weetje':
+      isVertaaldVeld(blok.tekst, `${path}.tekst`);
+      break;
+    case 'sleutelmoment':
+      isVertaaldVeld(blok.tekst, `${path}.tekst`);
+      if (typeof blok.jaar !== 'number' || !Number.isFinite(blok.jaar)) {
+        errors.push(`${path}.jaar: expected a number, got ${JSON.stringify(blok.jaar)}`);
+      }
       break;
     case 'quiz':
       isVertaaldVeld(blok.vraag, `${path}.vraag`);

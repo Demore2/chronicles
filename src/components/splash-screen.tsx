@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
+import HistoryBook from '@/assets/images/mascotte/history-book.svg';
 import { useTheme } from '@/hooks/use-theme';
 import { ThemedText } from './themed-text';
 
@@ -33,13 +34,15 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
         },
       ]}>
       <View style={styles.content}>
-        {/* Hourglass logo */}
+        {/*
+          Het merk is `currentColor`, dus het volgt `theme.accent` — op het donkere
+          thema is dat #6FA8B8 en niet #3B6E7D, wat op de donkerbruine achtergrond
+          te weinig contrast zou geven.
+        */}
         <View style={styles.logoContainer}>
-          <View style={[styles.hourglass, { borderColor: theme.text }]}>
-            <View style={[styles.chamber, { backgroundColor: theme.accent }]} />
-            <View style={[styles.sand, { backgroundColor: '#A67C52' }]} />
-            <View style={[styles.chamber, { backgroundColor: theme.accent }]} />
-          </View>
+          {/* Het merk vult maar ~53% van zijn eigen canvas, dus 132 op de tekening
+              levert optisch zo'n 70 px echte inkt — in balans met de 32 px titel. */}
+          <HistoryBook width={132} height={132} color={theme.accent} />
         </View>
 
         {/* App name */}
@@ -70,29 +73,10 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   logoContainer: {
-    width: 120,
-    height: 120,
+    width: 132,
+    height: 132,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  hourglass: {
-    width: 70,
-    height: 70,
-    borderWidth: 2.5,
-    borderRadius: 8,
-    justifyContent: 'space-between',
-    padding: 8,
-    alignItems: 'center',
-  },
-  chamber: {
-    width: '100%',
-    height: 12,
-    borderRadius: 4,
-  },
-  sand: {
-    width: 4,
-    height: 20,
-    borderRadius: 2,
   },
   title: {
     fontSize: 32,

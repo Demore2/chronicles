@@ -9,6 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Radii, Spacing, withAlpha } from '@/constants/theme';
 import { tijdperken } from '@/constants/tijdperken';
 import { verhalen } from '@/content/verhalen';
+import { useStreak } from '@/hooks/use-streak';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useVoortgangStore } from '@/store/voortgang-store';
@@ -18,7 +19,7 @@ export default function VoortgangScreen() {
   const router = useRouter();
   const { t, v } = useVertaling();
   const completedStories = useVoortgangStore((state) => state.completedStories);
-  const streakDagen = useVoortgangStore((state) => state.streakDagen);
+  const streakDagen = useStreak();
 
   return (
     <ThemedView style={styles.container}>
@@ -28,13 +29,38 @@ export default function VoortgangScreen() {
             <ThemedText type="display">{t((s) => s.voortgang.titel)}</ThemedText>
           </View>
 
+          {/*
+            Zonder streak is dit geen teller maar een uitnodiging (B6): het vlammetje dooft naar
+            `inactive` en de tekst zegt wat je moet doen in plaats van "0 days streak".
+          */}
           <View style={[styles.streakCard, { backgroundColor: theme.backgroundElement }]}>
-            <View style={[styles.streakIcoon, { backgroundColor: withAlpha(theme.accent, 0.16) }]}>
-              <Ionicons name="flame" size={28} color={theme.accent} />
+            <View
+              style={[
+                styles.streakIcoon,
+                {
+                  backgroundColor: withAlpha(
+                    streakDagen > 0 ? theme.accent : theme.inactive,
+                    0.16
+                  ),
+                },
+              ]}>
+              <Ionicons
+                name={streakDagen > 0 ? 'flame' : 'flame-outline'}
+                size={28}
+                color={streakDagen > 0 ? theme.accent : theme.inactive}
+              />
             </View>
             <View style={styles.streakTekst}>
-              <ThemedText type="title">{t((s) => s.voortgang.streak)(streakDagen)}</ThemedText>
-              <ThemedText themeColor="textSecondary">{t((s) => s.voortgang.streakBeschrijving)}</ThemedText>
+              <ThemedText type="title">
+                {streakDagen > 0
+                  ? t((s) => s.voortgang.streak)(streakDagen)
+                  : t((s) => s.voortgang.streakLeeg)}
+              </ThemedText>
+              <ThemedText themeColor="textSecondary">
+                {streakDagen > 0
+                  ? t((s) => s.voortgang.streakBeschrijving)
+                  : t((s) => s.voortgang.streakLeegBeschrijving)}
+              </ThemedText>
             </View>
           </View>
 

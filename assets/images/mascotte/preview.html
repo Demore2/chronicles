@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>History Book — logo</title>
+<style>
+  :root {
+    --bg: #F7F1E4; --el: #EEE4D0; --sel: #E3D6B8;
+    --text: #211F1A; --text2: #6B6355; --accent: #3B6E7D;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 40px 32px 80px;
+    background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", system-ui, sans-serif;
+  }
+  h1 { font-size: 30px; margin: 0 0 4px; letter-spacing: -0.5px; }
+  .sub { color: var(--text2); margin: 0 0 36px; font-size: 15px; max-width: 900px; line-height: 1.5; }
+  .card {
+    background: var(--el); border-radius: 16px; padding: 24px; margin-bottom: 24px;
+    display: grid; grid-template-columns: 260px 1fr; gap: 28px; align-items: start;
+  }
+  .card.dark { background: #26231D; color: #F3ECDC; --text2: #A89E89; --sel: #332E24; --bg: #1C1A16; --accent: #6FA8B8; }
+  .hero {
+    background: var(--bg); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; height: 200px;
+  }
+  .hero.tile { padding: 0; overflow: hidden; }
+  .hero img { width: 168px; height: 168px; }
+  .hero.tile img { width: 200px; height: 200px; border-radius: 12px; }
+  h2 { font-size: 20px; margin: 0 0 2px; }
+  .pill { font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase;
+          background: var(--accent); color: #F7F1E4; border-radius: 20px; padding: 3px 9px; margin-left: 8px; vertical-align: 3px; }
+  .card.dark .pill { color: #1C1A16; }
+  .tag { color: var(--text2); font-size: 14px; margin: 0 0 18px; line-height: 1.5; max-width: 780px; }
+  .row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 18px; }
+  .sizes { display: flex; align-items: flex-end; gap: 14px; }
+  .sizes img { display: block; border-radius: 22%; }
+  .sizes.flat img { border-radius: 0; }
+  .label { font-size: 11px; color: var(--text2); text-align: center; margin-top: 6px; }
+  .badge { width: 56px; height: 56px; border-radius: 28px; background: var(--sel);
+           display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .badge img { width: 56px; height: 56px; }
+  .badge.pad img { width: 52px; height: 52px; }
+
+  .mocks { display: flex; gap: 14px; flex-wrap: wrap; }
+  .mock { background: var(--bg); border-radius: 12px; padding: 12px 14px;
+          display: flex; align-items: center; gap: 10px; font-size: 13px; }
+  .mock img { width: 40px; height: 40px; flex: none; border-radius: 22%; }
+  .mock.flat img { border-radius: 0; }
+  .mock strong { display: block; font-size: 13px; }
+  .mock span { color: var(--text2); font-size: 12px; }
+  .bubble { background: var(--sel); border-radius: 12px; padding: 8px 12px; font-size: 13px; }
+  .cta { background: var(--accent); color: #F7F1E4; border-radius: 12px; padding: 10px 16px;
+         font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .card.dark .cta { color: #1C1A16; }
+  .cta img { width: 32px; height: 32px; border-radius: 22%; }
+  .cta img.flat { border-radius: 50%; background: var(--bg); }
+
+  .vs { display: flex; gap: 28px; align-items: flex-end; background: var(--bg);
+        border-radius: 12px; padding: 18px 22px; margin-bottom: 18px; flex-wrap: wrap; }
+  .vs .col { text-align: center; }
+  .vs img { display: block; border-radius: 18%; margin: 0 auto 6px; image-rendering: auto; }
+  .vs .cap { font-size: 11px; color: var(--text2); }
+  .vs h3 { font-size: 12px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--text2); }
+  .note { background: var(--sel); border-radius: 10px; padding: 10px 14px; font-size: 13px;
+          line-height: 1.5; max-width: 780px; margin-top: 14px; }
+</style>
+</head>
+<body>
+
+<h1>History Book</h1>
+<p class="sub">Jouw WebP, opnieuw opgebouwd als vector en in de huisstijl gezet: cr&egrave;me <code>#F7F1E4</code> op teal <code>#3B6E7D</code>. Dezelfde tekening, maar op &eacute;&eacute;n lijndikte, exact symmetrisch en gecentreerd. Onderaan staat nog de vereenvoudigde Kroniekschrijver.</p>
+
+<!-- gekozen -->
+<div class="card">
+  <div class="hero tile"><img src="history-book-teal.svg" alt=""></div>
+  <div>
+    <h2>De volledige tekening<span class="pill">gekozen</span></h2>
+    <p class="tag">Met de buitenste kaftlijn en het knopje onderaan, precies zoals het origineel. Dit is de versie voor groot gebruik: app-icoon, splash, feature graphic in de Play Store.</p>
+    <div class="row">
+      <div class="sizes">
+        <div><img src="history-book-teal.svg" width="96" height="96" alt=""><div class="label">96</div></div>
+        <div><img src="history-book-teal.svg" width="64" height="64" alt=""><div class="label">64</div></div>
+        <div><img src="history-book-teal.svg" width="40" height="40" alt=""><div class="label">40</div></div>
+        <div><img src="history-book-teal.svg" width="28" height="28" alt=""><div class="label">28</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- compact -->
+<div class="card">
+  <div class="hero tile"><img src="history-book-compact.svg" alt=""></div>
+  <div>
+    <h2>Compact, voor klein gebruik</h2>
+    <p class="tag">De kaftlijn en het knopje eruit, de rest 1,26&times; opgeschaald &mdash; dat tilt de lijndikte mee omhoog. Nodig omdat het boek nu ook naast de welkomstgroet, de FAQ-knop en de quizknop komt te staan, en dat zijn formaten van 28 tot 40&nbsp;px.</p>
+
+    <div class="vs">
+      <div>
+        <h3>volledig</h3>
+        <div style="display:flex;gap:18px;align-items:flex-end">
+          <div class="col"><img src="history-book-teal.svg" width="40" height="40" alt=""><div class="cap">40</div></div>
+          <div class="col"><img src="history-book-teal.svg" width="28" height="28" alt=""><div class="cap">28</div></div>
+          <div class="col"><img src="history-book-teal.svg" width="20" height="20" alt=""><div class="cap">20</div></div>
+        </div>
+      </div>
+      <div>
+        <h3>compact</h3>
+        <div style="display:flex;gap:18px;align-items:flex-end">
+          <div class="col"><img src="history-book-compact.svg" width="40" height="40" alt=""><div class="cap">40</div></div>
+          <div class="col"><img src="history-book-compact.svg" width="28" height="28" alt=""><div class="cap">28</div></div>
+          <div class="col"><img src="history-book-compact.svg" width="20" height="20" alt=""><div class="cap">20</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mocks">
+      <div class="mock"><img src="history-book-compact.svg" alt=""><div class="bubble">Welkom terug, Quinten.</div></div>
+      <div class="mock"><img src="history-book-compact.svg" alt=""><div><strong>Vragen?</strong><span>Bekijk de veelgestelde vragen</span></div></div>
+      <div class="cta"><img src="history-book-compact.svg" alt="">Dagelijkse quiz</div>
+    </div>
+  </div>
+</div>
+
+<!-- donker -->
+<div class="card dark">
+  <div class="hero tile"><img src="history-book-teal.svg" alt=""></div>
+  <div>
+    <h2>Op het donkere thema</h2>
+    <p class="tag">De teal tegel blijft dezelfde kleur; op de warme donkerbruine achtergrond houdt hij genoeg contrast. Alleen op de quizknop valt de tegel weg tegen de knop &mdash; dat oogt goed, het merk lijkt dan direct op de knop te staan.</p>
+    <div class="mocks">
+      <div class="mock"><img src="history-book-compact.svg" alt=""><div class="bubble">Welkom terug, Quinten.</div></div>
+      <div class="mock"><img src="history-book-compact.svg" alt=""><div><strong>Vragen?</strong><span>Bekijk de veelgestelde vragen</span></div></div>
+      <div class="cta"><img src="history-book-compact.svg" alt="">Dagelijkse quiz</div>
+    </div>
+    <p class="note">Let op: het merk is nu vast cr&egrave;me-op-teal. Wil je dat het meebeweegt met het thema (in het donker is <code>accent</code> <code>#6FA8B8</code>), dan gebruik je <code>history-book.svg</code> &mdash; die is &eacute;&eacute;nkleurig en kan zijn kleur van <code>useTheme()</code> krijgen.</p>
+  </div>
+</div>
+
+<!-- kroniekschrijver -->
+<div class="card">
+  <div class="hero"><img src="01-kroniekschrijver-simpel.svg" alt=""></div>
+  <div>
+    <h2>Kroniekschrijver, vereenvoudigd</h2>
+    <p class="tag">Veer en hand eruit. Wat overblijft is teal, cr&egrave;me en het gezicht &mdash; drie vormen minder en &eacute;&eacute;n kleur minder (de terracotta is weg). Je koos ervoor dat alleen het boek doorgaat, dus dit staat hier puur als bewaaroptie.</p>
+    <div class="vs">
+      <div>
+        <h3>was</h3>
+        <div style="display:flex;gap:18px;align-items:flex-end">
+          <div class="col"><img src="01-kroniekschrijver.svg" width="64" height="64" alt="" style="border-radius:0"><div class="cap">64</div></div>
+          <div class="col"><img src="01-kroniekschrijver.svg" width="40" height="40" alt="" style="border-radius:0"><div class="cap">40</div></div>
+          <div class="col"><img src="01-kroniekschrijver.svg" width="28" height="28" alt="" style="border-radius:0"><div class="cap">28</div></div>
+        </div>
+      </div>
+      <div>
+        <h3>wordt</h3>
+        <div style="display:flex;gap:18px;align-items:flex-end">
+          <div class="col"><img src="01-kroniekschrijver-simpel.svg" width="64" height="64" alt="" style="border-radius:0"><div class="cap">64</div></div>
+          <div class="col"><img src="01-kroniekschrijver-simpel.svg" width="40" height="40" alt="" style="border-radius:0"><div class="cap">40</div></div>
+          <div class="col"><img src="01-kroniekschrijver-simpel.svg" width="28" height="28" alt="" style="border-radius:0"><div class="cap">28</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mocks">
+      <div class="mock flat"><img src="01-kroniekschrijver-simpel.svg" alt=""><div class="bubble">Welkom terug, Quinten.</div></div>
+      <div class="mock flat"><img src="01-kroniekschrijver-simpel.svg" alt=""><div><strong>Vragen?</strong><span>Bekijk de veelgestelde vragen</span></div></div>
+      <div class="cta"><img class="flat" src="01-kroniekschrijver-simpel.svg" alt="">Dagelijkse quiz</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
