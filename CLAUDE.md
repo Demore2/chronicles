@@ -484,9 +484,13 @@ the Play Console** — `listing.md` (all copy plus the answer to every Console f
 (the steps that need an Expo login or the Console), `feature-graphic.html` and `assets/`.
 
 - **`eas.json`**: `production` builds an AAB, `preview` an installable APK. `cli.appVersionSource`
-  is **`"remote"`**, so EAS owns the versionCode after the first build — `android.versionCode` in
-  `app.json` is only the seed value and the source for local `expo run:android` builds. Both submit
-  profiles are `releaseStatus: "draft"` so an upload never rolls out by itself.
+  is **`"remote"`**, so EAS owns the versionCode — the counter lives on the server and
+  `autoIncrement` bumps it per production build (it stood at **6** after the first AAB).
+  **`android.versionCode` is deliberately absent from `app.json`**: eas-cli ignores it under a
+  remote source and says so on every build, and a stale number there reads like the truth when it
+  isn't. Local `expo run:android` builds fall back to 1, which is fine — they never reach Play.
+  Ask EAS for the real number with `npm run eas -- build:version:get --platform android`. Both
+  submit profiles are `releaseStatus: "draft"` so an upload never rolls out by itself.
 - **`eas-cli` is deliberately *not* a dependency.** It used to sit in `devDependencies`; that broke
   every cloud build. EAS runs `npm ci --include=dev` with **npm 10**, which wants
   `node_modules/eas-cli/node_modules/typescript@5.9.3` for `@expo/require-utils`' optional peer,

@@ -27,6 +27,7 @@
 | R8.AUTH | Supabase-auth + voortgang-sync (buiten dit plan om gebouwd) | ✅ Afgerond 2026-08-14 |
 | R8.SYNC-B | story-progress + character-unlocks naar Supabase | ✅ Afgerond 2026-08-14 |
 | 9 | Cloud-build werkend krijgen — `npm ci`, env-variabelen, `.easignore` | ✅ Afgerond 2026-08-17 |
+| 10 | Productie-AAB bouwen (versionCode 6) | ✅ Afgerond 2026-08-17 |
 | 1.1 | B3b — rijke blokken (`kop`/`weetje`/`sleutelmoment`) voor 120 hoofdstukken | ⬜ Ná launch |
 
 > **Fase 6.5 en 7 mogen door elkaar lopen.** Een nieuw Play-developeraccount moet geverifieerd
@@ -38,9 +39,38 @@
 ## Handover — laatste stand
 
 **Datum:** 2026-08-17
-**Laatst afgeronde fase:** Fase 9 — de EAS-build doet het weer. **Alle codefases van dit plan zijn
-afgerond.** Wat overblijft vóór v1.0 zit in de Play Console en in drie inhoudelijke blockers die
+**Laatst afgeronde fase:** Fase 10 — **de productie-AAB bestaat.** Alle codefases van dit plan zijn
+afgerond. Wat overblijft vóór v1.0 zit in de Play Console en in drie inhoudelijke blockers die
 hieronder staan, plus één ronde nieuwe screenshots.
+
+> ### Fase 10 — de productie-AAB (2026-08-17)
+>
+> Build [`0b9569fc`](https://expo.dev/accounts/quinten1234/projects/chronicles-app/builds/0b9569fc-6867-44e3-a8b6-7edf007f1d8e)
+> is **FINISHED**: `npm run eas -- build --platform android --profile production --non-interactive`,
+> gebouwd vanaf `a059ba1`. Artefact 108 MB, lokaal als `chronicles-1.0.0-versionCode6.aab`. Dat
+> hoort niet in de repo — de bron is de build op expo.dev, niet de kopie hier. De `*.aab`/`*.apk`
+> regels staan wél in de werkkopie van `.gitignore` **en** `.easignore` (die laatste is nodig:
+> `.easignore` vervángt elke `.gitignore`, dus zonder die regel upload de volgende build deze
+> 108 MB weer mee), maar zijn op verzoek **niet gecommit**. Zet ze alsnog vast als je ooit een
+> verse kloon maakt.
+>
+> **Gecontroleerd door de AAB open te trekken**, niet aangenomen uit de bestandsgrootte:
+> `BundleConfig.pb` en `base/manifest/AndroidManifest.xml` aanwezig (1609 entries, dus een echt
+> App Bundle en geen hernoemde APK), gesigneerd (`META-INF/*.RSA` + `.SF`) met keystore
+> `xHGwqm8DSF` alias `chronicles` — **dezelfde upload key als de preview-APK**, dus Play accepteert
+> de update-keten. Vier ABI's (arm64-v8a, armeabi-v7a, x86, x86_64) waar Play uit splitst, dus een
+> toestel downloadt ruwweg 80 MB van de 108. Alle 152 scènebeelden zitten erin. De
+> `EXPO_PUBLIC_SUPABASE_*`-variabelen zijn geladen uit de `production`-omgeving op EAS, dus de
+> crash-bij-het-eerste-frame uit Fase 9 kan niet terugkomen.
+>
+> **`android.versionCode` is uit `app.json` gehaald.** eas-cli negeert het veld bij
+> `appVersionSource: "remote"` en zegt dat bij élke build; de teller staat op de server en kwam na
+> deze build op **6**. Een verouderd getal in `app.json` leest als de waarheid terwijl het dat niet
+> is. Opvragen: `npm run eas -- build:version:get --platform android`.
+>
+> **Nog niet gedaan, en bewust:** de AAB is *niet* geüpload. `eas submit` heeft
+> `play-service-account.json` nodig en dat bestaat nog niet — zie `store/README.md`. En de drie
+> blockers hieronder (privacybeleid, screenshots) horen vóór de upload geregeld te zijn, niet erna.
 
 > ### Fase 9 — de cloud-build (2026-08-17)
 >

@@ -21,7 +21,6 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.chronicles.historyapp",
-      "versionCode": 1,
       "blockedPermissions": [
         "com.anddoes.launcher.permission.UPDATE_COUNT",
         "com.android.launcher.permission.INSTALL_SHORTCUT",

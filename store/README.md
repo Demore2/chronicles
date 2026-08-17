@@ -33,11 +33,13 @@ Regenereren: `npm run generate:store-assets` (icoon + feature graphic) en
 - `.easignore` bepaalt wat er wordt geüpload en **vervangt** alle `.gitignore`-bestanden. Een regel
   die je alleen in `.gitignore` zet, doet niets voor de build.
 
-**Versienummers worden op de EAS-server bijgehouden** (`cli.appVersionSource: "remote"`). Bij de
-eerste productiebuild neemt EAS `android.versionCode` uit `app.json` (= 1) over als startwaarde;
-daarna hoogt `autoIncrement` hem elke build zelf op. Dat is bewust: "version code already used" is
-de meest voorkomende afwijzing bij handmatig tellen. Het getal in `app.json` blijft staan voor
-lokale `expo run:android`-builds, maar is voor EAS vanaf dat moment niet meer leidend.
+**Versienummers worden op de EAS-server bijgehouden** (`cli.appVersionSource: "remote"`). De teller
+staat daar en `autoIncrement` hoogt hem elke productiebuild zelf op — na de eerste AAB op **6**.
+Dat is bewust: "version code already used" is de meest voorkomende afwijzing bij handmatig tellen.
+`android.versionCode` staat daarom **niet meer in `app.json`**: eas-cli negeert het veld bij een
+remote bron en meldt dat ook bij elke build, en een verouderd getal daar leest als de waarheid
+terwijl het dat niet is. Opvragen doe je met
+`npm run eas -- build:version:get --platform android`.
 
 ---
 
