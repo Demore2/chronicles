@@ -38,6 +38,11 @@ yarn-error.*
 # submit.*.android.serviceAccountKeyPath). Never commit this.
 play-service-account.json
 
+# build artefacts downloaded from EAS (108 MB per AAB) — de bron is de build op
+# expo.dev, niet het bestand dat hier toevallig staat
+*.aab
+*.apk
+
 # typescript
 *.tsbuildinfo
 
