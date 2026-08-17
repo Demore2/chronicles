@@ -632,8 +632,10 @@ Known gaps:
   (`extra.eas.projectId` in `app.json`), EAS holds the Android keystore
   (`Build Credentials xHGwqm8DSF`) and the Supabase env vars. What still needs the Play Console —
   developer account, service-account key for `eas submit`, the listing itself — is in
-  `store/README.md`. There is also a local `chronicles.keystore`; EAS is not using it, so **don't
-  assume it is the upload key** before checking `npm run eas -- credentials`.
+  `store/README.md`. Two keystores exist on EAS: one EAS generated (hex alias) and the **default**
+  one, alias `chronicles` — that is the local `chronicles.keystore`, uploaded by hand. It is the
+  **upload key**: lose the file and its password and no future build can update the listing, so it
+  belongs in a password manager, not only on this machine (`*.keystore` is gitignored on purpose).
 
 Root-level `REFACTOR-PLAN.md`, `subagent-prompts.md`, `AUTONOMOUS-OPS.md`, `INTEGRATION-GUIDE.md`,
 `AGENT-ORCHESTRATOR.md`, `R9-*.md`, `prompt.md` are historical planning docs. They describe intent,

@@ -24,6 +24,9 @@
 | 7 | A3 + A6 — EAS, keystore, store listing, internal testing | 🟡 Repo-werk afgerond 2026-07-28; wacht op jouw Expo-login + Play Console |
 | L | Logo — History Book als merk, icoon + splash + Kroniekschrijver | ✅ Afgerond 2026-07-28 |
 | 8 | B6 — streak-fixes + notificaties | ✅ Afgerond 2026-08-13 |
+| R8.AUTH | Supabase-auth + voortgang-sync (buiten dit plan om gebouwd) | ✅ Afgerond 2026-08-14 |
+| R8.SYNC-B | story-progress + character-unlocks naar Supabase | ✅ Afgerond 2026-08-14 |
+| 9 | Cloud-build werkend krijgen — `npm ci`, env-variabelen, `.easignore` | ✅ Afgerond 2026-08-17 |
 | 1.1 | B3b — rijke blokken (`kop`/`weetje`/`sleutelmoment`) voor 120 hoofdstukken | ⬜ Ná launch |
 
 > **Fase 6.5 en 7 mogen door elkaar lopen.** Een nieuw Play-developeraccount moet geverifieerd
@@ -34,10 +37,54 @@
 
 ## Handover — laatste stand
 
-**Datum:** 2026-08-13
-**Laatst afgeronde fase:** Fase 8 (B6). **Alle codefases van dit plan zijn nu afgerond.** Wat
-overblijft vóór v1.0 vereist jouw Expo-login en Play Console (Fase 7, zie verderop), plus één
-ronde nieuwe screenshots.
+**Datum:** 2026-08-17
+**Laatst afgeronde fase:** Fase 9 — de EAS-build doet het weer. **Alle codefases van dit plan zijn
+afgerond.** Wat overblijft vóór v1.0 zit in de Play Console en in drie inhoudelijke blockers die
+hieronder staan, plus één ronde nieuwe screenshots.
+
+> ### Fase 9 — de cloud-build (2026-08-17)
+>
+> Op 14 augustus faalden **vijf** productiebuilds achter elkaar, telkens na twee seconden. Drie
+> oorzaken, alle drie gerepareerd, en alle drie het soort dat je lokaal niet ziet.
+>
+> **1. `npm ci` — package.json en package-lock.json "niet in sync".** De melding wees
+> `typescript@5.9.3` aan, terwijl het project op `~6.0.3` staat. Dat kwam niet uit de app maar uit
+> **`eas-cli` in `devDependencies`**: die sleept `@expo/require-utils` mee, met een *optionele
+> peer* op `typescript ^5`. De npm 11 op deze machine laat die weg uit de lockfile, de npm 10 op
+> de EAS-builder wil hem nested installeren. `npm ci` slaagde hier dus altijd en faalde daar
+> altijd. Gereproduceerd met `npm@10 install --package-lock-only`, dat precies
+> `node_modules/eas-cli/node_modules/typescript@5.9.3` toevoegde.
+> **Fix:** eas-cli hoort niet in de dependency-boom van de app. De scripts draaien hem via `npx`
+> (`npm run eas -- <cmd>`), dus er verandert niets aan de bediening. Na de wijziging komen npm 10
+> én npm 11 schoon door `npm ci --include=dev` — controleer dat met
+> `npx npm@10 ci --include=dev --dry-run` als je ooit aan de dependencies zit.
+>
+> **2. De build zou een baksteen zijn geweest.** EAS respecteert `.gitignore` en `.env.local`
+> staat daarin, dus de AAB had géén `EXPO_PUBLIC_SUPABASE_*` gehad. `src/lib/supabase.ts` gooit bij
+> import, dus de app was bij het eerste frame gecrasht — met een foutmelding over `.env.local`, in
+> een build waar dat bestand per definitie niet bestaat. Beide waarden staan nu als **EAS
+> project-environmentvariabelen** in `development`/`preview`/`production`, en elk profiel in
+> `eas.json` noemt zijn `environment` expliciet.
+>
+> **3. De upload zelf viel om op Windows.** `.claude/skills/` bevat twee symlinks naar het
+> genegeerde `.agents/`, en Windows mag zonder ontwikkelaarsmodus geen symlink aanmaken:
+> `EPERM: operation not permitted, symlink`. Nieuw bestand **`.easignore`** sluit `.claude/` uit.
+> **Let op:** zodra `.easignore` bestaat, negeert eas-cli *élke* `.gitignore` in het project. Het
+> is dus een superset, en een regel die je alleen in `.gitignore` zet doet niets voor de build.
+>
+> **Geverifieerd, niet aangenomen:** de preview-APK (build `cf83eb78`) is **FINISHED** en
+> gedownload. De Supabase-URL en de publishable key zitten in de bundel; `expo-dev-launcher` en
+> DevMenu zitten er **niet** in; 186 webp'jes samen 33,0 MB. De APK is 143 MB omdat hij universeel
+> is (83 MB aan native libs voor vier ABI's) — de AAB splitst per ABI, dus een echt toestel
+> downloadt ruwweg 80 MB.
+>
+> **Ook uitgezocht:** er staan twee keystores op EAS. De actieve (`xHGwqm8DSF`, default) heeft
+> alias `chronicles` en is de lokale `chronicles.keystore` die jij hebt geüpload. Dat is de
+> **upload key** — zonder dat bestand plus wachtwoord kun je de app na publicatie nooit meer
+> updaten, dus die hoort in een wachtwoordmanager en niet alleen op deze machine.
+>
+> **En:** alle Fase 1–8 output stond nog ongecommit (273 bestanden). Dat is nu vastgelegd in
+> `0483dc6`, de build-fix in `633c68d`, `.easignore` + documentatie in `514b363`.
 
 > ### Fase 8 — streaks + dagelijkse herinnering (B6)
 >
@@ -171,9 +218,23 @@ ronde nieuwe screenshots.
 > bouwde, dus je verifieert je wijziging en ziet de óude code. Herstart met `--clear`, en check bij
 > twijfel wat er écht wordt uitgeleverd (commando staat in CLAUDE.md). Twee keer in deze sessie
 > een verkeerde conclusie op gebaseerd.
-**Volgende actie:** de handmatige stappen uit **`store/README.md`** — privacybeleid publiceren,
-`npx eas login` + `eas init`, keystore, preview-build op een echt toestel, Play-account. Daarnaast
-ligt **Fase 8 (B6)** klaar en die is inhoudelijk zwaarder geworden, zie de aandachtspunten.
+**Volgende actie (stand 2026-08-17):** de build-pipeline werkt en de app is technisch shipbaar. Wat
+er nu tussen jou en de Play Store staat is inhoudelijk, niet technisch:
+
+1. **Het privacybeleid klopt niet meer.** `docs/privacy-policy.html`, de Data Safety-antwoorden in
+   `docs/README.md` en `src/constants/juridisch.ts` beschrijven allemaal nog een app die niets
+   verstuurt. Sinds R8.AUTH is er een account en gaat leesvoortgang naar een server in Supabase.
+   Dit móet kloppen vóór indienen — een verkeerd Data Safety-formulier is een afwijzing, en
+   niets in de code faalt als het fout staat.
+2. **`PRIVACY_BELEID_URL` is nog een placeholder.** Publiceer `docs/` via GitHub Pages (stappen in
+   `docs/README.md`) en vul de URL in. Harde blocker; Profiel verbergt het "Over"-blok tot dat is
+   gebeurd, dus er komt nooit een dode link in een release.
+3. **Er is geen accountverwijdering.** Play eist voor elke app met accounts een route om je account
+   én je data te wissen, in de app én via een URL. Er is ook geen DELETE-policy op de Supabase-
+   tabellen. Zie `.claude/R8-AUTH-CHECKPOINT.md` §7.
+4. **Alle acht screenshots zijn verouderd** (Fase 8 veranderde de reader-header, de teller en de
+   streak), en er zijn nu ook inlog- en Profiel-schermen die er niet in staan.
+5. **Reken op de 12-testers-regel** — zie hieronder, dat is de langste doorlooptijd van allemaal.
 
 > ⚠️ **Fase 7 kan niet "af" zonder jou.** Alles wat zonder inloggen kon is gedaan; wat overblijft
 > vereist een Expo-account en de Play Console. Het volledige stappenplan staat in
