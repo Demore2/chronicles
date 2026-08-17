@@ -1,0 +1,63 @@
+# Wat EAS Build NIET mee mag uploaden.
+#
+# Let op: zodra dit bestand bestaat, negeert eas-cli élke .gitignore in het
+# project ("if .easignore exists, .gitignore files are not used" — zie
+# eas-cli/build/vcs/local.js). Dit bestand moet dus een *superset* van
+# .gitignore zijn; een regel die je alleen daar zet, werkt hier niet.
+#
+# Reden dat het bestaat: `.claude/skills/` bevat symlinks naar `.agents/`, dat
+# zelf genegeerd is. Windows mag zonder ontwikkelaarsmodus geen symlinks maken,
+# dus de kopieerstap van eas-cli viel om met
+#   EPERM: operation not permitted, symlink '...\.agents\skills\supabase'
+# Ze horen sowieso niet in een build thuis.
+
+# --- superset van .gitignore ---
+node_modules/
+
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+.kotlin/
+*.orig.*
+*.jks
+*.keystore
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+.metro-health-check*
+
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+.DS_Store
+*.pem
+
+.env*.local
+
+play-service-account.json
+
+*.tsbuildinfo
+
+example
+
+# EAS draait zelf `expo prebuild`; een meegestuurde android/ of ios/ map maakt
+# van een managed build een bare build met een verouderde native laag.
+/ios
+/android
+
+.tmp-export-check*
+.tmp-notification-icon.html
+.tmp-shots/
+
+/Git/
+.agents
+
+# --- alleen voor EAS ---
+
+# Agent-configuratie en skill-symlinks. Zie de toelichting bovenaan.
+.claude/

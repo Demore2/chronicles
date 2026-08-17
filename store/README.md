@@ -24,8 +24,14 @@ Regenereren: `npm run generate:store-assets` (icoon + feature graphic) en
   dat de eerste release al de verkeerde runtime vastlegt.
 - npm-scripts: `build:android:preview`, `build:android:prod`, `submit:android`,
   `submit:android:prod`.
-- `eas-cli` staat in `devDependencies`, dus `npm run build:android:preview` werkt zonder globale
-  installatie. Losse commando's draai je als `npx eas <…>`.
+- `eas-cli` staat **bewust niet** in `package.json` — als devDependency liet hij elke cloud-build
+  stuklopen op `npm ci` (zie CLAUDE.md, "Release & store assets"). De scripts draaien hem via
+  `npx`; losse commando's geef je als `npm run eas -- <…>`.
+- De Supabase-sleutels staan als **EAS project-environmentvariabelen** in `development`, `preview`
+  en `production` (`npm run eas -- env:list production`). `.env.local` wordt niet meegestuurd, dus
+  zonder die variabelen crasht de build bij de eerste render.
+- `.easignore` bepaalt wat er wordt geüpload en **vervangt** alle `.gitignore`-bestanden. Een regel
+  die je alleen in `.gitignore` zet, doet niets voor de build.
 
 **Versienummers worden op de EAS-server bijgehouden** (`cli.appVersionSource: "remote"`). Bij de
 eerste productiebuild neemt EAS `android.versionCode` uit `app.json` (= 1) over als startwaarde;

@@ -22,7 +22,8 @@ npm run generate:batch         # orchestration-controller.mjs batch content/imag
 npm run generate:store-assets  # store/assets/ icon-512.png + feature-graphic.png (see "Store assets")
 npm run generate:notification-icon # assets/images/notification-icon.png (white-on-transparent, 96px)
 npm run check:listing          # count store/listing.md copy against Play's limits (--check = dry run)
-npm run build:android:preview  # EAS APK build for your own device (needs `npx eas login` first)
+npm run eas -- <cmd>           # eas-cli via npx (it is NOT a dependency — see "Release & store assets")
+npm run build:android:preview  # EAS APK build for your own device (needs `npm run eas -- login` first)
 npm run build:android:prod     # EAS AAB build for Play
 npm run submit:android         # eas submit → internal testing track
 ```
@@ -486,9 +487,28 @@ the Play Console** — `listing.md` (all copy plus the answer to every Console f
   is **`"remote"`**, so EAS owns the versionCode after the first build — `android.versionCode` in
   `app.json` is only the seed value and the source for local `expo run:android` builds. Both submit
   profiles are `releaseStatus: "draft"` so an upload never rolls out by itself.
-- `eas-cli` is a **devDependency**, not global, so the `build:android:*` scripts work as-is.
+- **`eas-cli` is deliberately *not* a dependency.** It used to sit in `devDependencies`; that broke
+  every cloud build. EAS runs `npm ci --include=dev` with **npm 10**, which wants
+  `node_modules/eas-cli/node_modules/typescript@5.9.3` for `@expo/require-utils`' optional peer,
+  while local **npm 11** leaves it out of the lockfile — so `npm ci` passed here and failed there,
+  every time, in the first two seconds. The `build:android:*` / `submit:android*` scripts go
+  through `npm run eas --` (`npx eas-cli@^21.4.0`), so nothing about the workflow changed. **Don't
+  add it back**, and if you ever change dependencies, sanity-check with
+  `npx npm@10 ci --include=dev --dry-run`, not just the local npm.
+- **The Supabase keys live on EAS, not in the build.** `.env.local` is ignored, so a cloud build
+  has no `EXPO_PUBLIC_SUPABASE_*` and `src/lib/supabase.ts` throws at import — the app would crash
+  on its first frame with no clue why. Both values are EAS **project environment variables**
+  (plain text, in `development`/`preview`/`production`; the publishable key ships in the bundle
+  anyway). Each profile in `eas.json` names its `environment` explicitly. Check with
+  `npm run eas -- env:list production`; a new EXPO_PUBLIC_ variable has to be added there too.
+- **`.easignore` exists and it *replaces* every `.gitignore`** ("if .easignore exists, .gitignore
+  files are not used" — `eas-cli/build/vcs/local.js`), so it is a superset and a rule you add only
+  to `.gitignore` has no effect on what gets uploaded. It exists because `.claude/skills/` holds
+  symlinks into the ignored `.agents/`, and Windows refuses to copy a symlink without developer
+  mode: the upload died on `EPERM: operation not permitted, symlink`.
 - `eas config` refuses to run without a logged-in account, so eas.json is validated offline against
-  `@expo/eas-json` from `node_modules` instead — same parser eas-cli uses.
+  `@expo/eas-json` from `node_modules` instead — same parser eas-cli uses. That only worked while
+  eas-cli was installed; use `npm run eas -- config` now that you are logged in.
 - **The feature graphic has a source file.** `store/feature-graphic.html` is rendered to PNG by
   `npm run generate:store-assets` (headless Chrome). Edit the HTML, re-run the script, never touch
   the PNG. Play **rejects a feature graphic with an alpha channel**, so the script flattens the
@@ -608,9 +628,12 @@ Known gaps:
   "chapters done" counter and the streak, so `phone-3/4/7` show a header that no longer looks
   like that and the excluded Profiel/Voortgang shots are now worth taking. Recapture before the
   production build — see `store/listing.md`.
-- **The release pipeline exists but nothing is linked yet**: `eas.json` and the whole `store/`
-  folder are ready, `app.json` has no `extra.eas.projectId` and there is no keystore, because both
-  need an interactive `eas login`. Steps in `store/README.md`.
+- **The release pipeline is linked**: the project is `@quinten1234/chronicles-app`
+  (`extra.eas.projectId` in `app.json`), EAS holds the Android keystore
+  (`Build Credentials xHGwqm8DSF`) and the Supabase env vars. What still needs the Play Console —
+  developer account, service-account key for `eas submit`, the listing itself — is in
+  `store/README.md`. There is also a local `chronicles.keystore`; EAS is not using it, so **don't
+  assume it is the upload key** before checking `npm run eas -- credentials`.
 
 Root-level `REFACTOR-PLAN.md`, `subagent-prompts.md`, `AUTONOMOUS-OPS.md`, `INTEGRATION-GUIDE.md`,
 `AGENT-ORCHESTRATOR.md`, `R9-*.md`, `prompt.md` are historical planning docs. They describe intent,
