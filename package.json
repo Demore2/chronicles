@@ -86,7 +86,8 @@
     "generate:batch": "node orchestration-controller.mjs",
     "generate:batch:dev": "node orchestration-controller.mjs",
     "generate:batch:validate": "npm run validate:content && npx tsc --noEmit && npm run lint",
-    "sync:verhaalcatalogus": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sync-story-catalog.mjs"
+    "sync:verhaalcatalogus": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sync-story-catalog.mjs",
+    "check:push": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-push-setup.mjs"
   },
   "private": true
 }

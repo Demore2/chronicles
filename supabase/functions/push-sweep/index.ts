@@ -145,6 +145,35 @@ Deno.serve(async (req: Request) => {
   const doelUur = Number(params.get('uur') ?? STANDAARD_DOEL_UUR);
   const droogLopen = params.get('drooglopen') === '1';
 
+  // --- Is Firebase überhaupt ingesteld? ---
+  //
+  // **Dit moet vóór het claimen staan, en dat is geen netheid maar een bug die we hier repareren.**
+  // Zonder deze controle claimt de sweep netjes zijn regels in `notifications_sent`, roept dan
+  // `send-push` aan, krijgt een 500 (`firebase_niet_geconfigureerd`) terug en zet diezelfde regels
+  // op `failed`. Er wordt bewust niets herhaald, dus die lezer is die dag *bediend* zonder ooit
+  // iets ontvangen te hebben — en de dedupe-sleutel houdt hem de rest van de dag tegen. Draait de
+  // cron al terwijl `google-services.json` en het serviceaccount nog moeten komen, dan verbrandt
+  // dat elke dag opnieuw de melding van iedereen, stilletjes.
+  //
+  // Nu is het antwoord 200 met een reden erbij: er is niets misgegaan, er valt alleen nog niets te
+  // versturen. Zo mag de cron veilig aanstaan vóórdat de Firebase-kant klaar is, en gaat hij
+  // vanzelf leveren zodra de drie secrets er zijn. `send-push` houdt zijn eigen controle: die
+  // wordt ook met de hand aangeroepen, en dáár is een 500 juist het goede antwoord.
+  const firebaseIngesteld = Boolean(
+    Deno.env.get('FIREBASE_PROJECT_ID') &&
+      Deno.env.get('FIREBASE_CLIENT_EMAIL') &&
+      Deno.env.get('FIREBASE_PRIVATE_KEY')
+  );
+  if (!firebaseIngesteld && !droogLopen) {
+    console.warn('[push-sweep] Firebase-secrets ontbreken, sweep overgeslagen (niets geclaimd)');
+    return antwoord(200, {
+      ok: true,
+      overgeslagen: 'firebase_niet_geconfigureerd',
+      verzonden: 0,
+      hint: 'Zet FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL en FIREBASE_PRIVATE_KEY als secret. Zie supabase/README-push.md.',
+    });
+  }
+
   const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
 
   const { data: kandidaten, error: kandidaatFout } = await admin.rpc('push_kandidaten', {
@@ -178,6 +207,7 @@ Deno.serve(async (req: Request) => {
     return antwoord(200, {
       ok: true,
       drooglopen: true,
+      firebase_ingesteld: firebaseIngesteld,
       kandidaten: samengesteld.map(({ kandidaat, inhoud }) => ({
         user_id: kandidaat.user_id,
         soort: kandidaat.soort,

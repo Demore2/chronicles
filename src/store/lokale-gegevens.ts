@@ -2,6 +2,7 @@ import { useAbonnementStore } from '@/store/abonnement-store';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { STANDAARD_EMAIL_VOORKEUREN, useEmailVoorkeurStore } from '@/store/email-voorkeur-store';
 import { useNotificatieStore } from '@/store/notificatie-store';
+import { usePrestatieStore } from '@/store/prestatie-store';
 import { useProfileStore } from '@/store/profile-store';
 import { useStoryProgressStore } from '@/store/story-progress-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
@@ -50,6 +51,12 @@ export function wisLokaleGebruikersgegevens(): void {
   });
 
   useStoryProgressStore.setState({ progress: {}, heeftOnverzondenWijzigingen: false });
+
+  // De mijlpalen zijn afgeleid en verdwijnen dus vanzelf met de voortgang hierboven. Wat hier weg
+  // moet is het lijstje "hier heb je de melding al voor gehad": blijft dat staan, dan haalt de
+  // volgende lezer op dit toestel zijn eerste tien hoofdstukken zonder ooit een mijlpaal te zien.
+  // `geinitialiseerd` gaat mee terug op `false`, zodat die lezer een schone eerste meting krijgt.
+  usePrestatieStore.getState().reset();
   useCharacterUnlockStore.setState({ unlockedCharacters: [], heeftOnverzondenWijzigingen: false });
 
   // De avatar: een personage-avatar verwijst naar een verhaal dat je niet meer hebt ontgrendeld,

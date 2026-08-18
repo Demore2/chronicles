@@ -8,6 +8,23 @@ app-kant staat in `src/lib/push.ts`, `src/hooks/use-push-registratie.ts` en
 > het is Deno-code en hoort niet in een app-build. Een fris Supabase-project heeft deze functies
 > dus **niet**; die moeten apart gedeployd worden.
 
+## Eerst dit: `npm run check:push`
+
+```bash
+npm run check:push          # wat staat er, wat ontbreekt er
+npm run check:push -- --check   # exitcode 1 als er iets mist
+```
+
+Loopt alles langs wat de push-kant nodig heeft: `google-services.json` (**inclusief de controle
+dat het pakket erin overeenkomt met `app.json`** — komt dat niet overeen, dan slaagt de build en
+levert FCM alsnog nooit iets af), de vier native pakketten, het notificatie-icoon, de
+Supabase-variabelen en — als `SUPABASE_SERVICE_ROLE_KEY` in `.env.local` staat — de vier tabellen,
+de verhaalcatalogus en of de Firebase-secrets op de edge functions gezet zijn.
+
+Wat het zonder die sleutel niet kan zien, meldt het als `??` in plaats van als goed. Dat is
+dezelfde regel als bij `audit:interactief`: een blinde telling met de publishable key geeft nul
+rijen zonder foutmelding, en daar mag geen conclusie uit getrokken worden.
+
 ## De verdeling: wat lokaal is en wat via de server gaat
 
 Niet elke melding hoort een push te zijn. De regel hier is: **de server stuurt alleen wat het
@@ -19,6 +36,7 @@ toestel zelf niet kan weten.**
 | Streak loopt vanavond af | **Lokaal**, vooruit gepland | Het toestel kent de streak zelf; zie `use-streak-herinnering.ts` |
 | "Je hoofdstuk staat nog open" (win-back) | **Server**, FCM | Het toestel kan geen melding plannen voor een dag waarop de app dicht blijft |
 | "Spartacus wacht op je" (aanbeveling) | **Server**, FCM | Vereist kennis van de hele catalogus en van wat je nog niet las |
+| Mijlpaal bereikt ("Tien hoofdstukken ver") | **Lokaal**, vooruit niets | Af te leiden uit voortgang die op het toestel staat; zie `constants/prestaties.ts` |
 
 Dit is bewust anders dan het oorspronkelijke plan, dat óók de dagelijkse herinnering via een
 cron elke minuut wilde versturen. Twee redenen: die cron vergelijkt `now().getHours()` (UTC) met
@@ -36,6 +54,11 @@ achteruitgang.
   controle dat de aanroeper de service role is.
 - **Catalogus**: 20 verhalen, gevuld. Bijwerken met `npm run sync:verhaalcatalogus`
   (heeft `SUPABASE_SERVICE_ROLE_KEY` in `.env.local` nodig; `--dry` om alleen te kijken).
+- **Cron**: `push-sweep-elk-uur` staat ingepland en is inert tot het Vault-geheim er is (zie
+  stap 4).
+- **Mijlpalen**: veertien stuks, afgeleid uit de voortgang (`src/constants/prestaties.ts`), met
+  een eigen Android-kanaal, een schakelaar in Instellingen (`achievements_enabled`) en een
+  `achievement_unlocked`-gebeurtenis in Analytics. Volledig lokaal — er is geen tabel bij gekomen.
 
 ## Wat er nog moet — in volgorde
 
@@ -77,45 +100,46 @@ npx expo run:android
 (Zie ook de bekende val: een shell die in `android/` staat, of een draaiende Gradle-daemon,
 blokkeert `prebuild` met EBUSY.)
 
-### 4. De cron
+### 4. De cron — staat al ingepland, wacht op één regel
 
-`pg_cron` en `pg_net` staan **niet** aan in dit project. De sweep draait dus nog nergens vanzelf.
-Zet hem pas aan als stap 1–3 klaar zijn: een cron die elk uur een function aanroept die zonder
-Firebase-credentials een 500 teruggeeft, vult alleen je logboek.
-
-De service-role-sleutel hoort in Vault en niet in de cron-regel zelf — `cron.job` is leesbaar
-voor wie de database kan lezen.
+`pg_cron` en `pg_net` zijn aangezet en de job **`push-sweep-elk-uur`** bestaat (migraties
+`push_cron_sweep`, `push_cron_sweep_net_schema`). Hij doet alleen nog niets, en dat is met opzet:
 
 ```sql
-create extension if not exists pg_cron;
-create extension if not exists pg_net;
-
--- Eenmalig: de sleutel in Vault.
-select vault.create_secret('<SERVICE_ROLE_KEY>', 'service_role_key');
-
--- Elk uur op het hele uur. De function bepaalt zelf per lezer of het bij hém 19:00 is.
-select cron.schedule(
-  'push-sweep-elk-uur',
-  '0 * * * *',
-  $$
-  select net.http_post(
-    url     := '<PROJECT_URL>/functions/v1/push-sweep',
-    headers := jsonb_build_object(
-      'Content-Type', 'application/json',
-      'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets
-                                      where name = 'service_role_key')
-    ),
-    body    := '{}'::jsonb
-  );
-  $$
-);
+select net.http_post(...)
+where exists (select 1 from vault.decrypted_secrets where name = 'service_role_key');
 ```
+
+Zolang dat geheim niet bestaat gaat er geen aanroep uit — geen 401 per uur, geen logregel. Eén
+regel zet hem in werking:
+
+```sql
+select vault.create_secret('<SERVICE_ROLE_KEY>', 'service_role_key');
+```
+
+De sleutel hoort in Vault en niet in de cron-regel zelf: `cron.job` is leesbaar voor wie de
+database kan lezen.
+
+**Dit mag vóórdat Firebase klaar is.** `push-sweep` controleert sinds versie 2 zelf of de drie
+Firebase-secrets bestaan en geeft anders een 200 terug **zonder iets te claimen**. Dat was eerder
+een echte bug: de sweep claimde eerst een rij in `notifications_sent`, kreeg dan een 500 van
+`send-push` en zette diezelfde rij op `failed` — en omdat er bewust niets opnieuw geprobeerd
+wordt, was die lezer die dag "bediend" zonder ooit iets ontvangen te hebben. Een cron die aanstond
+vóór het serviceaccount had dus elke dag stilletjes ieders melding opgebrand.
 
 Weer uitzetten: `select cron.unschedule('push-sweep-elk-uur');`
 
 **Elk uur en niet elke minuut.** Er is één moment per lezer per dag waarop er iets kan vertrekken,
 en de sweep vindt dat moment door het lokale uur te vergelijken. Elke minuut draaien is 1440
 aanroepen per dag voor precies dezelfde uitkomst.
+
+Nakijken of hij loopt:
+
+```sql
+select jobname, schedule, active from cron.job;
+select status, return_message, start_time from cron.job_run_details
+order by start_time desc limit 10;
+```
 
 ## Testen zonder een dag te wachten
 

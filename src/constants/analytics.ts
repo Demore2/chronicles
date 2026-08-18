@@ -78,6 +78,15 @@ export const ANALYTICS_EVENTS = {
    * aantal verzonden meldingen staat in `notifications_sent`, en dit is de teller erboven.
    */
   NOTIFICATION_OPENED: 'notification_opened',
+  /**
+   * Er is een mijlpaal bereikt (`constants/prestaties.ts`).
+   *
+   * `achievement_id` is de stabiele id en niet de vertaalde naam — die verschilt per taal, en dan
+   * zou dezelfde mijlpaal in het rapport in vier rijen uiteenvallen. `tegelijk` telt hoeveel er in
+   * dezelfde meting binnenkwamen: structureel meer dan 1 betekent dat de eerste meting op een
+   * toestel te vroeg gebeurt, en dat is precies het soort fout dat je anders nooit ziet.
+   */
+  ACHIEVEMENT_UNLOCKED: 'achievement_unlocked',
 } as const;
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];

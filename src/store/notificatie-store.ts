@@ -42,6 +42,15 @@ export const STANDAARD_PUSH_VOORKEUREN = {
   aanbevelingenAan: false,
   /** Lokale melding als je streak vanavond afloopt. Zie `use-streak-herinnering.ts`. */
   streakAan: true,
+  /**
+   * Lokale melding bij een bereikte mijlpaal. Zie `constants/prestaties.ts`.
+   *
+   * Staat aan om dezelfde reden als `streakAan`: het gaat over wat de lezer zelf heeft opgebouwd,
+   * er komt geen server aan te pas, en hij kan alleen afgaan als de meldingstoestemming er al is.
+   * Uitzetten laat de mijlpaal gewoon bestaan — hij verschijnt dan alleen op Profiel en niet als
+   * melding. Een mijlpaal afzeggen is iets anders dan hem niet verdienen.
+   */
+  prestatiesAan: true,
 } as const;
 
 export type PushVoorkeurSleutel = keyof typeof STANDAARD_PUSH_VOORKEUREN;
@@ -69,6 +78,7 @@ type NotificatieState = {
   terugkeerAan: boolean;
   aanbevelingenAan: boolean;
   streakAan: boolean;
+  prestatiesAan: boolean;
   /**
    * Het laatst bij Supabase geregistreerde FCM-token van dit toestel.
    *
@@ -103,6 +113,7 @@ export type ServerVoorkeuren = {
   reengagement_enabled: boolean;
   recommendations_enabled: boolean;
   streak_enabled: boolean;
+  achievements_enabled: boolean;
 };
 
 const syncPlanner = maakSyncPlanner(() => useNotificatieStore.getState().syncToSupabase());
@@ -170,6 +181,7 @@ export const useNotificatieStore = create<NotificatieState>()(
             reengagement_enabled: state.terugkeerAan,
             recommendations_enabled: state.aanbevelingenAan,
             streak_enabled: state.streakAan,
+            achievements_enabled: state.prestatiesAan,
             tijdzone: huidigeTijdzone(),
           },
           { onConflict: 'user_id' }
@@ -204,6 +216,7 @@ export const useNotificatieStore = create<NotificatieState>()(
           terugkeerAan: vanServer.reengagement_enabled,
           aanbevelingenAan: vanServer.recommendations_enabled,
           streakAan: vanServer.streak_enabled,
+          prestatiesAan: vanServer.achievements_enabled,
         });
       },
 
@@ -239,7 +252,7 @@ export async function haalNotificatieVoorkeurenOp(userId: string): Promise<void>
     .from('notification_preferences')
     .select(
       'daily_reminder_enabled, daily_reminder_hour, daily_reminder_minute, ' +
-        'reengagement_enabled, recommendations_enabled, streak_enabled'
+        'reengagement_enabled, recommendations_enabled, streak_enabled, achievements_enabled'
     )
     .eq('user_id', userId)
     .maybeSingle();

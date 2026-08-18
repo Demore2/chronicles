@@ -22,6 +22,7 @@ npm run generate:batch         # orchestration-controller.mjs batch content/imag
 npm run generate:store-assets  # store/assets/ icon-512.png + feature-graphic.png (see "Store assets")
 npm run generate:notification-icon # assets/images/notification-icon.png (white-on-transparent, 96px)
 npm run check:listing          # count store/listing.md copy against Play's limits (--check = dry run)
+npm run check:push             # wat de push-kant nog mist (--check = exitcode 1)
 npm run eas -- <cmd>           # eas-cli via npx (it is NOT a dependency — see "Release & store assets")
 npm run build:android:preview  # EAS APK build for your own device (needs `npm run eas -- login` first)
 npm run build:android:prod     # EAS AAB build for Play
@@ -461,6 +462,7 @@ raken.
 | Streak loopt vanavond af | lokaal | `use-streak-herinnering.ts` |
 | Win-back ("je hoofdstuk staat nog open") | **server, FCM** | `push-sweep` → `send-push` |
 | Aanbeveling ("Spartacus wacht op je") | **server, FCM** | idem |
+| Mijlpaal ("Tien hoofdstukken ver") | lokaal | `use-prestaties.ts` (zie hieronder) |
 
 - **De dagelijkse herinnering is en blijft lokaal.** Er lag een plan om hem door een cron elke
   minuut te laten versturen; dat vergelijkt `now().getHours()` (UTC) met een lokaal ingesteld
@@ -489,6 +491,18 @@ raken.
   en geen minutenverschil — alleen zo klopt het na een zomertijdwissel. Een trigger zet een
   onbekende naam terug naar `'UTC'`, want `at time zone 'Mars/Olympus'` gooit en zou de hele sweep
   laten vallen.
+- **De sweep controleert éérst of Firebase is ingesteld, en claimt pas daarna.** Zonder die
+  volgorde claimt hij een rij, krijgt een 500 van `send-push` (`firebase_niet_geconfigureerd`) en
+  zet diezelfde rij op `failed` — en omdat er bewust niets opnieuw geprobeerd wordt is die lezer
+  die dag "bediend" zonder ooit iets ontvangen te hebben. Een cron die aanstaat vóórdat het
+  serviceaccount bestaat brandt zo elke dag ieders melding op, stilletjes. Nu is het antwoord een
+  200 met `overgeslagen: 'firebase_niet_geconfigureerd'` en is er niets geclaimd.
+- **De cron staat ingepland en is inert.** `pg_cron`/`pg_net` zijn aan, de job
+  `push-sweep-elk-uur` bestaat, en zijn opdracht eindigt op
+  `where exists (select 1 from vault.decrypted_secrets where name = 'service_role_key')`. Zolang
+  dat geheim niet bestaat gaat er geen aanroep uit — geen 401 per uur, geen logregel. Eén
+  `vault.create_secret(...)` zet hem in werking. **Let op: `pg_net` installeert zichzelf in schema
+  `net`**, ongeacht de `with schema` die je meegeeft; `extensions.http_post` bestaat niet.
 - **De sweep claimt vóórdat hij verstuurt.** Eerst een rij in `notifications_sent` met een unieke
   `dedupe_sleutel` (`on conflict do nothing` + `select`, dus alleen écht nieuwe rijen komen eruit),
   dan pas FCM. Andersom levert een crash halverwege een dubbele melding op. Er wordt bewust **niets
@@ -513,6 +527,40 @@ raken.
   genoeg, en `expo prebuild` faalt sowieso zolang `google-services.json` ontbreekt. Controleer na
   de eerste geslaagde prebuild de merged manifest opnieuw op nieuwe permissies (commando in
   `docs/README.md`).
+
+### Mijlpalen (`src/constants/prestaties.ts`, `use-prestaties.ts`)
+
+De "achievements" uit het pushplan. Veertien stuks, over vier tellers: afgeronde hoofdstukken,
+uitgelezen verhalen, ontgrendelde personages en de streak.
+
+- **Ze worden afgeleid, niet bijgehouden.** Geen tabel, geen teller, geen vijfde sync-store: een
+  mijlpaal is een uitspraak over voortgang die al in drie gesynchroniseerde stores staat. Wat
+  `prestatie-store` wél bewaart is uitsluitend **welke al is aangekondigd** — plus
+  `geinitialiseerd`. Dat laatste veld is het belangrijkste van de hele feature: zonder die vlag
+  krijgt iedereen die deze versie installeert met 50 hoofdstukken achter de rug zes felicitaties
+  bij de eerste start. De eerste meting schrijft dus alles stil bij. Om dezelfde reden wordt er
+  hoogstens **één per meting** aangekondigd en de rest stil bijgeschreven.
+- **`meet()` wacht op de hydratie van alle vier de stores.** Meten vóór AsyncStorage gelezen is
+  legt "nul mijlpalen" vast als beginstand, waarna de hydratie er vijftig hoofdstukken naast legt
+  en de lezer alsnog zijn hele geschiedenis als meldingen terugkrijgt — precies wat
+  `geinitialiseerd` moest voorkomen.
+- **Voorgrond wordt een strook, achtergrond wordt een melding.** Een mijlpaal wordt bijna altijd
+  bereikt terwijl je naar de app kijkt, en een systeemmelding over iets wat je zojuist zelf deed is
+  ruis (zelfde afweging als bij de verwijderde ontgrendelmelding). `PrestatieMelding` in de root
+  layout is bewust een strook en geen modal: de zware onderbreking is gereserveerd voor het
+  ontgrendelde personage, en deze mag daar niet mee botsen — hij blokkeert niets, wacht op geen
+  `onClose` en verdwijnt na 4,5 seconde.
+- **De schakelaar staat uit-zetbaar in Instellingen** (`prestatiesAan` →
+  `notification_preferences.achievements_enabled`, standaard **aan**, zelfde redenering als
+  `streakAan`). Uit betekent: geen aankondiging, maar de mijlpaal wordt wél bijgeschreven en staat
+  gewoon op Profiel. Een mijlpaal afzeggen is iets anders dan hem niet verdienen.
+- **Een vergrendelde tegel in `PrestatieRaster` verklapt zijn naam wél**, anders dan een
+  vergrendelde `CharacterCard`. Daar is de naam de beloning; hier is hij het doel.
+- Namen staan per mijlpaal in i18n (`prestatie.namen`, getypeerd als `Record<PrestatieId, string>`
+  — een mijlpaal zonder naam is dus een compileerfout), de uitleg wordt per categorie samengesteld.
+- Eigen Android-kanaal (`prestatie`) en een eigen analytics-gebeurtenis
+  (`ACHIEVEMENT_UNLOCKED`), met `tegelijk` erin: structureel meer dan 1 betekent dat de eerste
+  meting ergens te vroeg gebeurt.
 
 ### Images (portretten + scènes — gebundeld, LAUNCH-PLAN.md B1/B2)
 
@@ -965,7 +1013,8 @@ what the previous phase left behind. Update both at the end of every phase.
 Built and working: data model, design system, three tabs, era rows on Home, story chapter reader
 with persisted per-chapter progress, bundled portraits and chapter scenes, the six block types,
 motion + haptics, character unlock + Profiel collection grid, streaks (local dates, expiring, only
-a finished chapter counts), an optional daily reminder notification at a time you pick, email
+a finished chapter counts), an optional daily reminder notification at a time you pick, fourteen derived
+milestones (in-app strip when you are looking, local notification when you are not), email
 preferences, the free/Pro model (daily story limit + one placeholder interstitial, both behind
 flags), interactief lezen (quiz/peiling/keuzepunt per hoofdstuk, uit Supabase), full i18n
 (en/nl/fr/de) with a language picker, theme picker, Firebase Analytics (opt-out, schakelaar in Instellingen → Privacy).
@@ -995,16 +1044,19 @@ Known gaps:
   Instellingen → "Request my data" opens a prefilled mail to `SUPPORT_EMAIL`
   (`businessthedemoreagency@gmail.com`), and every such request has to be answered by hand within
   30 days. An export the app builds itself is deliberately not built.
-- **Push notifications are built but cannot deliver yet.** Schema, both edge functions
-  (`send-push`, `push-sweep`), the story catalog, the client wrapper, the preferences UI and the
-  four-language copy are all in place and deployed; `push_kandidaten` is verified against real
-  data. Three things are still missing and all three are outside the code: `google-services.json`
-  (same blocker as Analytics), a Firebase **service account** whose three values go into the edge
-  functions' secrets, and the **pg_cron schedule** — `pg_cron`/`pg_net` are not enabled on this
-  project. Until then `push.beschikbaar` is false, the two server categories are hidden from
-  Settings, and only the two local notifications (daily reminder, streak) work. Full runbook in
+- **Push notifications are built and scheduled; delivery waits on Firebase.** Schema, both edge
+  functions (`send-push`, `push-sweep`), the story catalog, the client wrapper, the preferences UI,
+  the milestones and the four-language copy are all in place and deployed; `push_kandidaten` is
+  verified against real data. `pg_cron`/`pg_net` **are** now enabled and the hourly job
+  `push-sweep-elk-uur` exists, deliberately inert until the Vault secret `service_role_key` is
+  created. Two things are still missing and both are outside the code: `google-services.json`
+  (same blocker as Analytics) and a Firebase **service account** whose three values go into the
+  edge functions' secrets. Until then `push.beschikbaar` is false, the two server categories are
+  hidden from Settings, and the three local notifications (daily reminder, streak, milestones)
+  work. `npm run check:push` reports exactly which of these is still open. Full runbook in
   `supabase/README-push.md`. **Nothing has been tested against a real device** — an emulator
-  without Play services never receives FCM.
+  without Play services never receives FCM, and the milestone strip uses Reanimated, which is
+  unreliable on web.
 - **Firebase Analytics needs `google-services.json` in the repo root.** It is not in the repo —
   create the Firebase project, add an Android app with package `com.chronicles.historyapp`, and
   drop the file there. Until then `expo prebuild` and every EAS build fail on the

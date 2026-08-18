@@ -31,6 +31,7 @@ const ICONEN: Record<PushVoorkeurSleutel, IoniconNaam> = {
   terugkeerAan: 'return-down-back-outline',
   aanbevelingenAan: 'compass-outline',
   streakAan: 'flame-outline',
+  prestatiesAan: 'ribbon-outline',
 };
 
 /** Sleutel → i18n-paar. Expliciet, zodat een nieuwe categorie zonder tekst een typefout is. */
@@ -50,18 +51,27 @@ const TEKSTEN: Record<
     label: (s) => s.instellingen.pushStreak,
     uitleg: (s) => s.instellingen.pushStreakUitleg,
   },
+  prestatiesAan: {
+    label: (s) => s.instellingen.pushPrestaties,
+    uitleg: (s) => s.instellingen.pushPrestatiesUitleg,
+  },
 };
 
 /** De categorieën die een server nodig hebben, en dus een werkende FCM-koppeling. */
 const SERVER_CATEGORIEEN: PushVoorkeurSleutel[] = ['terugkeerAan', 'aanbevelingenAan'];
 
+/** De categorieën die het toestel zelf plant. Die blijven staan als FCM ontbreekt. */
+const LOKALE_CATEGORIEEN: PushVoorkeurSleutel[] = ['streakAan', 'prestatiesAan'];
+
 export function PushVoorkeuren() {
   const { t } = useVertaling();
   const kanPush = push.beschikbaar;
 
+  // De twee lokale categorieën staan altijd onderaan, ook zonder FCM: ze lopen via
+  // expo-notifications en werken dus in elke build.
   const sleutels: PushVoorkeurSleutel[] = kanPush
-    ? [...SERVER_CATEGORIEEN, 'streakAan']
-    : ['streakAan'];
+    ? [...SERVER_CATEGORIEEN, ...LOKALE_CATEGORIEEN]
+    : [...LOKALE_CATEGORIEEN];
 
   return (
     <SettingsSectie

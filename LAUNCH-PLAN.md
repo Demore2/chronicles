@@ -28,6 +28,7 @@
 | R8.SYNC-B | story-progress + character-unlocks naar Supabase | ✅ Afgerond 2026-08-14 |
 | 9 | Cloud-build werkend krijgen — `npm ci`, env-variabelen, `.easignore` | ✅ Afgerond 2026-08-17 |
 | 10 | Productie-AAB bouwen (versionCode 6) | ✅ Afgerond 2026-08-17 |
+| 11 | Push-notificaties afgemaakt — mijlpalen, cron, sweep-precheck, `check:push` | ✅ Afgerond 2026-08-18 |
 | 1.1 | B3b — rijke blokken (`kop`/`weetje`/`sleutelmoment`) voor 120 hoofdstukken | ⬜ Ná launch |
 
 > **Fase 6.5 en 7 mogen door elkaar lopen.** Een nieuw Play-developeraccount moet geverifieerd
@@ -38,10 +39,56 @@
 
 ## Handover — laatste stand
 
-**Datum:** 2026-08-17
-**Laatst afgeronde fase:** Fase 10 — **de productie-AAB bestaat.** Alle codefases van dit plan zijn
-afgerond. Wat overblijft vóór v1.0 zit in de Play Console en in drie inhoudelijke blockers die
+**Datum:** 2026-08-18
+**Laatst afgeronde fase:** Fase 11 — de push-notificaties zijn af (mijlpalen, cron, een echte bug
+in `push-sweep`, `npm run check:push`). Daarvóór Fase 10: **de productie-AAB bestaat.** Alle
+codefases van dit plan zijn afgerond. Wat overblijft vóór v1.0 zit in de Play Console, in de
+Firebase Console (`google-services.json` + serviceaccount) en in drie inhoudelijke blockers die
 hieronder staan, plus één ronde nieuwe screenshots.
+
+> ### Fase 11 — push-notificaties afgemaakt (2026-08-18)
+>
+> De push-laag stond er al (schema, `send-push`, `push-sweep`, catalogus, client, voorkeuren-UI,
+> deeplinks, analytics). Wat er nog niet was, en nu wel:
+>
+> **1. Mijlpalen — het enige onderdeel van het pushplan dat nooit gebouwd was.** Veertien stuks
+> over vier tellers (hoofdstukken, verhalen, personages, streak), **afgeleid uit voortgang die al
+> synchroniseert** — geen tabel, geen vijfde sync-store. `constants/prestaties.ts`,
+> `store/prestatie-store.ts`, `hooks/use-prestaties.ts`, `components/prestatie-melding.tsx` +
+> `prestatie-raster.tsx` (op Profiel), vier talen, een eigen Android-kanaal, een schakelaar in
+> Instellingen (`achievements_enabled`) en `ACHIEVEMENT_UNLOCKED` in Analytics. Voorgrond wordt een
+> strook, achtergrond wordt een melding; hoogstens één per meting; de eerste meting op een toestel
+> kondigt niets aan. Die laatste twee regels zijn er omdat de feature anders bij de eerste start
+> zes felicitaties achter elkaar geeft aan iedereen die al vijftig hoofdstukken had.
+>
+> **2. Een echte bug in `push-sweep`, gevonden vóór hij kwaad kon.** Hij claimde een rij in
+> `notifications_sent` en riep pas daarna `send-push` aan. Zonder Firebase-secrets geeft die een
+> 500, waarna de sweep zijn eigen claim op `failed` zet — en er wordt bewust niets opnieuw
+> geprobeerd. Elke ronde had dus stilletjes ieders melding van die dag opgebrand. De function
+> controleert de drie secrets nu **vóór** het claimen en geeft anders een 200 met
+> `overgeslagen: 'firebase_niet_geconfigureerd'`. Gedeployd als versie 2.
+>
+> **3. De cron staat.** `pg_cron` en `pg_net` aangezet, job `push-sweep-elk-uur` (elk uur op het
+> hele uur). Hij is inert tot het Vault-geheim `service_role_key` bestaat — de opdracht eindigt op
+> een `where exists`, dus tot die tijd geen aanroep, geen 401, geen logregel. Nagerekend door de
+> opdracht met de hand te draaien: nul rijen, geen verkeer. Let op de val die hier eerst in zat:
+> `pg_net` installeert zich in schema **`net`**, niet in `extensions`.
+>
+> **4. `npm run check:push`.** De push-kant faalt overal stil (met opzet), waardoor "waarom komt er
+> niets aan?" acht mogelijke antwoorden heeft. Dit script loopt ze langs, inclusief de controle dat
+> het pakket in `google-services.json` overeenkomt met `app.json` — komt dat niet overeen, dan
+> slaagt de build en levert FCM alsnog nooit iets af.
+>
+> **Gecontroleerd:** `npx tsc --noEmit` schoon, `npm run lint` geen nieuwe fouten (de vier
+> bestaande zitten in orphaned bestanden die ik niet aanraakte), webbundel bouwt (2119 modules) met
+> alle nieuwe code en alle vier de talen erin, en de app rendert in headless Chrome zonder één
+> console-fout of exception. **Niet gecontroleerd:** het Profiel-scherm zelf en de strook-animatie
+> — die zitten achter `AuthPoort` en Reanimated is onbetrouwbaar op web; dat hoort op de emulator.
+> En nog steeds niets op een écht toestel, want dat kan pas met `google-services.json`.
+>
+> **Wat er nu nog tussen staat en een werkende push:** `google-services.json` in de repo-root, een
+> Firebase-serviceaccount (drie secrets op de edge functions) en één `vault.create_secret`. Alle
+> drie buiten de code. `npm run check:push` zegt welke.
 
 > ### Fase 10 — de productie-AAB (2026-08-17)
 >

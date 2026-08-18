@@ -68,6 +68,12 @@ export const STREAK_HERINNERING_MINUUT = 30;
 const KANAAL_ID = 'dagelijkse-herinnering';
 const KANAAL_STREAK = 'streak';
 const KANAAL_TERUGKEER = 'terugkeer';
+/**
+ * Mijlpalen. Eigen kanaal en niet bij `streak` erbij: een felicitatie is een ander soort bericht
+ * dan een waarschuwing dat je iets kwijtraakt, en wie het een te veel vindt hoort het ander te
+ * kunnen houden. Dat is de hele reden dat er kanalen zijn.
+ */
+const KANAAL_PRESTATIE = 'prestatie';
 
 /**
  * 19:00 lokale tijd — de **beginwaarde**, niet meer het vaste tijdstip.
@@ -113,6 +119,12 @@ export async function zorgVoorKanalen(): Promise<void> {
       lightColor: Colors.light.accent,
       vibrationPattern: [0, 120, 80, 120],
     });
+    await Notifications.setNotificationChannelAsync(KANAAL_PRESTATIE, {
+      name: 'Milestones',
+      importance: Notifications.AndroidImportance.DEFAULT,
+      lightColor: Colors.light.accent,
+      vibrationPattern: [0, 80, 60, 160],
+    });
     await Notifications.setNotificationChannelAsync(KANAAL_TERUGKEER, {
       name: 'Reading suggestions',
       // Bewust LOW: dit is de enige categorie die de lezer niet zelf heeft aangevraagd, dus hij
@@ -125,6 +137,16 @@ export async function zorgVoorKanalen(): Promise<void> {
     // Kanalen zijn een vriendelijkheid, geen voorwaarde. Mislukt het, dan gebruikt Android zijn
     // standaardkanaal en werkt alles verder gewoon.
   }
+}
+
+/**
+ * De korte kanaalnaam uit `toonNu` naar de echte kanaal-id. Losse functie omdat de ids constanten
+ * zijn en de aanroeper er geen weet van hoeft te hebben.
+ */
+function kanaalId(kort: 'streak' | 'terugkeer' | 'prestatie' | undefined): string {
+  if (kort === 'terugkeer') return KANAAL_TERUGKEER;
+  if (kort === 'prestatie') return KANAAL_PRESTATIE;
+  return KANAAL_STREAK;
 }
 
 export const notificaties = {
@@ -179,7 +201,11 @@ export const notificaties = {
       await zorgVoorKanaal();
       await Notifications.scheduleNotificationAsync({
         identifier: HERINNERING_ID,
-        content: { title: titel, body: tekst },
+        // `data` staat hier om dezelfde reden als bij de streakwaarschuwing: de tik-afhandeling in
+        // `use-push-registratie.ts` leest `soort` en `pad` uit élke melding, lokaal of via FCM.
+        // Zonder deze twee sleutels komt een geopende dagelijkse herinnering binnen als
+        // `soort: 'onbekend'` en is in Firebase niet te zien welke melding het meeste oplevert.
+        content: { title: titel, body: tekst, data: { soort: 'dagelijks', pad: '/' } },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DAILY,
           channelId: KANAAL_ID,
@@ -215,7 +241,7 @@ export const notificaties = {
       await zorgVoorKanalen();
       await Notifications.scheduleNotificationAsync({
         identifier: STREAK_HERINNERING_ID,
-        content: { title: titel, body: tekst, data: { soort: 'streak' } },
+        content: { title: titel, body: tekst, data: { soort: 'streak', pad: '/' } },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DATE,
           channelId: KANAAL_STREAK,
@@ -248,7 +274,7 @@ export const notificaties = {
   async toonNu(
     titel: string,
     tekst: string,
-    opties?: { kanaal?: 'streak' | 'terugkeer'; data?: Record<string, string> }
+    opties?: { kanaal?: 'streak' | 'terugkeer' | 'prestatie'; data?: Record<string, string> }
   ): Promise<boolean> {
     if (!ondersteund) return false;
     try {
@@ -259,7 +285,7 @@ export const notificaties = {
           body: tekst,
           data: opties?.data ?? {},
           ...(Platform.OS === 'android'
-            ? { channelId: opties?.kanaal ?? KANAAL_STREAK }
+            ? { channelId: kanaalId(opties?.kanaal) }
             : {}),
         },
         // `null` = nu. Geen trigger-object met een tijd van 0: dat is een *geplande* notificatie

@@ -8,6 +8,7 @@ import { FeedbackModal } from '@/components/feedback-modal';
 import { ProAccessBanner } from '@/components/pro-access-banner';
 import { ProfileCharacterCollection } from '@/components/profile-character-collection';
 import { ProfileHeader } from '@/components/profile-header';
+import { PrestatieRaster } from '@/components/prestatie-raster';
 import { ProfileStats } from '@/components/profile-stats';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -72,6 +73,8 @@ export default function ProfielScreen() {
           <ProfileHeader />
           <ProfileStats />
           <ProfileCharacterCollection />
+          {/* De mijlpalen ná de personages: die zijn de beloning, dit is de meetlat ernaast. */}
+          <PrestatieRaster />
         </ScrollView>
 
         {/* Staat buiten de ScrollView zodat hij blijft plakken. Rendert `null` zodra

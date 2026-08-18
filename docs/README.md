@@ -69,8 +69,12 @@ FCM-registratietoken van zijn installatie plus toestelmodel, tijdzone en app-ver
 `public.notifications_sent` bij wat er gestuurd is en of erop getikt is. Dat is een **Device ID**
 met als doel *App functionality*, niet Analytics — het token bezorgt een bericht, het meet niets.
 Allebei de categorieën staan **standaard uit**, dus voor een lezer die er niet aan komt verzamelt
-de app hier niets. De twee lokale meldingen (dagelijkse herinnering, streak) verlaten het toestel
-nooit en horen dus in geen enkele rij thuis.
+de app hier niets. De **drie** lokale meldingen (dagelijkse herinnering, streak, mijlpalen)
+verlaten het toestel nooit en horen dus in geen enkele rij thuis — de mijlpalen worden op het
+toestel zelf afgeleid uit voortgang die er al staat, dus ook zij voegen geen categorie toe. Het
+enige wat er voor hen naar de server gaat is de aan/uit-schakelaar zelf
+(`notification_preferences.achievements_enabled`), die net als de andere voorkeuren onder de
+bestaande regel voor de accountgegevens valt.
 
 **"Approximate location" is de val in dit formulier.** De app vraagt geen enkele locatiepermissie,
 maar Firebase leidt land en regio af uit het IP-adres van elk verzoek. Dat telt voor Play als

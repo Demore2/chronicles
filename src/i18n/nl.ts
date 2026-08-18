@@ -134,8 +134,10 @@ const nl: DeepPartial<Vertalingen> = {
     pushAanbevelingen: 'Verhaalsuggesties',
     pushAanbevelingenUitleg:
       'Af en toe een verhaal uit een tijdperk dat je ligt en dat je nog niet opende.',
-    pushStreak: 'Streak in gevaar',
-    pushStreakUitleg: '’s Avonds een seintje als je streak vandaag zou breken.',
+    pushStreak: 'Reeks in gevaar',
+    pushStreakUitleg: 'Een seintje ’s avonds als je reeks vandaag zou breken.',
+    pushPrestaties: 'Mijlpalen',
+    pushPrestatiesUitleg: 'Een berichtje als je een mijlpaal haalt terwijl de app dicht is.',
 
     beoordeel: 'Chronicles beoordelen',
     contact: 'Contact opnemen',
@@ -229,6 +231,35 @@ const nl: DeepPartial<Vertalingen> = {
     streakTitel: 'Je streak loopt vanavond af',
     streakTekst: (dagen: number): string =>
       `${dagen} ${dagen === 1 ? 'dag' : 'dagen'} op rij. Eén hoofdstuk houdt hem in leven.`,
+  },
+  prestatie: {
+    sectie: 'Mijlpalen',
+    telling: (behaald: number, totaal: number): string => `${behaald} van ${totaal}`,
+    meldingTitel: 'Mijlpaal bereikt',
+    nogNiet: 'Nog niet',
+    leeg: 'Lees een hoofdstuk uit en de eerste is binnen.',
+    namen: {
+      'hoofdstuk-1': 'Eerste bladzijde',
+      'hoofdstuk-10': 'Tien hoofdstukken ver',
+      'hoofdstuk-25': 'Belezen',
+      'hoofdstuk-50': 'Diep in het archief',
+      'hoofdstuk-100': 'Centurio',
+      'verhaal-1': 'Een leven gelezen',
+      'verhaal-5': 'Vijf levens',
+      'verhaal-10': 'Tien levens',
+      'personage-3': 'Goed gezelschap',
+      'personage-10': 'Een gezelschap',
+      'streak-3': 'Drie dagen op rij',
+      'streak-7': 'Een volle week',
+      'streak-30': 'Een maand geschiedenis',
+      'streak-100': 'Honderd dagen',
+    },
+    uitleg: {
+      hoofdstukken: (n: number): string => `${n} hoofdstuk${n === 1 ? '' : 'ken'} uitgelezen.`,
+      verhalen: (n: number): string => `${n} verhal${n === 1 ? 'a' : 'en'} helemaal gelezen.`,
+      personages: (n: number): string => `${n} personage${n === 1 ? '' : 's'} in je collectie.`,
+      streak: (n: number): string => `${n} dag${n === 1 ? '' : 'en'} op rij.`,
+    },
   },
   collectie: {
     nietGevondenTitel: 'Verhaallijn niet gevonden',

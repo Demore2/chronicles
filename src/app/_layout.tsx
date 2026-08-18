@@ -13,7 +13,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AppHeader } from '@/components/app-header';
 import { SplashScreen } from '@/components/splash-screen';
+import { PrestatieMelding } from '@/components/prestatie-melding';
 import { useDagelijkseHerinnering } from '@/hooks/use-dagelijkse-herinnering';
+import { usePrestaties } from '@/hooks/use-prestaties';
 import { usePushRegistratie } from '@/hooks/use-push-registratie';
 import { useStreakHerinnering } from '@/hooks/use-streak-herinnering';
 import { useEffectieveKleurenSchema, useTheme } from '@/hooks/use-theme';
@@ -57,6 +59,11 @@ export default function RootLayout() {
   useStreakHerinnering();
   usePushRegistratie();
 
+  // En de mijlpalen: hij meet de vier tellers en kondigt een nieuwe mijlpaal aan — als strook in
+  // de app wanneer je kijkt, als melding wanneer je dat niet doet. Staat ná `usePushRegistratie()`
+  // omdat die de Android-kanalen aanmaakt, en `prestatie` is er daar één van.
+  usePrestaties();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={kleurenSchema === 'dark' ? DarkTheme : DefaultTheme}>
@@ -65,6 +72,9 @@ export default function RootLayout() {
             flitst Home voorbij voordat de poort naar /login stuurt. */}
         {!showSplash && isLoading && <SessieLaadscherm />}
         <AuthPoort />
+        {/* Boven de Stack, zodat de strook op elk scherm kan verschijnen. Hij vangt zelf geen
+            aanrakingen buiten zijn eigen kader (`pointerEvents="box-none"`). */}
+        <PrestatieMelding />
         <Stack screenOptions={{ header: (props) => <AppHeader {...props} /> }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ headerShown: false }} />

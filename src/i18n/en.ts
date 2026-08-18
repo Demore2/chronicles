@@ -1,3 +1,5 @@
+import type { PrestatieId } from '@/constants/prestaties';
+
 // Bron van waarheid voor alle UI-sleutels. nl/fr/de moeten dezelfde
 // structuur volgen; ontbrekende sleutels daar vallen terug op deze Engelse
 // tekst (zie src/i18n/index.ts).
@@ -184,6 +186,12 @@ const en = {
     pushAanbevelingenUitleg: 'Now and then, a story from an era you like that you have not opened.',
     pushStreak: 'Streak at risk',
     pushStreakUitleg: 'A heads-up in the evening if today would break your streak.',
+    /**
+     * Mijlpalen. Staat in dezelfde sectie als de rest, maar is net als de streakmelding lokaal —
+     * de voetnoot van de sectie gaat over de twee die dat niet zijn.
+     */
+    pushPrestaties: 'Milestones',
+    pushPrestatiesUitleg: 'A note when you reach a milestone while the app is closed.',
 
     beoordeel: 'Rate Chronicles',
     contact: 'Contact support',
@@ -335,6 +343,46 @@ const en = {
     streakTitel: 'Your streak ends tonight',
     streakTekst: (dagen: number): string =>
       `${dagen} day${dagen === 1 ? '' : 's'} in a row. One chapter keeps it alive.`,
+  },
+  /**
+   * Mijlpalen (`constants/prestaties.ts`). De naam is per mijlpaal geschreven, de uitleg wordt uit
+   * de categorie samengesteld — zo staat er één zin per categorie in plaats van veertien.
+   *
+   * `namen` is getypeerd als `Record<PrestatieId, string>`: een mijlpaal erbij zonder naam is
+   * daarmee een compileerfout en niet een badge die "streak-30" heet.
+   */
+  prestatie: {
+    sectie: 'Milestones',
+    /** De teller boven het raster op Profiel. */
+    telling: (behaald: number, totaal: number): string => `${behaald} of ${totaal}`,
+    /** Titel van de systeemmelding. De naam van de mijlpaal staat in de body. */
+    meldingTitel: 'Milestone reached',
+    /** Onder een nog niet behaalde mijlpaal in het raster. */
+    nogNiet: 'Not yet',
+    /** Wat er in het raster staat als er nog geen enkele mijlpaal is. */
+    leeg: 'Finish a chapter and the first one is yours.',
+    namen: {
+      'hoofdstuk-1': 'First Page',
+      'hoofdstuk-10': 'Ten Chapters In',
+      'hoofdstuk-25': 'Well Read',
+      'hoofdstuk-50': 'Deep in the Archive',
+      'hoofdstuk-100': 'Centurion',
+      'verhaal-1': 'A Life Read',
+      'verhaal-5': 'Five Lives',
+      'verhaal-10': 'Ten Lives',
+      'personage-3': 'Good Company',
+      'personage-10': 'A Gathering',
+      'streak-3': 'Three Days Running',
+      'streak-7': 'A Full Week',
+      'streak-30': 'A Month of History',
+      'streak-100': 'A Hundred Days',
+    } satisfies Record<PrestatieId, string>,
+    uitleg: {
+      hoofdstukken: (n: number): string => `${n} chapter${n === 1 ? '' : 's'} finished.`,
+      verhalen: (n: number): string => `${n} stor${n === 1 ? 'y' : 'ies'} read to the end.`,
+      personages: (n: number): string => `${n} character${n === 1 ? '' : 's'} in your collection.`,
+      streak: (n: number): string => `${n} day${n === 1 ? '' : 's'} in a row.`,
+    },
   },
   collectie: {
     nietGevondenTitel: 'Storyline not found',
