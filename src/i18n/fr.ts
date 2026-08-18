@@ -126,6 +126,19 @@ const fr: DeepPartial<Vertalingen> = {
     analyticsVoet:
       'Chronicles compte les écrans que vous ouvrez, les chapitres que vous terminez et les boutons que vous utilisez, avec votre type d’appareil et votre pays. Ces données sont liées à votre compte et traitées par Google Firebase. Ce que vous écrivez n’est jamais inclus. Désactivez ceci et rien ne quitte votre appareil.',
 
+    sectiePush: 'Notifications push',
+    pushVoet:
+      'Pour les envoyer, Chronicles enregistre cet appareil auprès de Google Firebase et retient la date de votre dernière lecture. Désactivez les deux et l’appareil est à nouveau désenregistré.',
+    pushVoetLokaal:
+      'Ce rappel est créé sur votre appareil et n’en sort jamais. Les suggestions de retour ne sont pas disponibles dans cette version.',
+    pushTerugkeer: 'Me rappeler',
+    pushTerugkeerUitleg: 'Un rappel discret si quelques jours passent sans lecture.',
+    pushAanbevelingen: 'Suggestions d’histoires',
+    pushAanbevelingenUitleg:
+      'De temps en temps, une histoire d’une époque qui vous plaît et que vous n’avez pas ouverte.',
+    pushStreak: 'Série en danger',
+    pushStreakUitleg: 'Un signal le soir si votre série risque de s’interrompre aujourd’hui.',
+
     beoordeel: 'Noter Chronicles',
     contact: "Contacter l'assistance",
     contactOnderwerp: 'Assistance Chronicles',
@@ -136,8 +149,22 @@ const fr: DeepPartial<Vertalingen> = {
     accountVerwijderen: 'Supprimer le compte',
     accountVerwijderenTitel: 'Supprimer le compte ?',
     accountVerwijderenTekst:
-      "Cela supprime votre compte et tout ce qui y est synchronisé. Nous le faisons manuellement pour l'instant : écrivez-nous et nous confirmerons une fois que ce sera fait. Votre progression sur cet appareil reste intacte jusque-là.",
+      "Cela supprime votre compte, votre progression, vos personnages et vos réponses — sur nos serveurs comme sur cet appareil. C'est immédiat et irréversible.",
+    accountVerwijderenBevestig: 'Supprimer définitivement',
+    accountVerwijderenBezig: 'Suppression…',
+    accountVerwijderdTitel: 'Compte supprimé',
+    accountVerwijderdTekst:
+      'Tout a été effacé, y compris sur cet appareil. Merci d’avoir lu avec nous.',
+    accountVerwijderenMisluktTitel: 'Échec de la suppression',
+    accountVerwijderenMisluktTekst: (adres: string): string =>
+      `Rien n'a été supprimé : votre compte est intact. Vérifiez votre connexion et réessayez, ou écrivez à ${adres}.`,
     accountVerwijderenMail: 'Nous écrire',
+
+    gegevensVerzoek: 'Demander mes données',
+    gegevensVerzoekUitleg: 'Une copie de tout ce qui est enregistré sur votre compte, par e-mail.',
+    gegevensVerzoekOnderwerp: 'Demande de données Chronicles',
+    gegevensVerzoekBody:
+      'Bonjour,\n\nJe souhaite recevoir une copie des données enregistrées sur mon compte Chronicles.\n\nMerci de les envoyer à l’adresse depuis laquelle j’écris.\n\nCordialement.',
   },
   pro: {
     titel: 'Accès Pro',
@@ -201,6 +228,9 @@ const fr: DeepPartial<Vertalingen> = {
   notificatie: {
     titel: 'Votre prochain chapitre vous attend',
     tekst: 'Quelques minutes d’histoire, avant la fin de la journée.',
+    streakTitel: 'Votre série se termine ce soir',
+    streakTekst: (dagen: number): string =>
+      `${dagen} jour${dagen === 1 ? '' : 's'} de suite. Un chapitre suffit à la garder.`,
   },
   collectie: {
     nietGevondenTitel: 'Récit introuvable',

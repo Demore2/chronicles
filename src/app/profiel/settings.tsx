@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
@@ -7,6 +7,7 @@ import { Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-
 import { AnalyticsVoorkeuren } from '@/components/analytics-preferences';
 import { HerinneringSchakelaar, HerinneringTijd } from '@/components/daily-reminder-settings';
 import { EmailVoorkeuren } from '@/components/email-preferences';
+import { PushVoorkeuren } from '@/components/notification-preferences';
 import { PRO_BANNER_ENABLED } from '@/components/pro-access-banner';
 import { ProPaywall } from '@/components/pro-paywall';
 import { SettingsItem, SettingsSectie } from '@/components/settings-section';
@@ -32,6 +33,7 @@ import { useAbonnement } from '@/hooks/use-abonnement';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { logout } from '@/hooks/useAuth';
+import { useDeleteAccount } from '@/hooks/useDeleteAccount';
 import { taalCodes, taalNamen } from '@/i18n/taal-namen';
 import { useAbonnementStore, useVerhalenVandaag } from '@/store/abonnement-store';
 import { useAuthStore } from '@/store/auth-store';
@@ -80,6 +82,7 @@ export default function InstellingenScreen() {
   const setPro = useAbonnementStore((state) => state.setPro);
   const verhalenVandaag = useVerhalenVandaag();
   const [uitlogBezig, setUitlogBezig] = useState(false);
+  const { verwijderAccount, isBezig: verwijderBezig } = useDeleteAccount();
   const [paywallOpen, setPaywallOpen] = useState(false);
 
   /** Eén melding voor alles wat nog niet bestaat, met het onderwerp erin. */
@@ -97,9 +100,31 @@ export default function InstellingenScreen() {
     WebBrowser.openBrowserAsync(url).catch(() => {});
   }
 
-  function mailSupport() {
-    const onderwerp = encodeURIComponent(t((s) => s.instellingen.contactOnderwerp));
-    Linking.openURL(`mailto:${SUPPORT_EMAIL}?subject=${onderwerp}`).catch(() => {});
+  /**
+   * Opent een mailtje naar support. De tekst is optioneel: bij "Contact support" schrijft de lezer
+   * zelf, bij een gegevensverzoek staat de vraag al klaar zodat hij herkenbaar binnenkomt en de
+   * lezer niet hoeft te bedenken wat hij moet vragen.
+   */
+  function mailSupport(onderwerp: string, tekst?: string) {
+    const query = `subject=${encodeURIComponent(onderwerp)}`;
+    const body = tekst ? `&body=${encodeURIComponent(tekst)}` : '';
+    Linking.openURL(`mailto:${SUPPORT_EMAIL}?${query}${body}`).catch(() => {});
+  }
+
+  function mailContact() {
+    mailSupport(t((s) => s.instellingen.contactOnderwerp));
+  }
+
+  /**
+   * Een gegevenskopie (AVG art. 15/20) loopt via de mail en niet via een knop die een bestand
+   * bouwt: dat zou een tweede edge function plus een exportformaat zijn, en er staat te weinig
+   * per account om dat vandaag te rechtvaardigen. Wat er wél moet zijn is een route die aankomt.
+   */
+  function mailGegevensVerzoek() {
+    mailSupport(
+      t((s) => s.instellingen.gegevensVerzoekOnderwerp),
+      t((s) => s.instellingen.gegevensVerzoekBody),
+    );
   }
 
   // `zetHerinnering` stond hier; die logica woont sinds het instelbare tijdstip in
@@ -122,22 +147,44 @@ export default function InstellingenScreen() {
   }
 
   /**
-   * Accountverwijdering. Play eist voor elke app met accounts een route om er vanaf te komen, en
-   * die route mag ook een e-mail zijn — maar dan wel eentje die aankomt. Zonder ingesteld
-   * supportadres tonen we daarom geen knop die naar niemand mailt.
+   * Accountverwijdering. Play eist voor elke app met accounts een in-app route om er vanaf te
+   * komen; dit was er een naar de mailbox en is sinds de edge function `delete-account` een knop
+   * die het ook echt doet — server én toestel, meteen.
+   *
+   * Eén bevestiging, geen tweede "typ DELETE"-scherm: het dialoog zegt wat er weggaat en dat het
+   * niet terug te draaien is, en de handeling zit al drie schermen diep achter een rode regel.
+   *
+   * Bij een fout blijft de lezer waar hij is en zegt de melding dat er níéts is verwijderd. Dat
+   * is de enige vraag die er op dat moment toe doet — een half verwijderd account zou erger zijn
+   * dan geen, en de function verwijdert daarom in één cascade of niet.
    */
   function bevestigVerwijderen() {
-    if (!supportEmailIsIngesteld) {
-      nogNiet(t((s) => s.instellingen.accountVerwijderen));
-      return;
-    }
     bevestig({
       titel: t((s) => s.instellingen.accountVerwijderenTitel),
       tekst: t((s) => s.instellingen.accountVerwijderenTekst),
-      bevestigTekst: t((s) => s.instellingen.accountVerwijderenMail),
+      bevestigTekst: t((s) => s.instellingen.accountVerwijderenBevestig),
       annuleerTekst: t((s) => s.auth.annuleren),
       destructief: true,
-      onBevestig: mailSupport,
+      onBevestig: () => {
+        void (async () => {
+          const resultaat = await verwijderAccount();
+          if (resultaat.ok) {
+            // Geen `router.replace`: `AuthPoort` ziet de lege sessie en stuurt naar /login,
+            // net als bij uitloggen. Twee navigaties om hetzelfde besluit vechten anders.
+            meld(
+              t((s) => s.instellingen.accountVerwijderdTitel),
+              t((s) => s.instellingen.accountVerwijderdTekst),
+              t((s) => s.instellingen.ok),
+            );
+            return;
+          }
+          meld(
+            t((s) => s.instellingen.accountVerwijderenMisluktTitel),
+            t((s) => s.instellingen.accountVerwijderenMisluktTekst)(SUPPORT_EMAIL),
+            t((s) => s.instellingen.ok),
+          );
+        })();
+      },
     });
   }
 
@@ -251,6 +298,12 @@ export default function InstellingenScreen() {
           </SettingsSectie>
         ) : null}
 
+        {/* Los van de sectie hierboven: die gaat over de herinnering die de app zélf plant, deze
+            over meldingen die van de server komen (plus de streakwaarschuwing, die lokaal is maar
+            wél iets anders belooft dan "elke dag om 19:00"). Het component levert zijn eigen kop
+            en voetnoot, net als `EmailVoorkeuren` en `AnalyticsVoorkeuren`. */}
+        {notificaties.ondersteund ? <PushVoorkeuren /> : null}
+
         <EmailVoorkeuren />
 
         {/* Privacy staat bewust vóór het abonnement en niet onderaan bij "Account": het is een
@@ -331,7 +384,21 @@ export default function InstellingenScreen() {
             waarde={supportEmailIsIngesteld ? SUPPORT_EMAIL : undefined}
             badge={supportEmailIsIngesteld ? undefined : binnenkortBadge}
             onPress={
-              supportEmailIsIngesteld ? mailSupport : () => nogNiet(t((s) => s.instellingen.contact))
+              supportEmailIsIngesteld ? mailContact : () => nogNiet(t((s) => s.instellingen.contact))
+            }
+          />
+          {/* Het recht op een kopie (AVG art. 15/20). Staat hier en niet bij "Account", omdat het
+              een vraag aan ons is en geen handeling aan je account — en zeker geen buurman van de
+              verwijderknop. */}
+          <SettingsItem
+            icoon="download-outline"
+            label={t((s) => s.instellingen.gegevensVerzoek)}
+            uitleg={t((s) => s.instellingen.gegevensVerzoekUitleg)}
+            badge={supportEmailIsIngesteld ? undefined : binnenkortBadge}
+            onPress={
+              supportEmailIsIngesteld
+                ? mailGegevensVerzoek
+                : () => nogNiet(t((s) => s.instellingen.gegevensVerzoek))
             }
           />
           <SettingsItem
@@ -365,17 +432,6 @@ export default function InstellingenScreen() {
             label={t((s) => s.instellingen.versie)}
             waarde={APP_VERSIE}
           />
-          {/* De enige ingang naar `/profiel/analytics`. Alleen in ontwikkeling, om dezelfde reden
-              als "Simulate Pro" hierboven: het scherm bestaat om te controleren of Firebase iets
-              doorkrijgt, en linkt naar de console. Hardgecodeerd Engels, want geen lezer ziet het. */}
-          {__DEV__ ? (
-            <SettingsItem
-              icoon="stats-chart-outline"
-              label="Analytics dashboard (dev)"
-              uitleg="Firebase status, event list and console links."
-              onPress={() => router.push('/profiel/analytics')}
-            />
-          ) : null}
         </SettingsSectie>
 
         <SettingsSectie titel={t((s) => s.instellingen.sectieGevaar)}>
@@ -387,13 +443,14 @@ export default function InstellingenScreen() {
           <SettingsItem
             icoon="trash-outline"
             label={t((s) => s.instellingen.accountVerwijderen)}
+            waarde={verwijderBezig ? t((s) => s.instellingen.accountVerwijderenBezig) : undefined}
             isGevaar
-            onPress={bevestigVerwijderen}
+            onPress={verwijderBezig ? undefined : bevestigVerwijderen}
           />
         </SettingsSectie>
       </ScrollView>
 
-      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} />
+      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} bron="settings" />
     </ThemedView>
   );
 }

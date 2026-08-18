@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { ANALYTICS_GEBEURTENIS } from '@/constants/analytics';
-import { logEvent } from '@/hooks/useAnalytics';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
+import { logStoryEvent } from '@/hooks/useAnalytics';
 
 import {
   bewaarKeuze,
@@ -118,7 +118,7 @@ export function useHoofdstukInteractie(verhaalId: string, chapterId: number) {
       // Pas meten als de rij er ook echt staat. Een teruggedraaide stem is geen stem, en een
       // meting die dat niet weet telt offline-pogingen mee als deelname.
       if (gelukt) {
-        logEvent(ANALYTICS_GEBEURTENIS.pollGestemd, {
+        logStoryEvent(ANALYTICS_EVENTS.POLL_VOTE, {
           story_id: verhaalId,
           chapter_index: chapterId,
           poll_id: pollId,
@@ -160,7 +160,7 @@ export function useHoofdstukInteractie(verhaalId: string, chapterId: number) {
       const gelukt = await bewaarKeuze(keuzeId, user.id, optie);
       if (!gelukt) verschuif(-1, optie);
       if (gelukt) {
-        logEvent(ANALYTICS_GEBEURTENIS.keuzeGemaakt, {
+        logStoryEvent(ANALYTICS_EVENTS.CHOICE_SELECT, {
           story_id: verhaalId,
           chapter_index: chapterId,
           choice_id: keuzeId,

@@ -53,6 +53,9 @@ example
 /ios
 /android
 
+# De Supabase edge functions worden apart uitgerold (Deno), niet met de app meegebouwd.
+supabase/
+
 .tmp-export-check*
 .tmp-notification-icon.html
 .tmp-shots/

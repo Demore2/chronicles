@@ -1,7 +1,7 @@
 import { useSegments } from 'expo-router';
 import { useEffect } from 'react';
 
-import { ANALYTICS_EIGENSCHAP, type AnalyticsGebeurtenis } from '@/constants/analytics';
+import { USER_PROPERTIES, type AnalyticsEvent, type UserProperty } from '@/constants/analytics';
 import { analytics } from '@/lib/analytics';
 import { useAbonnementStore } from '@/store/abonnement-store';
 import { useAnalyticsStore } from '@/store/analytics-store';
@@ -18,19 +18,16 @@ import { useTaalStore } from '@/store/taal-store';
  * identificeert en de schermen bijhoudt — hoort **één keer** in de root layout te staan.
  *
  * Wat hij niet doet is losse gebeurtenissen versturen. Die staan in de schermen zelf, want alleen
- * daar is bekend wat er gebeurde; zie `ANALYTICS_GEBEURTENIS` voor de volledige lijst.
+ * daar is bekend wat er gebeurde; zie `ANALYTICS_EVENTS` voor de volledige lijst.
  */
 
 /** Eén eigen gebeurtenis. Dunne doorgeefluik naar `lib/analytics.ts`, zie daar waarom het niet gooit. */
-export function logEvent(naam: AnalyticsGebeurtenis, params?: Record<string, unknown>): void {
+export function logStoryEvent(naam: AnalyticsEvent, params?: Record<string, unknown>): void {
   analytics.log(naam, params);
 }
 
 /** Eén gebruikerseigenschap. Normaal doet `useAnalytics()` dit al; dit is voor de uitzonderingen. */
-export function logUserProperty(
-  naam: (typeof ANALYTICS_EIGENSCHAP)[keyof typeof ANALYTICS_EIGENSCHAP],
-  waarde: string | null
-): void {
+export function setUserProperty(naam: UserProperty, waarde: string | null): void {
   analytics.zetEigenschap(naam, waarde);
 }
 
@@ -38,8 +35,8 @@ export function logUserProperty(
  * Inloggen en registreren.
  *
  * Losse functies omdat `login` en `sign_up` gereserveerde namen zijn: Firebase bouwt er zelf zijn
- * acquisitie- en retentierapporten op, en `logEvent` weigert ze daarom. Ze staan dus niet in
- * `ANALYTICS_GEBEURTENIS`.
+ * acquisitie- en retentierapporten op, en `logStoryEvent` weigert ze daarom. Ze staan dus niet in
+ * `ANALYTICS_EVENTS`.
  */
 export function logInloggen(methode: string): void {
   analytics.logInloggen(methode);
@@ -120,15 +117,15 @@ export function useAnalytics(): void {
   // halverwege een sessie een personage ontgrendeld of de Pro-schakelaar omgezet, dan klopt de
   // eigenschap meteen; bij een eenmalige aanroep na het inloggen zou hij een sessie achterlopen.
   useEffect(() => {
-    analytics.zetEigenschap(ANALYTICS_EIGENSCHAP.tier, isPro ? 'pro' : 'free');
+    analytics.zetEigenschap(USER_PROPERTIES.TIER, isPro ? 'pro' : 'free');
   }, [isPro]);
 
   useEffect(() => {
-    analytics.zetEigenschap(ANALYTICS_EIGENSCHAP.personages, String(aantalPersonages));
+    analytics.zetEigenschap(USER_PROPERTIES.TOTAL_CHARS, String(aantalPersonages));
   }, [aantalPersonages]);
 
   useEffect(() => {
-    analytics.zetEigenschap(ANALYTICS_EIGENSCHAP.taal, taal);
+    analytics.zetEigenschap(USER_PROPERTIES.LANGUAGE, taal);
   }, [taal]);
 
   // --- Waar die lezer is ---

@@ -4,6 +4,7 @@ import { AppState } from 'react-native';
 
 import { useAuthStore } from '@/store/auth-store';
 import { haalOntgrendelingenOp, useCharacterUnlockStore } from '@/store/character-unlock-store';
+import { haalNotificatieVoorkeurenOp, useNotificatieStore } from '@/store/notificatie-store';
 import { haalHoofdstukVoortgangOp, useStoryProgressStore } from '@/store/story-progress-store';
 import { haalVoortgangOp, useVoortgangStore } from '@/store/voortgang-store';
 
@@ -29,6 +30,11 @@ const SYNC_STORES = [
   { store: useVoortgangStore, haalOp: haalVoortgangOp },
   { store: useStoryProgressStore, haalOp: haalHoofdstukVoortgangOp },
   { store: useCharacterUnlockStore, haalOp: haalOntgrendelingenOp },
+  // De vierde, precies zoals de kop hierboven voorspelde. Notificatievoorkeuren horen bij het
+  // account en niet bij het toestel: wie op zijn tablet de win-back-push uitzet bedoelt dat niet
+  // alleen daar. Eén afwijking t.o.v. de andere drie staat in `voegServerVoorkeurenSamen` —
+  // voorkeuren worden overschreven en niet verenigd, want "uit" is een keuze en geen leegte.
+  { store: useNotificatieStore, haalOp: haalNotificatieVoorkeurenOp },
 ] as const;
 
 /** Duwt alles wat openstaat omhoog. Een store zonder wijzigingen kost niets. */

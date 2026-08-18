@@ -4,18 +4,30 @@ import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
 import { ThemedText } from '@/components/themed-text';
-import { ANALYTICS_GEBEURTENIS } from '@/constants/analytics';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { meld } from '@/constants/dialoog';
 import { Radii, Spacing, withAlpha } from '@/constants/theme';
 import type { IoniconNaam } from '@/constants/types';
 import { verhalen } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
-import { logEvent } from '@/hooks/useAnalytics';
+import { logStoryEvent } from '@/hooks/useAnalytics';
+
+/**
+ * Vanwaar het venster geopend is.
+ *
+ * **Verplicht en geen optionele string met een standaardwaarde**, want het verschil tussen deze
+ * vier is precies wat `paywall_viewed` interessant maakt. `banner` en `settings` zijn iemand die
+ * uit zichzelf gaat kijken; `limit` en `ad` zijn iemand die tegen een muur liep. Als de conversie
+ * ergens vandaan komt, komt hij van die laatste twee — en zonder deze parameter zie je dat niet.
+ * Een vijfde ingang moet daarom een keuze maken in plaats van in een `undefined` te vallen.
+ */
+export type PaywallBron = 'banner' | 'settings' | 'limit' | 'ad';
 
 type ProPaywallProps = {
   visible: boolean;
   onClose: () => void;
+  bron: PaywallBron;
 };
 
 /**
@@ -34,7 +46,7 @@ type ProPaywallProps = {
  *
  * Zie `pro-access-banner.tsx` voor de vlag die het hele aanbod aan- en uitzet.
  */
-export function ProPaywall({ visible, onClose }: ProPaywallProps) {
+export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   const theme = useTheme();
   const { t } = useVertaling();
 
@@ -50,14 +62,21 @@ export function ProPaywall({ visible, onClose }: ProPaywallProps) {
   // `true` springt — niet het monteren. Zonder deze voorwaarde zou elk scherm dat de paywall
   // klaarzet er meteen een weergave voor tellen.
   useEffect(() => {
-    if (visible) logEvent(ANALYTICS_GEBEURTENIS.paywallGetoond);
-  }, [visible]);
+    if (visible) logStoryEvent(ANALYTICS_EVENTS.PAYWALL_VIEWED, { tier: 'pro', source: bron });
+  }, [visible, bron]);
 
   function nogNiet() {
     // Wat hier gemeten wordt is de *intentie*, niet een aankoop — zie de toelichting bij
-    // `paywallUpgradeGedrukt`. Er wordt met opzet geen bedrag of valuta meegestuurd: een
-    // omzetparameter bij een gebeurtenis die niets oplevert vervuilt het omzetrapport blijvend.
-    logEvent(ANALYTICS_GEBEURTENIS.paywallUpgradeGedrukt);
+    // `SUBSCRIPTION_ATTEMPT`. Er gaat met opzet geen bedrag of valuta in mee: een omzetparameter
+    // bij een gebeurtenis die niets oplevert vervuilt het omzetrapport blijvend. `status` en
+    // `reason` staan er wél in, zodat straks te zien is welke rijen uit de stub-periode komen en
+    // die apart te filteren zijn zodra Billing er is.
+    logStoryEvent(ANALYTICS_EVENTS.SUBSCRIPTION_ATTEMPT, {
+      tier: 'pro',
+      source: bron,
+      status: 'blocked_no_billing',
+      reason: 'play_billing_not_integrated',
+    });
     meld(
       t((s) => s.pro.nogNietTitel),
       t((s) => s.pro.nogNietTekst),

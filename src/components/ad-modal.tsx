@@ -53,7 +53,7 @@ export function AdModal({ visible, onClose }: AdModalProps) {
         ) : null}
       </Modal>
 
-      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} />
+      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} bron="ad" />
     </>
   );
 }

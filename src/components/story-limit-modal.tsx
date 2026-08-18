@@ -92,7 +92,7 @@ export function StoryLimitModal({ visible, onClose }: StoryLimitModalProps) {
 
       {/* Naast de Modal en niet erin: twee geneste `Modal`s zijn op Android net zo vaak één
           onzichtbaar venster als twee zichtbare. */}
-      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} />
+      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} bron="limit" />
     </>
   );
 }

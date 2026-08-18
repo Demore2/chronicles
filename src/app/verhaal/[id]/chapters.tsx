@@ -15,7 +15,7 @@ import { LegeStaat } from '@/components/lege-staat';
 import { StoryLimitModal } from '@/components/story-limit-modal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ANALYTICS_GEBEURTENIS } from '@/constants/analytics';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { DAGELIJKSE_VERHAAL_LIMIET } from '@/constants/monetisatie';
 import { Motion } from '@/constants/motion';
 import { Radii, Spacing } from '@/constants/theme';
@@ -24,7 +24,7 @@ import { berekenLeestijdMinuten } from '@/content/leestijd';
 import { getVerhaal } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
-import { logEvent } from '@/hooks/useAnalytics';
+import { logStoryEvent } from '@/hooks/useAnalytics';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useAbonnementStore } from '@/store/abonnement-store';
 import { useStoryProgressStore } from '@/store/story-progress-store';
@@ -96,7 +96,7 @@ export default function ChaptersScreen() {
 
       if (isUitgelezen) {
         setLimietBereikt(false);
-        logEvent(ANALYTICS_GEBEURTENIS.verhaalGestart, { ...meting, is_reread: true });
+        logStoryEvent(ANALYTICS_EVENTS.STORY_READ, { ...meting, is_reread: true });
         return;
       }
 
@@ -104,14 +104,14 @@ export default function ChaptersScreen() {
       if (abonnement.magVerhaalOpenen(verhaalId)) {
         abonnement.registreerVerhaalGeopend(verhaalId);
         setLimietBereikt(false);
-        logEvent(ANALYTICS_GEBEURTENIS.verhaalGestart, { ...meting, is_reread: false });
+        logStoryEvent(ANALYTICS_EVENTS.STORY_READ, { ...meting, is_reread: false });
         return;
       }
       setLimietBereikt(true);
       // Het directe signaal voor het gratis/Pro-model: hoe vaak loopt een lezer tegen de muur,
-      // en bij welk verhaal? Dat is niet af te leiden uit `story_started`, want die blijft hier
+      // en bij welk verhaal? Dat is niet af te leiden uit `story_read`, want die blijft hier
       // juist uit.
-      logEvent(ANALYTICS_GEBEURTENIS.limietBereikt, {
+      logStoryEvent(ANALYTICS_EVENTS.LIMIT_REACHED, {
         ...meting,
         daily_limit: DAGELIJKSE_VERHAAL_LIMIET,
       });

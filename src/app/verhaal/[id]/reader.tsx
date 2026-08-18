@@ -19,7 +19,7 @@ import { InteractieveSectie } from '@/components/interactieve-sectie';
 import { LegeStaat } from '@/components/lege-staat';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ANALYTICS_GEBEURTENIS } from '@/constants/analytics';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { haptics } from '@/constants/haptics';
 import { AD_ONDERBREKING_ENABLED } from '@/constants/monetisatie';
 import { Motion, staggerVertraging } from '@/constants/motion';
@@ -30,7 +30,7 @@ import { useAbonnement } from '@/hooks/use-abonnement';
 import { biedHerinneringAan } from '@/hooks/use-dagelijkse-herinnering';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
-import { logEvent } from '@/hooks/useAnalytics';
+import { logStoryEvent } from '@/hooks/useAnalytics';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
@@ -160,7 +160,7 @@ export default function ReaderScreen() {
     const totaal = verhaal!.chapters.length;
     const meting = { story_id: verhaal!.id, era: verhaal!.tijdperkId, chapter_count: totaal };
 
-    logEvent(ANALYTICS_GEBEURTENIS.hoofdstukVoltooid, {
+    logStoryEvent(ANALYTICS_EVENTS.CHAPTER_COMPLETED, {
       ...meting,
       chapter_index: chapterId,
       chapters_done: voltooidNa,
@@ -168,10 +168,10 @@ export default function ReaderScreen() {
     });
 
     // "Uitgelezen" is hier: het laatste hoofdstuk is af. Bewust een andere gebeurtenis dan
-    // `character_unlocked` hieronder — tussen die twee zit een knop, en het verschil tussen de
+    // `char_unlocked` hieronder — tussen die twee zit een knop, en het verschil tussen de
     // aantallen is precies hoeveel lezers die knop niet indrukken.
     if (voltooidNa >= totaal) {
-      logEvent(ANALYTICS_GEBEURTENIS.verhaalVoltooid, meting);
+      logStoryEvent(ANALYTICS_EVENTS.STORY_FINISHED, meting);
     }
 
     progress.completeChapter(chapterId);
@@ -209,7 +209,7 @@ export default function ReaderScreen() {
     if (verhaal) {
       voortgangStore.markStoryCompleted(verhaal.id);
       characterStore.unlockCharacter(verhaal.id, verhaal.personage.naam);
-      logEvent(ANALYTICS_GEBEURTENIS.personageOntgrendeld, {
+      logStoryEvent(ANALYTICS_EVENTS.CHAR_UNLOCKED, {
         story_id: verhaal.id,
         era: verhaal.tijdperkId,
         character_name: verhaal.personage.naam,

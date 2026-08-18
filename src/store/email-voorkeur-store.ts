@@ -29,7 +29,11 @@ type EmailVoorkeurState = {
   zetVoorkeur: (sleutel: EmailVoorkeurSleutel, aan: boolean) => void;
 };
 
-const STANDAARD: Record<EmailVoorkeurSleutel, boolean> = {
+/**
+ * Alles uit. Ook de terugvalwaarde bij het wissen van het account: een "ja, stuur maar" van de
+ * vorige lezer mag niet blijven staan voor wie zich daarna op dit toestel aanmeldt.
+ */
+export const STANDAARD_EMAIL_VOORKEUREN: Record<EmailVoorkeurSleutel, boolean> = {
   nieuwsbrief: false,
   nieuweVerhalen: false,
   tips: false,
@@ -39,7 +43,7 @@ const STANDAARD: Record<EmailVoorkeurSleutel, boolean> = {
 export const useEmailVoorkeurStore = create<EmailVoorkeurState>()(
   persist(
     (set) => ({
-      voorkeuren: STANDAARD,
+      voorkeuren: STANDAARD_EMAIL_VOORKEUREN,
       zetVoorkeur: (sleutel, aan) =>
         set((state) => ({ voorkeuren: { ...state.voorkeuren, [sleutel]: aan } })),
     }),
@@ -52,7 +56,7 @@ export const useEmailVoorkeurStore = create<EmailVoorkeurState>()(
        */
       merge: (opgeslagen, huidig) => {
         const bewaard = (opgeslagen as Partial<EmailVoorkeurState> | undefined)?.voorkeuren;
-        return { ...huidig, voorkeuren: { ...STANDAARD, ...bewaard } };
+        return { ...huidig, voorkeuren: { ...STANDAARD_EMAIL_VOORKEUREN, ...bewaard } };
       },
     }
   )

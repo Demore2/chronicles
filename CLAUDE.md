@@ -449,6 +449,71 @@ with). Same shape as `haptics.ts`: intents, no throwing, no-op on web.
   `expo-notifications` plugin block in `app.json`. It is a native change, so it needs a prebuild
   plus a rebuild, not a JS reload.
 
+### Push-notificaties (`src/lib/push.ts`, `use-push-registratie.ts`, `supabase/functions/`)
+
+Vier soorten meldingen, en de scheidslijn is: **de server stuurt alleen wat het toestel zelf niet
+kan weten.** Het volledige draaiboek staat in `supabase/README-push.md`; hier de regels die code
+raken.
+
+| Melding | Vandaan | Bestand |
+|---|---|---|
+| Dagelijkse herinnering | lokaal | `use-dagelijkse-herinnering.ts` (hierboven) |
+| Streak loopt vanavond af | lokaal | `use-streak-herinnering.ts` |
+| Win-back ("je hoofdstuk staat nog open") | **server, FCM** | `push-sweep` → `send-push` |
+| Aanbeveling ("Spartacus wacht op je") | **server, FCM** | idem |
+
+- **De dagelijkse herinnering is en blijft lokaal.** Er lag een plan om hem door een cron elke
+  minuut te laten versturen; dat vergelijkt `now().getHours()` (UTC) met een lokaal ingesteld
+  "19:00" en stuurt dus iedereen buiten Greenwich op het verkeerde uur een melding. De lokale
+  versie werkt offline en op de seconde. Niet omruilen.
+- **De streakwaarschuwing wordt vooruit gepland.** Een lokale melding kan alleen gezet worden
+  terwijl de app open is, en de dag dat hij moet afgaan is juist een dag zonder app. Dus: heb je
+  vandaag gelezen, dan staat hij voor **morgen** 20:30; heb je nog niet gelezen en is het vóór
+  20:30, dan voor vanavond. Elke terugkeer naar de voorgrond herberekent. Bewust géén
+  `DAILY`-trigger — die gaat ook af op avonden dat je allang gelezen hebt.
+- **Er is bewust géén ontgrendelmelding.** Ontgrendelen is een knopdruk in de reader met een modal
+  erachter, dus die melding zou altijd verschijnen terwijl de lezer er al naar kijkt.
+- **`src/lib/push.ts` heeft exact de vorm van `lib/analytics.ts`**: lui `require` achter een
+  `Platform`-controle, nooit gooien, `sdk === null` als "hier is niets". Zonder
+  `google-services.json` is `push.beschikbaar` onwaar en valt de hele push-kant stil zonder dat de
+  app iets merkt. De typen worden met `ReturnType`/`Parameters` uit de SDK afgeleid —
+  `@react-native-firebase/messaging` exporteert zijn interfaces niet vanaf de hoofdingang, en v26
+  is **volledig modulair** (`getMessaging()` + losse functies, geen `messaging()`-default).
+- **`user_devices` is uniek op `fcm_token`, niet op `user_id`.** Een token identificeert een
+  *installatie*: één lezer kan twee toestellen hebben, en op één toestel kunnen na elkaar twee
+  accounts inloggen. Uniek op `user_id` gooit het tweede toestel weg; helemaal geen unieke sleutel
+  maakt bij elke login een rij bij tot dezelfde melding vijf keer aankomt. Upsert dus met
+  `onConflict: 'fcm_token'`.
+- **`push_kandidaten(doel_uur)` rekent het uur per lezer uit in diens eigen tijdzone**
+  (`now() at time zone np.tijdzone`), en `notification_preferences.tijdzone` is een **IANA-naam**
+  en geen minutenverschil — alleen zo klopt het na een zomertijdwissel. Een trigger zet een
+  onbekende naam terug naar `'UTC'`, want `at time zone 'Mars/Olympus'` gooit en zou de hele sweep
+  laten vallen.
+- **De sweep claimt vóórdat hij verstuurt.** Eerst een rij in `notifications_sent` met een unieke
+  `dedupe_sleutel` (`on conflict do nothing` + `select`, dus alleen écht nieuwe rijen komen eruit),
+  dan pas FCM. Andersom levert een crash halverwege een dubbele melding op. Er wordt bewust **niets
+  opnieuw geprobeerd**: een win-back die een dag later alsnog aankomt is geen win-back.
+- **Beide edge functions eisen de service role**, bovenop `verify_jwt`. Die poort laat elk geldig
+  token door, dus ook dat van een gewone lezer — zonder de rolcontrole kan iedereen die inlogt een
+  push naar een willekeurige `userId` sturen. `send-push` ondertekent zelf een RS256-JWT voor
+  Google's OAuth2 (HTTP v1 API); de oude `FCM_API_KEY` is legacy en door Google uitgezet.
+- **`public.story_catalog` is afgeleid, geen tweede bron van waarheid.** De server moet weten dát
+  Joan of Arc bestaat om haar te kunnen noemen; de verhalen zelf blijven in de bundel. Bijwerken na
+  het toevoegen van een verhaal: `npm run sync:verhaalcatalogus` (heeft
+  `SUPABASE_SERVICE_ROLE_KEY` nodig, `--dry` om alleen te kijken).
+- **`notificatie-store` is de vierde regel in `SYNC_STORES`** (`use-voortgang-sync.ts`), precies
+  waar die lijst voor bedoeld was. Eén afwijking t.o.v. de andere drie: voorkeuren worden
+  **overschreven** en niet verenigd — "uit" is een keuze en geen leegte. Lokale niet-verzonden
+  wijzigingen winnen; anders wint de server.
+- **Er zijn drie Android-kanalen** (`dagelijkse-herinnering`, `streak`, `terugkeer`), aangemaakt
+  door `zorgVoorKanalen()` bij het opstarten. Een kanaal is de knop waarmee de lezer één sóórt
+  melding uitzet; alles op één kanaal betekent dat wie de win-back te veel vindt ook zijn
+  dagelijkse herinnering verliest. `terugkeer` moet bestaan vóórdat de eerste push ernaar verwijst.
+- **`@react-native-firebase/messaging` is native**: na het pullen hiervan is een JS-reload niet
+  genoeg, en `expo prebuild` faalt sowieso zolang `google-services.json` ontbreekt. Controleer na
+  de eerste geslaagde prebuild de merged manifest opnieuw op nieuwe permissies (commando in
+  `docs/README.md`).
+
 ### Images (portretten + scènes — gebundeld, LAUNCH-PLAN.md B1/B2)
 
 Two separate image sets, same pattern: an explicit `require()` map in `src/constants/`, files
@@ -554,6 +619,43 @@ change both.
 no git remote yet, so the page isn't published. `privacyBeleidIsGepubliceerd` derives from it, and
 Profiel's "About" section renders only when it's true, so an unpublished URL can never ship as a
 dead link. Filling in the real URL is the only step; nothing else needs enabling.
+
+### Account deletion & data requests (`supabase/functions/delete-account`, `useDeleteAccount.ts`)
+
+Instellingen → *Delete account* → one confirmation, and the account is gone: server and device,
+immediately, no mail in between. **This is the only Supabase edge function in the project.**
+
+- **The delete cannot happen in the app, and the obvious version fails silently.** Every table has
+  RLS with select/insert/update policies and **no delete policy** — a `.delete()` for which no
+  policy exists touches **zero rows and returns no error**, so a client-side version reports
+  success while nothing is gone. And `auth.users` is out of reach for a client anyway: leave that
+  row and the account still logs in.
+- **One `auth.admin.deleteUser`, the rest cascades.** Every FK to `auth.users` is
+  `on delete cascade` (checked, all seven tables), so the user row takes `profiles`, `voortgang`,
+  `story_progress`, `character_unlocks`, `poll_responses`, `user_choices` and `feedback` with it
+  in one transaction. Don't replace it with seven deletes — those can half-fail.
+- **The function only ever deletes its caller.** The id comes from `auth.getUser(token)`, never
+  from the body; there is no parameter naming a user. `verify_jwt` is on, so an anonymous POST is
+  refused by the gateway before the code runs (verified: OPTIONS still passes, so the web preview's
+  CORS preflight works).
+- **`wisLokaleGebruikersgegevens()` in `src/store/lokale-gegevens.ts` wipes the device too, and it
+  is not optional.** The three progress stores *merge* local into server at the next login
+  (`voegServerVoortgangSamen`), so leaving the data behind means the next account created on this
+  device inherits the deleted reader's chapters, characters and streak — and uploads them. Avatar,
+  email preferences and the daily story counter go too; language, theme, the reminder and the
+  analytics consent stay, because they describe the device, and resetting the analytics switch to
+  its default would silently re-enable a measurement someone turned off. **Do not call this on
+  logout** — logout promises the opposite.
+- **The screen does not navigate.** `AuthPoort` sees the empty session and goes to `/login`, same
+  as logout.
+- **`supabase/functions/` is excluded from `tsconfig.json`, `eslint.config.js` and `.easignore`** —
+  it is Deno code (`jsr:` imports, `Deno.serve`), so the app's type-check would fail on it and an
+  app build has no business shipping it. It also means a fresh Supabase project does **not** have
+  the function; deploy it separately.
+- **A data copy is a mailto, on purpose.** Instellingen → *Request my data* prefills subject and
+  body to `SUPPORT_EMAIL`. An in-app export would be a second edge function plus a file format for
+  a handful of rows; what the GDPR requires is a route that arrives and an answer within 30 days,
+  and `docs/privacy-policy.html` promises exactly that. Those requests are handled by hand.
 
 ### Release & store assets (`eas.json`, `store/`, LAUNCH-PLAN.md A3/A6)
 
@@ -735,12 +837,19 @@ eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
   `Platform`-controle** — op web bestaat hij niet, en in een dev-client die van vóór deze fase is
   ook niet. Een statische `import` zou de app daar op het eerste frame laten klappen. Mislukt het
   laden één keer, dan wordt het niet opnieuw geprobeerd (`sdk === null`).
-- **Namen staan in `src/constants/analytics.ts`, nooit los in een scherm.** Firebase legt de
-  eerste spelling van een gebeurtenis vast en kan hem daarna niet hernoemen of samenvoegen, dus
-  een typefout kost data die je pas maanden later mist. Sleutels Nederlands, waarden Engels — de
-  waarde is wat er in het dashboard staat.
-- **`login`, `sign_up` en `screen_view` zijn gereserveerd** en gaan níét via `logEvent` (die
-  weigert ze). Daarvoor zijn `logInloggen` / `logRegistreren` / `analytics.logScherm`.
+- **Namen staan in `src/constants/analytics.ts` (`ANALYTICS_EVENTS` / `USER_PROPERTIES`), nooit
+  los in een scherm.** Firebase legt de eerste spelling van een gebeurtenis vast en kan hem daarna
+  niet hernoemen of samenvoegen, dus een typefout kost data die je pas maanden later mist. Het
+  `as const` is het hele punt: zonder dat is het type `string` en vangt de compiler niets af.
+  Tien eigen gebeurtenissen, drie gebruikerseigenschappen — bewust weinig.
+- **Firebase verzamelt `login` en `sign_up` NIET vanzelf.** Automatisch verzameld zijn alleen
+  `first_open`, `session_start`, `user_engagement`, `app_update`, `os_update` en dergelijke — de
+  volledige lijst staat als `ReservedEventNames` in `@react-native-firebase/analytics`, en die
+  twee staan er niet in. Het zijn *aanbevolen* events die je zelf logt, waarna Firebase er zijn
+  rapporten over nieuwe versus terugkerende lezers mee vult. `logInloggen`/`logRegistreren` in
+  `hooks/useAnalytics.ts` doen dat; haal je ze weg, dan is er geen inlog- of registratietrechter.
+  `screen_view` gaat via `analytics.logScherm` (→ `logScreenView`), want dát is de weg waarlangs
+  het ingebouwde schermrapport en de `screen_class`-dimensie gevuld worden.
 - **`useAnalytics()` hoort één keer in de root layout**, net als `useAuth()` en
   `useVoortgangSync()`, en móét ná `useAuth()` staan. Hij past de toestemming toe, zet het
   gebruiker-id (en `null` bij uitloggen), houdt de drie gebruikerseigenschappen bij vanuit de
@@ -748,10 +857,16 @@ eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
 - **Schermnamen komen uit `useSegments()`, niet uit `usePathname()`.** Het pad bevat het verhaal-id
   (`/verhaal/julius-caesar/reader`), en dan worden negentien verhalen negentien schermen; de
   segmenten houden het patroon vast (`verhaal/[id]/reader`). Groepsmappen (`(tabs)`) vallen weg.
-- **`paywall_upgrade_pressed`, niet `subscription_upgrade` of `purchase`.** Billing is een stub;
-  een omzetgebeurtenis die geen omzet oplevert vervuilt het omzetrapport blijvend. Er gaat om
-  dezelfde reden geen bedrag of valuta in mee.
-- **`story_completed` en `character_unlocked` zijn twee gebeurtenissen**, precies omdat er sinds B4
+- **`subscription_attempt`, niet `subscription_upgrade` of Firebase' eigen `purchase`.** Billing is
+  een stub; een omzetgebeurtenis die geen omzet oplevert vervuilt het omzetrapport blijvend. Er
+  gaat om dezelfde reden geen bedrag of valuta in mee, wél `status: 'blocked_no_billing'` en
+  `reason`, zodat de rijen uit de stub-periode later te filteren zijn.
+- **`ProPaywall` heeft een verplichte `bron`-prop** (`banner` | `settings` | `limit` | `ad`), die
+  als `source` in `paywall_viewed` en `subscription_attempt` meegaat. Verplicht en niet optioneel
+  met een standaardwaarde: `limit` en `ad` zijn "iemand liep tegen een muur", `banner` en
+  `settings` zijn "iemand ging zelf kijken", en dat verschil is de hele conversievraag. Er zijn
+  vier aanroepplekken — de compiler wees er twee aan die anders vergeten waren.
+- **`story_finished` en `char_unlocked` zijn twee gebeurtenissen**, precies omdat er sinds B4
   een knop tussen zit. Het verschil tussen die aantallen is hoeveel lezers die knop niet indrukken.
 - **Toestemming staat in `store/analytics-store.ts`, standaard aan**, met een schakelaar in
   Instellingen → Privacy (`components/analytics-preferences.tsx`). Bewust device-lokaal: Firebase
@@ -760,23 +875,28 @@ eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
   `STANDAARD_ANALYTICS_TOESTEMMING`, inclusief wat ertegen pleit. Wie hem op `false` zet moet ook
   `firebase_analytics_collection_enabled=false` in het manifest zetten: de runtime-schakelaar komt
   te laat om de app-start zelf nog tegen te houden.
-- **`src/app/profiel/analytics.tsx` is een `__DEV__`-scherm** en toont geen cijfers — Firebase heeft
-  geen API waarmee een app zijn eigen DAU kan opvragen (dat is de Data API, met een serviceaccount,
-  dus een sleutel in de bundel). Wat het wél beantwoordt is "komt er iets aan, en zo nee waarom
-  niet": native module beschikbaar, toestemming, projectid, app-instance-id. Tekst hardgecodeerd in
-  het Engels, zoals de "Simulate Pro"-regel — geen lezer ziet het. Zelfde reden als bij
-  `(tabs)/profiel.tsx` staat het als stack-scherm naast de tabbladen.
+- **`src/app/profiel/analytics.tsx` is een grafsteen.** Daar stond een `__DEV__`-dashboard dat
+  toonde of de native module in deze build zat, of er toestemming was, het projectid en het
+  app-instance-id. Het is eruit gehaald omdat de cijfers in de Firebase Console horen — maar het
+  toonde géén cijfers (Firebase heeft geen API waarmee een app zijn eigen DAU opvraagt; dat is de
+  Data API met een serviceaccount, dus een sleutel in de bundel). **Wat wegviel is de diagnose:**
+  "waarom zie ik niets in Firebase" is bijna altijd "de dev-client is niet opnieuw gebouwd" of "je
+  kijkt op web". De vervanging is `analytics.beschikbaar` uit `lib/analytics.ts`, of de
+  waarschuwing die die module zelf één keer logt.
 - **`google-services.json` hoort in de repo-root en moet gecommit worden**, niet in `android/`:
   die map staat in `.gitignore` én in `.easignore` (EAS draait zijn eigen prebuild), dus een
   bestand daar overleeft geen `prebuild --clean` en bereikt de cloudbuild nooit. `app.json` wijst
   er met `expo.android.googleServicesFile` naar. **Zonder dat bestand faalt `expo prebuild`** —
   bewust luidruchtig, want een build waar Analytics stilletjes uit is gevallen is erger.
 - **Native module**: na het pullen van deze wijziging is een JS-reload niet genoeg, de dev client
-  moet opnieuw gebouwd worden (`npx expo run:android`). Het dev-dashboard zegt dat ook als je het
-  vergeet.
-- **Data Safety en de privacypagina moeten mee.** `docs/README.md` is bijgewerkt (inclusief de val
-  "approximate location": Firebase leidt land af uit het IP, ook zonder locatiepermissie);
-  `docs/privacy-policy.html` nog niet — zie "Known gaps".
+  moet opnieuw gebouwd worden (`npx expo run:android`). Vergeet je dat, dan blijft `laad()` in
+  `lib/analytics.ts` `null` teruggeven en logt hij één waarschuwing — de app werkt gewoon door.
+- **Data Safety en de privacypagina zijn bijgewerkt.** `docs/README.md` (inclusief de val
+  "approximate location": Firebase leidt land af uit het IP, ook zonder locatiepermissie) én
+  `docs/privacy-policy.html`, die nu account, sync, peilingantwoorden, feedback en analytics
+  beschrijft in plaats van "Chronicles collects nothing". Wat er nog ontbreekt is de
+  verwerkingsregio van Supabase — vul die in vóór publicatie als je een expliciete
+  EU-doorgifteclausule wilt.
 
 ### Reusable interaction patterns
 
@@ -822,6 +942,7 @@ delete it, and don't wire it back up without reading why it was dropped.
 | `components/placeholder-screen.tsx` | Voortgang/Profiel are fully built |
 | `components/profile-card-collection.tsx` | superseded by `profile-character-collection.tsx` (kaarten i.p.v. cirkelraster) |
 | `verhaal/[id]/quiz.tsx`, `verhaal/[id]/chapter-quiz.tsx` | quizzes removed; now tombstone screens |
+| `profiel/analytics.tsx` | dev analytics dashboard removed; now a tombstone screen |
 | `app/land/[landId]/**`, `components/story-card.tsx`, `components/tijdperk-section.tsx`, `constants/stub-data.ts` | pre-Regio/Tijdperk content model; last three are empty stubs |
 
 `getVerhalenByRegio()` in `content/verhalen/index.ts` always returns `[]` — `Verhaal.regioIds` was
@@ -859,28 +980,43 @@ Known gaps:
   (~205 KB each). That is the single biggest thing in the bundle; if the download size ever needs
   to come down, lower the resolution or `output_quality` in `scripts/generate-scene-images.mjs` and
   regenerate, don't recompress files one by one.
-- **The preference stores don't sync.** `voortgang-store`, `story-progress-store` and
-  `character-unlock-store` all do since R8.SYNC-B, so a second device gets the same chapters and
-  the same collection. Language, theme, the reminder setting (now including its **time**), the
-  **avatar** (`profile-store`), the **email preferences** (`email-voorkeur-store`) and the
-  **daily story counter** (`abonnement-store`) are all still device-local (the `profiles` row has
-  `language`/`theme` columns that nothing writes yet, and no avatar or email column at all — a
-  photo avatar would also need Storage for the bytes, not just a column). The story counter being
-  local means two devices each get their own daily allowance; that is a Billing-era problem, not a
-  today problem.
-- **Account deletion is a mailto, not a button that deletes.** Play requires an in-app route for
-  apps with accounts; Instellingen offers one and it now works — `SUPPORT_EMAIL` is filled in
-  (`businessthedemoreagency@gmail.com`), so "Contact support" and "Delete account" open a real
-  mail instead of showing "Soon". **Every deletion request therefore lands in that inbox and has to
-  be handled by hand**; an edge function that does it in-app is still open.
+- **Most preference stores still don't sync.** `voortgang-store`, `story-progress-store` and
+  `character-unlock-store` do since R8.SYNC-B, and **`notificatie-store` joined them** with the
+  push work — the reminder, its time and the two push categories now live in
+  `public.notification_preferences` and follow the account to a second device. Still device-local:
+  language, theme, the **avatar** (`profile-store`), the **email preferences**
+  (`email-voorkeur-store`) and the **daily story counter** (`abonnement-store`) — the `profiles`
+  row has `language`/`theme` columns that nothing writes yet, and no avatar or email column at all
+  (a photo avatar would also need Storage for the bytes, not just a column). The story counter
+  being local means two devices each get their own daily allowance; that is a Billing-era problem,
+  not a today problem.
+- ~~Account deletion is a mailto~~ — **it deletes now**, via the `delete-account` edge function
+  (see "Account deletion & data requests"). What is still handwork is the **data copy**:
+  Instellingen → "Request my data" opens a prefilled mail to `SUPPORT_EMAIL`
+  (`businessthedemoreagency@gmail.com`), and every such request has to be answered by hand within
+  30 days. An export the app builds itself is deliberately not built.
+- **Push notifications are built but cannot deliver yet.** Schema, both edge functions
+  (`send-push`, `push-sweep`), the story catalog, the client wrapper, the preferences UI and the
+  four-language copy are all in place and deployed; `push_kandidaten` is verified against real
+  data. Three things are still missing and all three are outside the code: `google-services.json`
+  (same blocker as Analytics), a Firebase **service account** whose three values go into the edge
+  functions' secrets, and the **pg_cron schedule** — `pg_cron`/`pg_net` are not enabled on this
+  project. Until then `push.beschikbaar` is false, the two server categories are hidden from
+  Settings, and only the two local notifications (daily reminder, streak) work. Full runbook in
+  `supabase/README-push.md`. **Nothing has been tested against a real device** — an emulator
+  without Play services never receives FCM.
 - **Firebase Analytics needs `google-services.json` in the repo root.** It is not in the repo —
   create the Firebase project, add an Android app with package `com.chronicles.historyapp`, and
   drop the file there. Until then `expo prebuild` and every EAS build fail on the
   `@react-native-firebase/app` plugin. See "Analytics".
-- **The privacy policy still describes a device-only app** — an account and now reading progress
-  live on a server. `docs/privacy-policy.html`, the Data Safety answers in `docs/README.md` and
-  `src/constants/juridisch.ts` all predate auth and must be updated before the production build.
-  Nothing in the code fails when they are wrong.
+- ~~The privacy policy still describes a device-only app~~ — **rewritten.**
+  `docs/privacy-policy.html` now covers the account, the progress sync, poll/choice answers,
+  feedback and Firebase Analytics (including the opt-out and the IP-derived approximate location),
+  and `docs/README.md` carries the matching Data Safety answers. Two things are still open: the
+  page is **not published** (`PRIVACY_BELEID_URL` in `src/constants/juridisch.ts` is still the
+  placeholder, so Settings hides the link), and it does not name Supabase's processing region —
+  fill that in if you want an explicit EU-transfer clause. Nothing in the code fails when the page
+  is wrong, so this only gets caught by reading it.
 - **Google Play Billing is a stub** — nothing can actually be bought; `useAbonnement()` now reads
   `abonnement-store`, whose `isPro` only moves via the `__DEV__` "Simulate Pro" switch. `ADS_ENABLED`
   in `ad-banner.tsx` is still `false`, but **three other flags are on**: `PRO_BANNER_ENABLED`

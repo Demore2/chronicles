@@ -14,6 +14,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AppHeader } from '@/components/app-header';
 import { SplashScreen } from '@/components/splash-screen';
 import { useDagelijkseHerinnering } from '@/hooks/use-dagelijkse-herinnering';
+import { usePushRegistratie } from '@/hooks/use-push-registratie';
+import { useStreakHerinnering } from '@/hooks/use-streak-herinnering';
 import { useEffectieveKleurenSchema, useTheme } from '@/hooks/use-theme';
 import { useVoortgangSync } from '@/hooks/use-voortgang-sync';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -45,6 +47,16 @@ export default function RootLayout() {
   // in de store zit wanneer hij het gebruiker-id doorgeeft.
   useAnalytics();
 
+  // De laatste twee bewoners van de root layout, om dezelfde reden als de vier hierboven: er is
+  // per taak precies één plek die hem uitvoert.
+  //
+  // `useStreakHerinnering()` plant de lokale waarschuwing dat je reeks vanavond afloopt — geen
+  // server, geen FCM. `usePushRegistratie()` doet de FCM-kant: het toestel registreren, luisteren
+  // of het token vernieuwt, en een tik op een melding omzetten in een navigatie. Zonder
+  // `google-services.json` doet die tweede niets en klaagt hij niet (zie `lib/push.ts`).
+  useStreakHerinnering();
+  usePushRegistratie();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={kleurenSchema === 'dark' ? DarkTheme : DefaultTheme}>
@@ -64,7 +76,8 @@ export default function RootLayout() {
               De titels zetten de schermen zelf, zodat ze vertaald meebewegen. */}
           <Stack.Screen name="profiel/settings" />
           <Stack.Screen name="profiel/upload-avatar" options={{ presentation: 'modal' }} />
-          {/* Alleen bereikbaar via de dev-regel onderaan Instellingen; zie het scherm zelf. */}
+          {/* Grafsteen: het dev-dashboard is eruit gehaald. Niets linkt hierheen; de route blijft
+              bestaan omdat het bestand blijft bestaan (zie CLAUDE.md, "File deletion"). */}
           <Stack.Screen name="profiel/analytics" />
         </Stack>
       </ThemeProvider>

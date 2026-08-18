@@ -10,6 +10,7 @@
     "@react-native-community/netinfo": "12.0.1",
     "@react-native-firebase/analytics": "^26.2.0",
     "@react-native-firebase/app": "^26.2.0",
+    "@react-native-firebase/messaging": "^26.2.0",
     "@supabase/supabase-js": "^2.112.3",
     "expo": "~57.0.7",
     "expo-constants": "~57.0.6",
@@ -84,7 +85,8 @@
     "generate:interactief": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-interactive-content.mjs",
     "generate:batch": "node orchestration-controller.mjs",
     "generate:batch:dev": "node orchestration-controller.mjs",
-    "generate:batch:validate": "npm run validate:content && npx tsc --noEmit && npm run lint"
+    "generate:batch:validate": "npm run validate:content && npx tsc --noEmit && npm run lint",
+    "sync:verhaalcatalogus": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/sync-story-catalog.mjs"
   },
   "private": true
 }

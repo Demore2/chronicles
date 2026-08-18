@@ -124,6 +124,19 @@ const nl: DeepPartial<Vertalingen> = {
     analyticsVoet:
       'Chronicles telt welke schermen je opent, welke hoofdstukken je afrondt en welke knoppen je gebruikt, samen met je toesteltype en land. Het hangt aan je account en loopt via Google Firebase. Wat je zelf typt gaat nooit mee. Zet je dit uit, dan verlaat er niets je toestel.',
 
+    sectiePush: 'Pushmeldingen',
+    pushVoet:
+      'Om deze te kunnen sturen registreert Chronicles dit toestel bij Google Firebase en houdt het bij wanneer je voor het laatst las. Zet ze allebei uit en het toestel wordt weer afgemeld.',
+    pushVoetLokaal:
+      'Deze melding wordt op je toestel gemaakt en verlaat het nooit. Suggesties om terug te komen zitten niet in deze versie.',
+    pushTerugkeer: 'Herinner me',
+    pushTerugkeerUitleg: 'Een zacht duwtje als er een paar dagen voorbijgaan zonder lezen.',
+    pushAanbevelingen: 'Verhaalsuggesties',
+    pushAanbevelingenUitleg:
+      'Af en toe een verhaal uit een tijdperk dat je ligt en dat je nog niet opende.',
+    pushStreak: 'Streak in gevaar',
+    pushStreakUitleg: '’s Avonds een seintje als je streak vandaag zou breken.',
+
     beoordeel: 'Chronicles beoordelen',
     contact: 'Contact opnemen',
     contactOnderwerp: 'Chronicles support',
@@ -134,8 +147,22 @@ const nl: DeepPartial<Vertalingen> = {
     accountVerwijderen: 'Account verwijderen',
     accountVerwijderenTitel: 'Account verwijderen?',
     accountVerwijderenTekst:
-      'Hiermee verdwijnt je account en alles wat ermee is gesynchroniseerd. We doen dat voorlopig met de hand: mail ons en je krijgt bericht zodra het gebeurd is. Je voortgang op dit toestel blijft tot die tijd staan.',
+      'Hiermee verdwijnen je account, je voortgang, je personages en je antwoorden — op onze servers en op dit toestel. Het gebeurt meteen en is niet terug te draaien.',
+    accountVerwijderenBevestig: 'Voorgoed verwijderen',
+    accountVerwijderenBezig: 'Bezig met verwijderen…',
+    accountVerwijderdTitel: 'Account verwijderd',
+    accountVerwijderdTekst:
+      'Alles is weg en dit toestel is leeggemaakt. Bedankt voor het lezen.',
+    accountVerwijderenMisluktTitel: 'Verwijderen mislukt',
+    accountVerwijderenMisluktTekst: (adres: string): string =>
+      `Er is niets verwijderd — je account staat er nog precies zo bij. Controleer je verbinding en probeer het opnieuw, of mail ${adres}.`,
     accountVerwijderenMail: 'Mail ons',
+
+    gegevensVerzoek: 'Mijn gegevens opvragen',
+    gegevensVerzoekUitleg: 'Een kopie van alles wat bij je account is opgeslagen, per e-mail.',
+    gegevensVerzoekOnderwerp: 'Chronicles gegevensverzoek',
+    gegevensVerzoekBody:
+      'Hallo,\n\nIk ontvang graag een kopie van de gegevens die bij mijn Chronicles-account zijn opgeslagen.\n\nStuur ze naar het adres waarvandaan ik schrijf.\n\nAlvast bedankt.',
   },
   pro: {
     titel: 'Pro-toegang',
@@ -199,6 +226,9 @@ const nl: DeepPartial<Vertalingen> = {
   notificatie: {
     titel: 'Je volgende hoofdstuk wacht',
     tekst: 'Een paar minuten geschiedenis, voor de dag om is.',
+    streakTitel: 'Je streak loopt vanavond af',
+    streakTekst: (dagen: number): string =>
+      `${dagen} ${dagen === 1 ? 'dag' : 'dagen'} op rij. Eén hoofdstuk houdt hem in leven.`,
   },
   collectie: {
     nietGevondenTitel: 'Verhaallijn niet gevonden',

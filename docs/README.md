@@ -42,14 +42,14 @@ Console aankruist:
 > **Deze tabel is verouderd en moet vóór de productiebuild opnieuw worden ingevuld.** Ze is
 > geschreven voor een app die niets verstuurde. Daarna kwamen er een account (R8.AUTH), een
 > voortgangssync (R8.SYNC-B), interactief lezen en nu Firebase Analytics bij. De regels hieronder
-> zijn de nieuwe antwoorden; `privacy-policy.html` beschrijft nog steeds de oude situatie en is
-> daarmee het openstaande werk — zie "Wat de privacypagina nog mist".
+> zijn de nieuwe antwoorden; `privacy-policy.html` is intussen bijgeschreven en zegt hetzelfde —
+> zie "De privacypagina".
 
 | Vraag | Antwoord |
 |---|---|
 | Does your app collect or share any of the required user data types? | **Yes** |
 | Is all of the user data collected by your app encrypted in transit? | **Yes** — Supabase en Firebase gaan allebei over HTTPS |
-| Do you provide a way for users to request that their data is deleted? | **Yes** — Instellingen → Delete account (nu nog een mailto naar `SUPPORT_EMAIL`, met de hand afgehandeld) |
+| Do you provide a way for users to request that their data is deleted? | **Yes** — Instellingen → Delete account. Kruis **"Users can request that their data is deleted"** én **"Users can delete their account in the app"** aan: het verwijderen gebeurt in de app zelf, meteen, via de edge function `delete-account` (zie hieronder). Play vraagt daarnaast om een publieke *account deletion*-URL in de listing; die staat op de privacypagina onder "Your rights" |
 
 Per gegevenstype, zoals het formulier het uitvraagt:
 
@@ -60,8 +60,17 @@ Per gegevenstype, zoals het formulier het uitvraagt:
 | App interactions | Ja (Firebase Analytics: schermweergaven en de gebeurtenissen uit `src/constants/analytics.ts`) | Ja — Google (Firebase) | Analytics | **Optioneel** — Instellingen → Privacy |
 | Crash logs / diagnostics | Nee | Nee | — | — |
 | Approximate location | **Ja, indirect** | Ja — Google (Firebase) | Analytics | Optioneel, zelfde schakelaar |
-| Device or other IDs | Ja (Firebase app-instance-id) | Ja — Google (Firebase) | Analytics | Optioneel, zelfde schakelaar |
+| Device or other IDs | Ja (Firebase app-instance-id; **plus het FCM-registratietoken** in `user_devices` zodra push aan staat) | Ja — Google (Firebase) | Analytics, **App functionality** (bezorgen van meldingen) | Optioneel — Analytics via Privacy, push via Instellingen → Pushmeldingen |
 | Photos | Nee — de avatar blijft op het toestel (`profile-store`, AsyncStorage) | Nee | — | — |
+
+**Push-notificaties voegen één regel toe aan dit formulier en één aan de bestaande.** Zodra een
+lezer "Nudge me back" of "Story suggestions" aanzet, bewaart `public.user_devices` het
+FCM-registratietoken van zijn installatie plus toestelmodel, tijdzone en app-versie, en houdt
+`public.notifications_sent` bij wat er gestuurd is en of erop getikt is. Dat is een **Device ID**
+met als doel *App functionality*, niet Analytics — het token bezorgt een bericht, het meet niets.
+Allebei de categorieën staan **standaard uit**, dus voor een lezer die er niet aan komt verzamelt
+de app hier niets. De twee lokale meldingen (dagelijkse herinnering, streak) verlaten het toestel
+nooit en horen dus in geen enkele rij thuis.
 
 **"Approximate location" is de val in dit formulier.** De app vraagt geen enkele locatiepermissie,
 maar Firebase leidt land en regio af uit het IP-adres van elk verzoek. Dat telt voor Play als
@@ -71,6 +80,44 @@ formulier onjuist in.
 **"Optional" mag alleen aangekruist worden zolang de schakelaar er is.** Instellingen → Privacy →
 *Usage statistics* zet `analytics.zetVerzamelenAan(false)`; verdwijnt die regel, dan verandert het
 antwoord in "Required".
+
+### Accountverwijdering (`supabase/functions/delete-account`)
+
+Play eist voor elke app met accounts een in-app route om het account weer kwijt te raken, en de
+AVG eist dat die route ook echt iets verwijdert. Beide lopen via één knop: Instellingen →
+*Delete account* → één bevestiging.
+
+- **Het wissen gebeurt in een edge function, niet in de app.** Dat is geen voorkeur maar
+  noodzaak. Op `profiles`, `voortgang`, `story_progress`, `character_unlocks`, `poll_responses`,
+  `user_choices` en `feedback` staat RLS aan met alleen select-, insert- en update-policies; een
+  `delete` waarvoor geen policy bestaat raakt **nul rijen en geeft geen foutmelding**. Een
+  client-side verwijdering zou dus "verwijderd" melden terwijl alles er nog staat. En `auth.users`
+  is voor een client sowieso onbereikbaar: zonder die rij weg te halen kun je meteen weer
+  inloggen.
+- **Eén `deleteUser`, de rest cascadeert.** Elke foreign key naar `auth.users` staat op
+  `on delete cascade`, dus de zeven tabellen lopen mee in dezelfde transactie. Zeven losse
+  deletes zouden bij een fout halverwege een half account achterlaten.
+- **De function verwijdert alleen de aanroeper.** Het gebruiker-id komt uit het geverifieerde
+  token (`auth.getUser(token)`), nooit uit de request-body; er is geen parameter waarmee je
+  iemand anders opgeeft. `verify_jwt` staat aan, dus een verzoek zonder token wordt al door de
+  gateway geweigerd.
+- **Het toestel wordt óók leeggemaakt** (`src/store/lokale-gegevens.ts`). Moet wel: de drie
+  voortgangsstores *verenigen* bij de volgende login lokaal met server in plaats van te
+  overschrijven, dus zonder die stap erft het volgende account op dit toestel de hoofdstukken,
+  personages en streak van de verwijderde lezer — en zet die keurig terug op de server. Taal,
+  thema, de herinnering en de analytics-toestemming blijven staan: toestelinstellingen, geen
+  persoonsgegevens.
+- **Uitrollen doe je apart van de app.** De function staat in `supabase/functions/` en is via
+  Supabase uitgerold (versie 1, actief); `.easignore` en `tsconfig.json` sluiten die map uit,
+  want het is Deno-code en geen app-code. Een nieuw Supabase-project heeft hem dus niet vanzelf.
+
+### Gegevenskopie (AVG art. 15/20)
+
+Instellingen → *Request my data* opent een mailtje naar `SUPPORT_EMAIL` met onderwerp en tekst al
+ingevuld. **Bewust geen exportknop:** dat zou een tweede edge function plus een bestandsformaat
+zijn, en er staat per account te weinig om dat vandaag te rechtvaardigen. Wat de AVG eist is een
+route die aankomt en een antwoord binnen 30 dagen — beide staan zo ook in `privacy-policy.html`.
+**Elk verzoek komt dus met de hand in die mailbox binnen**; het verwijderverzoek niet meer.
 
 ### Firebase Analytics in het bijzonder
 
@@ -90,13 +137,20 @@ antwoord in "Required".
   toegeschreven kwam altijd al van dezelfde Firebase-bibliotheken. Meet het na met het commando
   onderaan deze pagina.
 
-### Wat de privacypagina nog mist
+### De privacypagina
 
-`privacy-policy.html` beschrijft een app die alles op het toestel houdt. Dat klopt sinds R8.AUTH
-niet meer en sinds deze fase nog minder. Vóór de productiebuild moeten er minstens bij: het
-account en wat erin zit, de voortgangssync, de antwoorden op peilingen en keuzepunten, en
-Firebase Analytics met de opt-outschakelaar en de verwerking door Google. `src/constants/juridisch.ts`
-verandert niet mee — daar staat alleen de URL.
+`privacy-policy.html` is **herschreven** en beschrijft nu wat de app echt doet: het account, de
+voortgangssync, de antwoorden op peilingen en keuzepunten, de feedback, en Firebase Analytics met
+de opt-outschakelaar en de verwerking door Google. Ze opende eerst met "Chronicles collects
+nothing"; die zin was waar toen ze geschreven werd en al onjuist sinds R8.AUTH.
+
+Twee dingen blijven open:
+
+1. **De pagina is nog niet gepubliceerd.** `PRIVACY_BELEID_URL` in `src/constants/juridisch.ts` is
+   nog de placeholder, dus Instellingen verbergt de link (zie boven, "Publiceren via GitHub
+   Pages"). De constante verandert niet mee met de inhoud — daar staat alleen de URL.
+2. **De verwerkingsregio van Supabase staat er niet in.** Wil je een expliciete
+   EU-doorgifteclausule, vul die dan in vóór publicatie; ik heb geen regio verzonnen.
 
 Geen enkele permissie is een Data Safety-onderwerp (dat formulier gaat over *verzamelde gegevens*,
 niet over permissies), maar ze staan wél in de listing en de privacypagina moet ze kloppend

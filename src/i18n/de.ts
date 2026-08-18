@@ -127,6 +127,19 @@ const de: DeepPartial<Vertalingen> = {
     analyticsVoet:
       'Chronicles zählt, welche Bildschirme du öffnest, welche Kapitel du abschließt und welche Schaltflächen du nutzt, zusammen mit Gerätetyp und Land. Es ist mit deinem Konto verknüpft und läuft über Google Firebase. Was du selbst schreibst, geht nie mit. Schaltest du dies aus, verlässt nichts davon dein Gerät.',
 
+    sectiePush: 'Push-Benachrichtigungen',
+    pushVoet:
+      'Um diese zu senden, registriert Chronicles dieses Gerät bei Google Firebase und merkt sich, wann du zuletzt gelesen hast. Schalte beide aus, und das Gerät wird wieder abgemeldet.',
+    pushVoetLokaal:
+      'Diese Erinnerung entsteht auf deinem Gerät und verlässt es nie. Vorschläge zur Rückkehr gibt es in dieser Version nicht.',
+    pushTerugkeer: 'Erinnere mich',
+    pushTerugkeerUitleg: 'Ein leiser Anstoß, wenn ein paar Tage ohne Lesen vergehen.',
+    pushAanbevelingen: 'Geschichtenvorschläge',
+    pushAanbevelingenUitleg:
+      'Ab und zu eine Geschichte aus einer Epoche, die dir liegt und die du noch nicht geöffnet hast.',
+    pushStreak: 'Serie in Gefahr',
+    pushStreakUitleg: 'Abends ein Hinweis, wenn deine Serie heute reißen würde.',
+
     beoordeel: 'Chronicles bewerten',
     contact: 'Support kontaktieren',
     contactOnderwerp: 'Chronicles Support',
@@ -137,8 +150,22 @@ const de: DeepPartial<Vertalingen> = {
     accountVerwijderen: 'Konto löschen',
     accountVerwijderenTitel: 'Konto löschen?',
     accountVerwijderenTekst:
-      'Damit verschwindet dein Konto samt allem, was damit synchronisiert wurde. Wir erledigen das vorerst von Hand: Schreib uns, und wir bestätigen, sobald es erledigt ist. Dein Lesefortschritt auf diesem Gerät bleibt bis dahin unangetastet.',
+      'Damit verschwinden dein Konto, dein Lesefortschritt, deine Figuren und deine Antworten — auf unseren Servern und auf diesem Gerät. Es geschieht sofort und lässt sich nicht rückgängig machen.',
+    accountVerwijderenBevestig: 'Endgültig löschen',
+    accountVerwijderenBezig: 'Wird gelöscht…',
+    accountVerwijderdTitel: 'Konto gelöscht',
+    accountVerwijderdTekst:
+      'Alles ist weg, auch auf diesem Gerät. Danke, dass du mit uns gelesen hast.',
+    accountVerwijderenMisluktTitel: 'Löschen fehlgeschlagen',
+    accountVerwijderenMisluktTekst: (adres: string): string =>
+      `Es wurde nichts gelöscht — dein Konto ist unverändert. Prüfe deine Verbindung und versuche es erneut, oder schreib an ${adres}.`,
     accountVerwijderenMail: 'Schreib uns',
+
+    gegevensVerzoek: 'Meine Daten anfordern',
+    gegevensVerzoekUitleg: 'Eine Kopie von allem, was zu deinem Konto gespeichert ist, per E-Mail.',
+    gegevensVerzoekOnderwerp: 'Chronicles Datenanfrage',
+    gegevensVerzoekBody:
+      'Hallo,\n\nich hätte gern eine Kopie der Daten, die zu meinem Chronicles-Konto gespeichert sind.\n\nBitte sendet sie an die Adresse, von der ich schreibe.\n\nVielen Dank.',
   },
   pro: {
     titel: 'Pro-Zugang',
@@ -202,6 +229,9 @@ const de: DeepPartial<Vertalingen> = {
   notificatie: {
     titel: 'Dein nächstes Kapitel wartet',
     tekst: 'Ein paar Minuten Geschichte, bevor der Tag vorbei ist.',
+    streakTitel: 'Deine Serie endet heute Abend',
+    streakTekst: (dagen: number): string =>
+      `${dagen} Tag${dagen === 1 ? '' : 'e'} in Folge. Ein Kapitel hält sie am Leben.`,
   },
   collectie: {
     nietGevondenTitel: 'Erzählstrang nicht gefunden',

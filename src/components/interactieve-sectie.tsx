@@ -4,11 +4,11 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { StoryChoice } from '@/components/story-choice';
 import { StoryPoll } from '@/components/story-poll';
 import { StoryQuiz } from '@/components/story-quiz';
-import { ANALYTICS_GEBEURTENIS } from '@/constants/analytics';
+import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { Motion, staggerVertraging } from '@/constants/motion';
 import { Spacing } from '@/constants/theme';
 import { useHoofdstukInteractie } from '@/hooks/use-interactie';
-import { logEvent } from '@/hooks/useAnalytics';
+import { logStoryEvent } from '@/hooks/useAnalytics';
 import { isLeeg } from '@/lib/interactief';
 
 /**
@@ -56,7 +56,7 @@ export function InteractieveSectie({
             quiz={quiz}
             accent={accent}
             onBeantwoord={(gekozen, goed) =>
-              logEvent(ANALYTICS_GEBEURTENIS.quizBeantwoord, {
+              logStoryEvent(ANALYTICS_EVENTS.QUIZ_ANSWER, {
                 story_id: verhaalId,
                 chapter_index: chapterId,
                 quiz_id: quiz.id,

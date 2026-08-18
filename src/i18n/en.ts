@@ -163,6 +163,28 @@ const en = {
     analyticsVoet:
       'Chronicles counts screens you open, chapters you finish and buttons you press, together with your device type and country. It is tied to your account and handled by Google Firebase. It never includes what you write. Turn this off and none of it leaves your device.',
 
+    // --- Push-notificaties ---
+    //
+    // Los van de dagelijkse herinnering, die lokaal is en zijn eigen sectie heeft. Wat hier staat
+    // komt van de server, en de teksten zeggen dat ook: wie een melding krijgt hoort te weten
+    // waarom hij hem krijgt.
+    sectiePush: 'Push notifications',
+    /**
+     * Zegt wat er nodig is om ze te sturen. Bewust geen "we respect your privacy"-zin: wat er
+     * gebeurt is dat dit toestel bij ons bekend staat, en dát is de mededeling.
+     */
+    pushVoet:
+      'To send these, Chronicles registers this device with Google Firebase and keeps track of when you last read. Turn both off and the device is unregistered again.',
+    /** Als FCM in deze build niet bestaat: dan is er maar één schakelaar, en die is lokaal. */
+    pushVoetLokaal:
+      'This reminder is created on your device and never leaves it. Suggestions to come back are not available in this version.',
+    pushTerugkeer: 'Nudge me back',
+    pushTerugkeerUitleg: 'A quiet reminder if a few days pass without reading.',
+    pushAanbevelingen: 'Story suggestions',
+    pushAanbevelingenUitleg: 'Now and then, a story from an era you like that you have not opened.',
+    pushStreak: 'Streak at risk',
+    pushStreakUitleg: 'A heads-up in the evening if today would break your streak.',
+
     beoordeel: 'Rate Chronicles',
     contact: 'Contact support',
     contactOnderwerp: 'Chronicles support',
@@ -172,11 +194,39 @@ const en = {
 
     accountVerwijderen: 'Delete account',
     accountVerwijderenTitel: 'Delete account?',
-    // Bewust geen knop die het meteen doet: verwijderen gebeurt aan de serverkant en die stap
-    // bestaat nog niet. Liever een eerlijke route dan een knop die stilletjes niets opruimt.
+    /**
+     * Zegt precies wat er gebeurt, inclusief het toestel. Dit stond hier eerder als "we handle it
+     * by hand — email us"; sinds de edge function `delete-account` is het echt onmiddellijk, en
+     * dan mag de tekst niet meer om een mailtje vragen. De regel over dit toestel staat er bij
+     * omdat uitloggen het tegenovergestelde belooft — dat verschil is precies de vraag die je op
+     * dit moment stelt.
+     */
     accountVerwijderenTekst:
-      'This removes your account and everything synced to it. We handle it by hand for now — email us and we will confirm once it is done. Your reading progress on this device is untouched until then.',
+      'This deletes your account, your reading progress, your characters and your answers — on our servers and on this device. It happens right away and cannot be undone.',
+    accountVerwijderenBevestig: 'Delete forever',
+    accountVerwijderenBezig: 'Deleting…',
+    accountVerwijderdTitel: 'Account deleted',
+    accountVerwijderdTekst:
+      'Everything is gone and this device has been cleared. Thank you for reading with us.',
+    accountVerwijderenMisluktTitel: 'Could not delete your account',
+    /** Belangrijkste zin: er is *niets* half weg. Zonder dat blijft de vraag hangen. */
+    accountVerwijderenMisluktTekst: (adres: string): string =>
+      `Nothing was deleted — your account is exactly as it was. Check your connection and try again, or write to ${adres}.`,
+    // Superseded: het verwijderen loopt niet meer via een mailtje. Blijft staan zolang de
+    // andere talen hem nog kennen.
     accountVerwijderenMail: 'Email us',
+
+    // --- Gegevensverzoek (AVG art. 15/20) ---
+    /**
+     * Een export bouwen we (nog) niet in de app: dat is een tweede edge function plus een
+     * bestandsformaat, en de gegevens passen in een e-mail. Deze regel opent er dus eentje, met
+     * onderwerp en tekst al ingevuld, zodat het verzoek herkenbaar binnenkomt.
+     */
+    gegevensVerzoek: 'Request my data',
+    gegevensVerzoekUitleg: 'A copy of everything stored against your account, by email.',
+    gegevensVerzoekOnderwerp: 'Chronicles data request',
+    gegevensVerzoekBody:
+      'Hello,\n\nI would like a copy of the data stored against my Chronicles account.\n\nPlease send it to the address I am writing from.\n\nThank you.',
   },
   /**
    * De premium-banner op Profiel en het paywall-venster erachter (`pro-paywall.tsx`).
@@ -275,6 +325,16 @@ const en = {
   notificatie: {
     titel: 'Your next chapter is waiting',
     tekst: 'A few minutes of history, before the day is over.',
+    /**
+     * De ontgrendelmelding. Lokaal en meteen — het ontgrendelen gebeurt op dit toestel, dus er
+     * is geen server voor nodig (zie `notificaties.toonNu`).
+     *
+     * Hij verschijnt alleen als de app *niet* op de voorgrond staat: wie de ontgrendelmodal voor
+     * zijn neus heeft gehad, heeft het al gezien, en dan is een melding erbovenop ruis.
+     */
+    streakTitel: 'Your streak ends tonight',
+    streakTekst: (dagen: number): string =>
+      `${dagen} day${dagen === 1 ? '' : 's'} in a row. One chapter keeps it alive.`,
   },
   collectie: {
     nietGevondenTitel: 'Storyline not found',

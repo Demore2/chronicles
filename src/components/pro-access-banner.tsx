@@ -56,7 +56,7 @@ export function ProAccessBanner() {
         </AnimatedPressable>
       </View>
 
-      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} />
+      <ProPaywall visible={paywallOpen} onClose={() => setPaywallOpen(false)} bron="banner" />
     </>
   );
 }

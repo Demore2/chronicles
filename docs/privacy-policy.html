@@ -34,6 +34,7 @@
   main { max-width: 42rem; margin: 0 auto; }
   h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .35rem; }
   h2 { font-size: 1.2rem; margin: 2.25rem 0 .6rem; }
+  h3 { font-size: 1rem; margin: 1.5rem 0 .4rem; color: var(--text-secondary); }
   p, li { color: var(--text); }
   ul { padding-left: 1.25rem; }
   li { margin-bottom: .4rem; }
@@ -58,51 +59,153 @@
 <body>
 <main>
   <h1>Privacy Policy</h1>
-  <p class="meta">Chronicles &mdash; last updated 13 August 2026</p>
+  <p class="meta">Chronicles &mdash; last updated 18 August 2026</p>
 
   <div class="callout">
-    <p><strong>In short: Chronicles collects nothing.</strong> There are no accounts, no analytics,
-    no advertising and no tracking. Everything the app remembers about you stays on your own
-    device.</p>
+    <p><strong>In short:</strong> Chronicles needs an account, so it stores your e-mail address and
+    your reading progress on a server. It also measures how the app is used, which you can switch
+    off. We sell nothing to anyone, and the stories themselves are read from the app, not from
+    us.</p>
   </div>
 
   <h2>Who we are</h2>
-  <p>Chronicles is an offline reading app about historical figures and events, published for
-  Android on Google Play. This policy explains what the app does and does not do with data.</p>
+  <p>Chronicles is a reading app about historical figures and events, published for Android on
+  Google Play. This policy explains what the app stores, where it goes, and what you can do about
+  it. It replaces an earlier version which described Chronicles as an app that collected nothing;
+  that stopped being true when accounts and synchronisation were added.</p>
 
   <h2>Data we collect</h2>
-  <p><strong>None.</strong> Chronicles does not collect, transmit or share any personal data. In
-  particular, the app does not:</p>
+
+  <h3>Your account</h3>
+  <p>Chronicles requires an account, so that your reading progress follows you to a second device.
+  When you sign up we store:</p>
   <ul>
-    <li>ask you to create an account or sign in;</li>
-    <li>ask for your name, e-mail address, phone number or location;</li>
-    <li>use analytics, crash reporting or advertising SDKs;</li>
-    <li>use cookies, advertising identifiers or any other tracking technology;</li>
-    <li>share anything with third parties, because there is nothing to share.</li>
+    <li>your <strong>e-mail address</strong>, used to sign in and to reach you about your account;</li>
+    <li>a <strong>username</strong> you choose, shown only to you;</li>
+    <li>your <strong>password</strong>, which is stored only as a cryptographic hash by our
+    authentication provider. Nobody, including us, can read it back.</li>
   </ul>
 
-  <h2>Data stored on your device</h2>
-  <p>To keep your place in a story, the app saves a small amount of information in its own private
-  storage on your device:</p>
+  <h3>Your reading</h3>
+  <p>So that your place in a story is the same on every device, the following is stored against
+  your account on our server:</p>
   <ul>
     <li>which chapters you have completed and which stories you have opened;</li>
-    <li>which characters you have unlocked;</li>
-    <li>your reading streak;</li>
-    <li>your theme (light, dark or system) and language preference.</li>
+    <li>which characters you have unlocked, and when;</li>
+    <li>your reading streak and the date you last read something.</li>
   </ul>
-  <p>This information never leaves your device and is not readable by us or by anyone else. It is
-  removed when you clear the app's data or uninstall the app.</p>
+
+  <h3>Your answers</h3>
+  <p>Some chapters end with a quiz, a poll or a choice point. Quiz answers are <strong>not</strong>
+  stored anywhere &mdash; a quiz is a self-test while you read, not a grade. Poll votes and choices
+  <em>are</em> stored, one row per question, so the app can show how other readers answered. Other
+  readers only ever see totals; nobody can look up how you voted.</p>
+
+  <h3>Feedback you send</h3>
+  <p>If you send us a bug report or an idea from inside the app, we store the message you typed
+  together with the app version and the platform. Feedback goes nowhere else.</p>
+
+  <h3>Usage statistics</h3>
+  <p>Chronicles measures how the app is used, through <strong>Google Firebase Analytics</strong>.
+  That covers:</p>
+  <ul>
+    <li>which screens you open, and how long a session lasts;</li>
+    <li>a small, fixed set of actions: opening a story, finishing a chapter, finishing a story,
+    unlocking a character, answering a quiz, voting in a poll, making a choice, reaching the daily
+    reading limit, and opening or pressing the button on the subscription screen;</li>
+    <li>your device model, operating system version, app version and app language;</li>
+    <li>a pseudonymous identifier that Firebase assigns to this installation, linked to your
+    account identifier so that one reader on two devices is counted once.</li>
+  </ul>
+  <p><strong>This includes an approximate location.</strong> Chronicles asks for no location
+  permission and cannot read your GPS, but Firebase derives a country and region from the IP
+  address of each request. That counts as approximate location, and it would be misleading to
+  leave it out.</p>
+  <p>It never includes the text you write, your e-mail address or your password.</p>
+  <p><strong>You can switch this off.</strong> Go to <em>Profile &rarr; Settings &rarr; Privacy</em>
+  and turn off <em>Usage statistics</em>. From that moment nothing further is collected. It is on
+  unless you turn it off.</p>
+
+  <h2>Data stored only on your device</h2>
+  <p>The following never leaves your phone, and disappears when you clear the app&rsquo;s data or
+  uninstall the app:</p>
+  <ul>
+    <li>your theme (light, dark or system) and your language preference;</li>
+    <li>whether the daily reminder is on, and the time you picked for it;</li>
+    <li>your profile picture. If you choose a photo from your gallery, the app remembers where
+    that file sits on your device &mdash; the picture itself is never uploaded;</li>
+    <li>your e-mail preferences (we send no e-mail yet);</li>
+    <li>how many stories you have opened today, for the free daily limit;</li>
+    <li>your choice about usage statistics;</li>
+    <li>a copy of your reading progress, so the app also works without a connection.</li>
+  </ul>
+
+  <h2>Who else sees it</h2>
+  <p>We do not sell data and we do not share it for advertising. Two companies process data on our
+  behalf, because the app could not work without them:</p>
+  <ul>
+    <li><strong>Supabase</strong> &mdash; the database and sign-in service holding your account,
+    your reading progress, your poll and choice answers, and your feedback.</li>
+    <li><strong>Google (Firebase Analytics)</strong> &mdash; the usage statistics described above,
+    including the pseudonymous installation identifier and the approximate location derived from
+    your IP address.</li>
+    <li><strong>Google (Firebase Cloud Messaging)</strong> &mdash; delivery of the two kinds of
+    notification we send from our servers, and only if you have switched them on. It receives the
+    registration token for your installation and the text of the message.</li>
+  </ul>
+  <p>Everything travels over an encrypted connection (HTTPS).</p>
+
+  <h2>Your rights</h2>
+  <p>If you are in the European Economic Area or the United Kingdom you have the right to access,
+  correct, export or erase your personal data, and to object to processing. In practice:</p>
+  <ul>
+    <li><strong>Switch off usage statistics</strong> &mdash; <em>Settings &rarr; Privacy</em>, at
+    any time, effective immediately.</li>
+    <li><strong>Delete your account</strong> &mdash; <em>Settings &rarr; Delete account</em>,
+    after one confirmation. This is immediate and permanent: your account, your reading progress,
+    your unlocked characters, your poll and choice answers and any feedback you sent are removed
+    from our database in a single step, and the same data is cleared from the device you are
+    holding. There is no backup to restore from and no way to undo it. You do not need to write to
+    us and we do not keep a copy.</li>
+    <li><strong>Ask for a copy of your data</strong> &mdash; <em>Settings &rarr; Request my
+    data</em>, which opens an e-mail to us with the request already written. We answer within 30
+    days, normally much sooner. There is no automatic export button; the data is sent to the
+    address you write from.</li>
+    <li><strong>Anything else</strong> about this policy, at the address below.</li>
+  </ul>
+  <p><strong>How long we keep it:</strong> your account data stays for as long as the account
+  exists. Delete the account and it is gone at that moment &mdash; we do not keep an archived copy
+  and cannot recover it afterwards.</p>
+  <p>You can also complain to your national data protection authority. In the Netherlands that is
+  the Autoriteit Persoonsgegevens.</p>
 
   <h2>Notifications</h2>
-  <p>Chronicles can send you one optional reminder a day, at 7 pm, to read your next chapter. It
-  is off unless you turn it on, you can switch it off again at any time under
-  <em>Profile &rarr; Settings &rarr; Daily reminder</em>, and it is scheduled entirely by your own
-  device. No push service is involved, nothing is sent to or from a server, and we have no way of
-  knowing whether the reminder appeared or whether you opened it.</p>
+  <p>Every notification is optional, each kind can be switched on and off separately under
+  <em>Profile &rarr; Settings</em>, and Android will not let us send any of them until you have
+  granted permission. They come in two kinds, and the difference matters for your privacy.</p>
+
+  <h3>Created by your device</h3>
+  <p>The daily reading reminder, at a time you choose, and the warning that your reading streak is
+  about to end. Both are scheduled entirely by your own phone. No push service is involved, no
+  message is sent to or from a server, and we have no way of knowing whether they appeared or
+  whether you opened them.</p>
+
+  <h3>Sent by us</h3>
+  <p>Two kinds are sent from our servers through Google&rsquo;s Firebase Cloud Messaging: a
+  reminder to come back if several days pass without reading, and an occasional suggestion for a
+  story you have not opened yet. <strong>Both are off unless you turn them on.</strong></p>
+  <p>To send them we need to store a registration token that identifies your installation of the
+  app &mdash; not you, and not your phone number &mdash; together with your device model, your time
+  zone and your app version. The time zone is what lets us send in your evening rather than ours.
+  We also record which of these messages we sent you and whether you tapped it, so we can tell
+  whether they are useful or merely annoying.</p>
+  <p>Turning both of these off unregisters your device again, and the token stops being used. We
+  never put personal details in the text of a notification: it names a story, never your name, your
+  email address or anything you have written.</p>
 
   <h2>Permissions</h2>
-  <p>None of the permissions Chronicles requests give access to your data, your files, your
-  contacts or your location:</p>
+  <p>None of the permissions Chronicles requests give access to your files, your contacts or your
+  location:</p>
   <ul>
     <li><code>VIBRATE</code> &mdash; the short haptic feedback when you tap a chapter or unlock a
     character. A normal permission; it asks for no confirmation.</li>
@@ -112,41 +215,45 @@
     <li><code>RECEIVE_BOOT_COMPLETED</code> and <code>WAKE_LOCK</code> &mdash; let a reminder you
     enabled survive a restart of your phone and arrive on time. Without them the reminder would
     silently stop after every reboot.</li>
-    <li><code>INTERNET</code> and <code>ACCESS_NETWORK_STATE</code> &mdash; part of the app
-    framework. Chronicles works fully offline and contacts no server of ours; see below.</li>
+    <li><code>INTERNET</code> and <code>ACCESS_NETWORK_STATE</code> &mdash; used to sign you in,
+    synchronise your progress, load the polls and send the usage statistics described above.</li>
   </ul>
-  <p>The notification component that schedules the daily reminder is built on Google's messaging
-  library, so the app also declares
-  <code>com.google.android.c2dm.permission.RECEIVE</code>, the permission an app needs to receive
-  push messages. <strong>Chronicles sends no push messages and is not registered to receive
-  any.</strong> There is no messaging configuration in the app, no push token is ever requested,
-  and the reminder is scheduled by your own device's alarm clock. The permission is listed because
-  the library declares it, not because the app uses it.</p>
+  <p>The app also declares <code>com.google.android.c2dm.permission.RECEIVE</code>, the permission
+  an app needs in order to receive push messages, because the Google libraries behind the reminder
+  and the usage statistics declare it. <strong>Chronicles sends no push messages and is not
+  registered to receive any</strong>: no push token is ever requested, and the reminder is
+  scheduled by your own device&rsquo;s alarm clock.</p>
 
-  <h2>Internet access</h2>
-  <p>All story text and all images are bundled inside the app, so Chronicles works fully offline.
-  The app does not contact any server of ours, and we operate no server that receives data
-  from it.</p>
+  <h2>Offline use</h2>
+  <p>All story text and all images are bundled inside the app, so you can read without a
+  connection. The quizzes, polls and choice points come from our server and are simply absent when
+  you are offline &mdash; the chapter reads exactly as it otherwise would. Progress you make
+  offline stays on your device and is sent up the next time you have a connection.</p>
 
   <h2>Children</h2>
-  <p>Chronicles is suitable for all ages and contains no user-generated content, no chat and no
-  purchases. Because it collects no data at all, it collects no data from children either.</p>
+  <p>Chronicles is suitable for all ages, has no chat, and shows no content written by other
+  readers. It is not directed at children under 13, and creating an account requires an e-mail
+  address. We do not knowingly collect data from children under 13; if you believe a child has
+  created an account, write to us and we will remove it.</p>
 
-  <h2>Advertising</h2>
-  <p>This version of Chronicles contains no advertising. If advertising or a paid subscription is
-  ever added in a future version, this policy will be updated before that version is published,
-  and the change will be described here.</p>
+  <h2>Advertising and payment</h2>
+  <p>This version of Chronicles shows <strong>no advertising</strong> and contains <strong>no
+  working purchase</strong>. A subscription screen exists and describes a paid tier, but nothing
+  can be bought yet, and the screen says so itself. If real advertising or a real purchase is added
+  in a future version, this policy is updated before that version is published.</p>
 
   <h2>Changes to this policy</h2>
   <p>If this policy changes, the updated version is published on this page with a new date at the
   top. The version that applies to you is the one published here.</p>
 
   <h2>Contact</h2>
-  <p>Questions about this policy? E-mail
-  <a href="mailto:quintenraats@gmail.com">quintenraats@gmail.com</a>.</p>
+  <p>Questions about this policy, or a request for a copy of your data? E-mail
+  <a href="mailto:businessthedemoreagency@gmail.com">businessthedemoreagency@gmail.com</a>.
+  Deleting your account does not need an e-mail &mdash; the app does it for you under
+  <em>Settings &rarr; Delete account</em>.</p>
 
   <footer>
-    <p>Chronicles &mdash; Privacy Policy &mdash; 13 August 2026</p>
+    <p>Chronicles &mdash; Privacy Policy &mdash; 18 August 2026</p>
   </footer>
 </main>
 </body>

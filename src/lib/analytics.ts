@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import type { Analytics } from '@react-native-firebase/analytics';
 
-import { ANALYTICS_EIGENSCHAP, type AnalyticsGebeurtenis } from '@/constants/analytics';
+import type { AnalyticsEvent, UserProperty } from '@/constants/analytics';
 
 /**
  * Firebase Analytics, als bedoelingen in plaats van als API — dezelfde vorm als
@@ -139,8 +139,8 @@ export const analytics = {
     geladen.sdk.setAnalyticsCollectionEnabled(geladen.analytics, aan).catch(() => {});
   },
 
-  /** Eén eigen gebeurtenis. De naam komt uit `ANALYTICS_GEBEURTENIS`, nooit uit een losse string. */
-  log(naam: AnalyticsGebeurtenis, params?: Record<string, unknown>): void {
+  /** Eén eigen gebeurtenis. De naam komt uit `ANALYTICS_EVENTS`, nooit uit een losse string. */
+  log(naam: AnalyticsEvent, params?: Record<string, unknown>): void {
     const geladen = laad();
     if (!geladen) return;
     try {
@@ -151,8 +151,11 @@ export const analytics = {
   },
 
   /**
-   * Een schermweergave. Aparte functie omdat `screen_view` een gereserveerde naam is die
-   * `logEvent` weigert — Firebase bouwt er zelf zijn schermrapport op.
+   * Een schermweergave.
+   *
+   * Aparte functie, en niet `log('screen_view')`: `logScreenView` is de weg waarlangs Firebase
+   * zijn eigen schermrapport en de "screen_class"-dimensie vult. Zelf een gebeurtenis met die
+   * naam sturen levert een los rapport op dat naast het ingebouwde staat in plaats van erin.
    */
   logScherm(schermNaam: string): void {
     const geladen = laad();
@@ -162,14 +165,22 @@ export const analytics = {
       .catch(() => {});
   },
 
-  /** Idem voor `login`: gereserveerd, dus via de eigen functie. */
+  /**
+   * Inloggen.
+   *
+   * Let op: Firebase verzamelt `login` en `sign_up` **niet** vanzelf — automatisch verzameld zijn
+   * alleen `first_open`, `session_start`, `user_engagement`, `app_update` en dergelijke (de lijst
+   * staat als `ReservedEventNames` in de package). Het zijn *aanbevolen* events: je logt ze zelf,
+   * en in ruil vult Firebase er zijn rapporten over nieuwe versus terugkerende lezers mee. Laat
+   * je ze weg, dan is er geen registratie- of inlogtrechter.
+   */
   logInloggen(methode: string): void {
     const geladen = laad();
     if (!geladen) return;
     geladen.sdk.logLogin(geladen.analytics, { method: methode }).catch(() => {});
   },
 
-  /** Idem voor `sign_up`. */
+  /** Zelfde verhaal als `logInloggen`, voor registreren. */
   logRegistreren(methode: string): void {
     const geladen = laad();
     if (!geladen) return;
@@ -191,7 +202,7 @@ export const analytics = {
   },
 
   /** Eén gebruikerseigenschap. `null` wist hem. */
-  zetEigenschap(naam: (typeof ANALYTICS_EIGENSCHAP)[keyof typeof ANALYTICS_EIGENSCHAP], waarde: string | null): void {
+  zetEigenschap(naam: UserProperty, waarde: string | null): void {
     const geladen = laad();
     if (!geladen) return;
     geladen.sdk.setUserProperty(geladen.analytics, naam, waarde).catch(() => {});
