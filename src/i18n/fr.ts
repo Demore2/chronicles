@@ -31,6 +31,14 @@ const fr: DeepPartial<Vertalingen> = {
     chaptersRead: (n: number) => (n === 1 ? 'chapitre terminé' : 'chapitres terminés'),
     charactersUnlocked: (n: number) => (n === 1 ? 'personnage débloqué' : 'personnages débloqués'),
     storiesCompleted: (n: number) => (n === 1 ? 'histoire terminée' : 'histoires terminées'),
+    unlockedCounter: (count: number, total: number) => `${count} sur ${total} débloqués`,
+    personageVergrendeld: 'Encore caché',
+    personageVergrendeldUitleg: 'Terminez cette histoire pour ajouter le portrait à votre collection.',
+    nogTeOntgrendelen: (n: number): string =>
+      n === 1
+        ? 'Encore une histoire et votre collection sera complète.'
+        : `Continuez pour débloquer ${n} personnages de plus.`,
+    collectieCompleet: 'Votre collection est complète. Tous les personnages débloqués.',
     instellingen: 'Paramètres',
     thema: 'Thème',
     themaLicht: 'Clair',
@@ -38,10 +46,157 @@ const fr: DeepPartial<Vertalingen> = {
     themaSysteem: 'Système',
     taal: 'Langue',
     herinnering: 'Rappel quotidien',
-    herinneringUitleg: 'Un rappel discret à 19 h pour lire votre prochain chapitre.',
+    herinneringUitleg: 'Un rappel discret pour lire votre prochain chapitre.',
     over: 'À propos',
     privacybeleid: 'Politique de confidentialité',
     privacybeleidUitleg: 'Chronicles enregistre votre progression uniquement sur cet appareil et ne collecte aucune donnée personnelle.',
+    instellingenOpenen: 'Ouvrir les paramètres',
+    feedbackOpenen: 'Envoyer un commentaire',
+    avatarWijzigen: "Changer d'avatar",
+    naamloos: 'Lecteur',
+  },
+  avatar: {
+    titel: 'Votre avatar',
+    ondertitel: 'Portez un personnage débloqué, ou une photo à vous.',
+    fotoKiezen: 'Choisir une photo',
+    fotoUitleg: 'Reste sur cet appareil.',
+    fotoMislukt: "Cette photo n'a pas pu être ouverte.",
+    personages: 'Personnages débloqués',
+    personagesLeeg: 'Terminez une histoire pour débloquer un portrait à porter ici.',
+    verwijderen: "Supprimer l'avatar",
+    huidige: 'Avatar actuel',
+  },
+  instellingen: {
+    titel: 'Paramètres',
+    sectieAccount: 'Compte',
+    sectieWeergave: 'Apparence',
+    sectieMeldingen: 'Notifications',
+    sectieAbonnement: 'Abonnement',
+    sectieSupport: 'Aide et commentaires',
+    sectieApp: "À propos de l'app",
+    sectieGevaar: 'Compte',
+
+    binnenkort: 'Bientôt',
+    binnenkortTitel: 'Pas encore disponible',
+    binnenkortTekst: (onderwerp: string): string =>
+      `${onderwerp} ne fait pas encore partie de cette version de Chronicles.`,
+    ok: 'OK',
+
+    ingelogdAls: 'Connecté en tant que',
+    gebruikersnaam: "Nom d'utilisateur",
+    geenGebruikersnaam: 'Non défini',
+    wachtwoordWijzigen: 'Changer le mot de passe',
+    synchronisatie: 'Synchronisation',
+
+    appIcoon: "Icône de l'app",
+    abonnement: 'Votre formule',
+    abonnementGratis: 'Gratuite',
+    abonnementPro: 'Pro',
+    dagelijkseLimiet: "Lecture du jour",
+    verhalenVandaag: (gebruikt: number, limiet: number): string =>
+      `${gebruikt}/${limiet} récits aujourd'hui`,
+    onbeperkt: 'Illimité',
+
+    herinneringTijd: 'Heure du rappel',
+    tijdWaarde: (uur: number, minuut: number): string =>
+      `${String(uur).padStart(2, '0')} h ${String(minuut).padStart(2, '0')}`,
+    tijdKiezerTitel: 'Quand faut-il vous faire signe ?',
+    tijdKiezerUitleg: 'Un rappel par jour, à cette heure-ci. Modifiable à tout moment.',
+    tijdOpslaan: "Enregistrer l'heure",
+    uur: 'Heure',
+    minuut: 'Minute',
+
+    sectieEmail: 'E-mail',
+    emailVoorkeuren: 'Préférences e-mail',
+    emailUitleg:
+      "Chronicles n'envoie encore aucun e-mail. Vos choix sont enregistrés ici et s'appliqueront dès le premier.",
+    emailNieuwsbrief: 'Lettre mensuelle',
+    emailNieuwsbriefUitleg: 'Un e-mail par mois, sur nos propres lectures.',
+    emailNieuweVerhalen: 'Nouveaux récits',
+    emailNieuweVerhalenUitleg: "Un mot dès qu'un récit ou une époque arrive.",
+    emailTips: 'Conseils de lecture',
+    emailTipsUitleg: 'De temps à autre, une idée pour tirer plus de chaque chapitre.',
+    emailAanbiedingen: 'Offres',
+    emailAanbiedingenUitleg: 'Des réductions sur Chronicles Pro. Rarement, promis.',
+
+    // --- Privacy ---
+    sectiePrivacy: 'Confidentialité',
+    analytics: 'Statistiques d’utilisation',
+    analyticsUitleg: 'Pour voir quelles histoires sont lues et où les lecteurs s’arrêtent.',
+    analyticsVoet:
+      'Chronicles compte les écrans que vous ouvrez, les chapitres que vous terminez et les boutons que vous utilisez, avec votre type d’appareil et votre pays. Ces données sont liées à votre compte et traitées par Google Firebase. Ce que vous écrivez n’est jamais inclus. Désactivez ceci et rien ne quitte votre appareil.',
+
+    beoordeel: 'Noter Chronicles',
+    contact: "Contacter l'assistance",
+    contactOnderwerp: 'Assistance Chronicles',
+    voorwaarden: "Conditions d'utilisation",
+
+    versie: 'Version',
+
+    accountVerwijderen: 'Supprimer le compte',
+    accountVerwijderenTitel: 'Supprimer le compte ?',
+    accountVerwijderenTekst:
+      "Cela supprime votre compte et tout ce qui y est synchronisé. Nous le faisons manuellement pour l'instant : écrivez-nous et nous confirmerons une fois que ce sera fait. Votre progression sur cet appareil reste intacte jusque-là.",
+    accountVerwijderenMail: 'Nous écrire',
+  },
+  pro: {
+    titel: 'Accès Pro',
+    ondertitel: 'Toutes les époques, sans interruption.',
+    knop: 'Voir les formules',
+
+    paywallTitel: 'Chronicles Pro',
+    paywallOndertitel: "Plus d'histoire, moins d'interruptions.",
+    sluiten: 'Fermer',
+
+    voordeelVerhalen: (n: number): string => `Les ${n} récits, à travers six époques`,
+    voordeelPersonages: 'Tous les portraits de personnages dans votre collection',
+    voordeelVroeg: 'Les nouveaux récits en avant-première',
+    voordeelOffline: 'Lecture hors ligne, où que vous soyez',
+    voordeelGeenAds: 'Aucune publicité',
+
+    prijsMaand: '4,99 € / mois',
+    prijsJaar: '39,99 € / an — 33 % d’économie',
+    abonneer: "S'abonner",
+    misschienLater: 'Plus tard',
+    voorbehoud:
+      "Prix indicatifs. Les abonnements arriveront dans une version ultérieure — rien n'est facturé aujourd'hui.",
+    nogNietTitel: 'Pas encore disponible',
+    nogNietTekst:
+      "Les abonnements arriveront dans une version ultérieure de Chronicles. Rien n'a été facturé.",
+  },
+  limiet: {
+    titel: "Voilà pour aujourd'hui",
+    tekst: (n: number): string =>
+      n === 1
+        ? "Chronicles ouvre un nouveau récit par jour pour les lecteurs gratuits. Tout ce que vous avez lu est conservé — le suivant vous attend demain."
+        : `Chronicles ouvre ${n} nouveaux récits par jour pour les lecteurs gratuits. Tout ce que vous avez lu est conservé — le suivant vous attend demain.`,
+    verderUitleg: "Les récits déjà ouverts aujourd'hui restent accessibles.",
+    voordeelOnbeperkt: 'Lisez autant de récits que vous voulez',
+    voordeelGeenAds: 'Aucune publicité entre les chapitres',
+    voordeelAlles: 'Chaque époque, chaque personnage',
+    upgrade: 'Découvrir Chronicles Pro',
+    morgen: 'À demain',
+  },
+  feedback: {
+    titel: 'Envoyer un commentaire',
+    ondertitel: "Qu'est-ce qui n'a pas marché, ou que souhaiteriez-vous voir ?",
+    soortBug: 'Signaler un bug',
+    soortIdee: 'Idée',
+    plaatshouderBug: "Que s'est-il passé, et à quoi vous attendiez-vous ?",
+    plaatshouderIdee: 'Que devrait faire Chronicles ?',
+    versturen: 'Envoyer',
+    verzenden: 'Envoi…',
+    sluiten: 'Fermer',
+    tekensOver: (n: number): string => `${n} caractères restants`,
+    leegTitel: 'Rien à envoyer',
+    leegTekst: "Écrivez d'abord une ligne ou deux.",
+    geluktTitel: 'Merci !',
+    geluktTekst:
+      'Votre message est bien arrivé. Nous lisons tout, même si nous ne pouvons pas répondre à chacun.',
+    misluktTitel: "Échec de l'envoi",
+    misluktTekst: 'Votre message est toujours là — vérifiez votre connexion et réessayez.',
+    geenSessie: 'Connectez-vous pour envoyer un commentaire.',
+    ok: 'OK',
   },
   notificatie: {
     titel: 'Votre prochain chapitre vous attend',
@@ -89,6 +244,24 @@ const fr: DeepPartial<Vertalingen> = {
     jaarLabel: (jaar: number) =>
       jaar < 0 ? `${Math.abs(jaar)} av. J.-C.` : jaar < 1000 ? `${jaar} apr. J.-C.` : `${jaar}`,
   },
+  interactief: {
+    quizKop: 'Petite vérification',
+    quizControleer: 'Vérifier la réponse',
+    quizGoedTitel: 'Correct',
+    quizGoedTekst: 'Vous avez bien suivi.',
+    quizFoutTitel: 'Pas tout à fait',
+    quizJuisteAntwoord: (antwoord: string): string => `La réponse est ${antwoord}.`,
+    quizVerder: 'Continuer la lecture',
+    optieLabel: (letter: string, tekst: string): string => `Option ${letter} : ${tekst}`,
+    pollKop: "Qu'en pensez-vous ?",
+    pollVoor: "Répondez pour voir ce qu'ont choisi les autres lecteurs.",
+    pollStemmen: (n: number): string =>
+      n <= 1 ? `${n} lecteur a répondu` : `${n} lecteurs ont répondu`,
+    pollEerste: 'Vous êtes la première personne à répondre.',
+    keuzeKop: 'À vous de décider',
+    keuzeVoor: "Qu'auriez-vous fait ?",
+    keuzeNa: "L'histoire a suivi son cours — voici ce qu'ont décidé les autres lecteurs.",
+  },
   personage: {
     ontgrendeldTitel: 'Personnage débloqué !',
     ontgrendeldBeschrijving:
@@ -97,6 +270,10 @@ const fr: DeepPartial<Vertalingen> = {
   },
   advertentie: {
     label: 'Publicité',
+    plaatshouder: 'Un message sponsorisé apparaîtrait ici.',
+    overslaanIn: (n: number): string => `Passer dans ${n} s`,
+    overslaan: 'Passer',
+    proKnop: 'Supprimer les publicités avec Pro',
   },
   auth: {
     loginTitel: 'Bon retour',

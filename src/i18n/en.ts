@@ -44,6 +44,13 @@ const en = {
     charactersUnlocked: (n: number): string => (n === 1 ? 'character unlocked' : 'characters unlocked'),
     storiesCompleted: (n: number): string => (n === 1 ? 'story completed' : 'stories completed'),
     unlockedCounter: (count: number, total: number) => `${count} of ${total} unlocked`,
+    /** Op een vergrendelde personagekaart, in plaats van de naam die je nog moet verdienen. */
+    personageVergrendeld: 'Still hidden',
+    personageVergrendeldUitleg: 'Finish this story to add the portrait to your collection.',
+    /** Aanmoediging onder de collectie. Verdwijnt zodra alles ontgrendeld is. */
+    nogTeOntgrendelen: (n: number): string =>
+      n === 1 ? 'One more story to complete your collection.' : `Read on to unlock ${n} more characters.`,
+    collectieCompleet: 'Your collection is complete. Every character unlocked.',
     instellingen: 'Settings',
     thema: 'Theme',
     themaLicht: 'Light',
@@ -51,10 +58,216 @@ const en = {
     themaSysteem: 'System',
     taal: 'Language',
     herinnering: 'Daily reminder',
-    herinneringUitleg: 'A quiet nudge at 7 pm to read your next chapter.',
+    // Bewust zonder tijdstip: dat is sinds de instelbare herinnering geen vast gegeven meer, en
+    // het staat een regel lager als waarde bij `instellingen.herinneringTijd`.
+    herinneringUitleg: 'A quiet nudge to read your next chapter.',
     over: 'About',
     privacybeleid: 'Privacy Policy',
     privacybeleidUitleg: 'Chronicles stores your progress on this device only and collects no personal data.',
+    /** Toegankelijkheidslabels van de twee icoonknoppen bovenaan Profiel. */
+    instellingenOpenen: 'Open settings',
+    feedbackOpenen: 'Send feedback',
+    avatarWijzigen: 'Change avatar',
+    /** Valt in als er noch een gebruikersnaam noch een e-mailadres bekend is. */
+    naamloos: 'Reader',
+  },
+  /** Het avatarscherm (modal vanaf Profiel). */
+  avatar: {
+    titel: 'Your avatar',
+    ondertitel: 'Wear a character you unlocked, or a picture of your own.',
+    fotoKiezen: 'Choose a photo',
+    fotoUitleg: 'Stays on this device.',
+    fotoMislukt: 'That picture could not be opened.',
+    personages: 'Unlocked characters',
+    personagesLeeg: 'Finish a story to unlock a portrait you can wear here.',
+    verwijderen: 'Remove avatar',
+    huidige: 'Current avatar',
+  },
+  /** Het instellingenscherm (`app/profiel/settings.tsx`). */
+  instellingen: {
+    titel: 'Settings',
+    sectieAccount: 'Account',
+    sectieWeergave: 'Appearance',
+    sectieMeldingen: 'Notifications',
+    sectieAbonnement: 'Subscription',
+    sectieSupport: 'Support & feedback',
+    sectieApp: 'App info',
+    sectieGevaar: 'Account',
+
+    // Alles wat nog niet bestaat draagt dit label in plaats van een knop die doet alsof.
+    binnenkort: 'Soon',
+    binnenkortTitel: 'Not available yet',
+    binnenkortTekst: (onderwerp: string): string =>
+      `${onderwerp} is not part of this version of Chronicles yet.`,
+    ok: 'OK',
+
+    ingelogdAls: 'Signed in as',
+    gebruikersnaam: 'Username',
+    geenGebruikersnaam: 'Not set',
+    wachtwoordWijzigen: 'Change password',
+    synchronisatie: 'Sync',
+
+    appIcoon: 'App icon',
+    abonnement: 'Your plan',
+    abonnementGratis: 'Free',
+    abonnementPro: 'Pro',
+    dagelijkseLimiet: 'Today’s reading',
+    /** Rechts van "Your plan" voor een gratis lezer: hoeveel van de dag nog over is. */
+    verhalenVandaag: (gebruikt: number, limiet: number): string =>
+      `${gebruikt}/${limiet} stories today`,
+    onbeperkt: 'Unlimited',
+
+    // --- Dagelijkse herinnering ---
+    herinneringTijd: 'Reminder time',
+    /**
+     * Klok­notatie. Een functie en geen `toLocaleTimeString`: de app kent vier talen die niet met
+     * de systeemtaal hoeven mee te lopen, en alleen het Engels gebruikt AM/PM.
+     */
+    tijdWaarde: (uur: number, minuut: number): string => {
+      const deel = uur < 12 ? 'AM' : 'PM';
+      const twaalf = uur % 12 === 0 ? 12 : uur % 12;
+      return `${twaalf}:${String(minuut).padStart(2, '0')} ${deel}`;
+    },
+    tijdKiezerTitel: 'When should we nudge you?',
+    tijdKiezerUitleg: 'One reminder a day, at this time. You can change it whenever you like.',
+    tijdOpslaan: 'Save time',
+    uur: 'Hour',
+    minuut: 'Minute',
+
+    // --- E-mailvoorkeuren ---
+    sectieEmail: 'Email',
+    emailVoorkeuren: 'Email preferences',
+    /**
+     * Eerlijk over de stand van zaken: er gaat vandaag geen enkele mail de deur uit. De keuzes
+     * bewaren is dus geen loze knop, maar beloven dat er post komt zou dat wél zijn.
+     */
+    emailUitleg:
+      'Chronicles sends no email yet. Your choices are saved here and will apply from the first one.',
+    emailNieuwsbrief: 'Monthly letter',
+    emailNieuwsbriefUitleg: 'One email a month, with what we have been reading.',
+    emailNieuweVerhalen: 'New stories',
+    emailNieuweVerhalenUitleg: 'A note when a new story or era lands.',
+    emailTips: 'Reading tips',
+    emailTipsUitleg: 'Occasional ideas on getting more out of a chapter.',
+    emailAanbiedingen: 'Offers',
+    emailAanbiedingenUitleg: 'Discounts on Chronicles Pro. Rare, we promise.',
+
+    // --- Privacy ---
+    sectiePrivacy: 'Privacy',
+    analytics: 'Usage statistics',
+    analyticsUitleg: 'Helps us see which stories get read and where people stop.',
+    /**
+     * Bewust geen "anoniem": zodra je bent ingelogd hangt de meting aan je account. Zeggen wat er
+     * gebeurt kost één zin meer en is het enige dat de schakelaar boven een vinkje uittilt.
+     */
+    analyticsVoet:
+      'Chronicles counts screens you open, chapters you finish and buttons you press, together with your device type and country. It is tied to your account and handled by Google Firebase. It never includes what you write. Turn this off and none of it leaves your device.',
+
+    beoordeel: 'Rate Chronicles',
+    contact: 'Contact support',
+    contactOnderwerp: 'Chronicles support',
+    voorwaarden: 'Terms of Service',
+
+    versie: 'Version',
+
+    accountVerwijderen: 'Delete account',
+    accountVerwijderenTitel: 'Delete account?',
+    // Bewust geen knop die het meteen doet: verwijderen gebeurt aan de serverkant en die stap
+    // bestaat nog niet. Liever een eerlijke route dan een knop die stilletjes niets opruimt.
+    accountVerwijderenTekst:
+      'This removes your account and everything synced to it. We handle it by hand for now — email us and we will confirm once it is done. Your reading progress on this device is untouched until then.',
+    accountVerwijderenMail: 'Email us',
+  },
+  /**
+   * De premium-banner op Profiel en het paywall-venster erachter (`pro-paywall.tsx`).
+   *
+   * De prijzen staan hier en niet in het component: zodra Google Play Billing echt gekoppeld is
+   * komen ze uit de producten van de store zelf (andere valuta en andere bedragen per land), en
+   * dan is dit precies de plek die vervalt. Tot die tijd zijn het richtprijzen, en dat zegt
+   * `voorbehoud` er ook bij.
+   */
+  pro: {
+    titel: 'Get Pro access',
+    ondertitel: 'Every era, no interruptions.',
+    knop: 'See plans',
+
+    paywallTitel: 'Chronicles Pro',
+    paywallOndertitel: 'More history, fewer interruptions.',
+    sluiten: 'Close',
+
+    /**
+     * Elke voordeelregel is iets wat de app heeft of aantoonbaar krijgt. Bewust géén "100+
+     * stories": het er zijn er negentien, en een belofte die de build niet waarmaakt is zowel een
+     * klassieke Play-afwijsreden als gewoon onwaar tegen de gebruiker. Het aantal is daarom een
+     * parameter en geen overgetypt getal — `verhalen.length` vult het.
+     */
+    voordeelVerhalen: (n: number): string => `All ${n} stories, across six eras`,
+    voordeelPersonages: 'Every character portrait in your collection',
+    voordeelVroeg: 'New stories first, as soon as they land',
+    voordeelOffline: 'Read offline, anywhere',
+    voordeelGeenAds: 'No ads, ever',
+
+    prijsMaand: '€4.99 / month',
+    prijsJaar: '€39.99 / year — save 33%',
+    abonneer: 'Subscribe',
+    misschienLater: 'Maybe later',
+    /**
+     * Eerlijk over wat er vandaag gebeurt: niets. Een "7 dagen gratis proberen"-regel zonder
+     * Billing erachter belooft een proefperiode die niet bestaat en die niemand kan opzeggen.
+     */
+    voorbehoud:
+      'Indicative pricing. Subscriptions arrive in a later version — nothing is charged today.',
+    nogNietTitel: 'Not available yet',
+    nogNietTekst:
+      'Subscriptions arrive with a later version of Chronicles. Nothing has been charged.',
+  },
+  /**
+   * De dagelijkse leeslimiet voor gratis lezers (`story-limit-modal.tsx`).
+   *
+   * De toon is bewust "tot morgen" en niet "betaal nu": wie de limiet raakt heeft net twee
+   * verhalen gelezen, en dat is precies het gedrag dat de app wil. Er staat daarom óók dat de
+   * voortgang bewaard blijft — dat is de vraag die je op dit scherm stelt.
+   */
+  limiet: {
+    titel: 'That is today’s reading',
+    tekst: (n: number): string =>
+      n === 1
+        ? 'Chronicles opens one new story a day for free readers. Everything you read is saved — the next one is waiting tomorrow.'
+        : `Chronicles opens ${n} new stories a day for free readers. Everything you read is saved — the next one is waiting tomorrow.`,
+    /** Een verhaal dat je vandaag al opende blijft open; dat zegt deze regel. */
+    verderUitleg: 'Stories you already started today stay open.',
+    voordeelOnbeperkt: 'Read as many stories as you like',
+    voordeelGeenAds: 'No ads between chapters',
+    voordeelAlles: 'Every era, every character',
+    upgrade: 'See Chronicles Pro',
+    morgen: 'Come back tomorrow',
+  },
+  /**
+   * Het feedbackvenster achter het spreekwolkje op Profiel (`feedback-modal.tsx`).
+   *
+   * Het bericht gaat naar `public.feedback` in Supabase, dus "verzonden" betekent hier ook echt
+   * verzonden — vandaar dat er een aparte mislukt-tekst is die zegt dat de tekst blijft staan.
+   */
+  feedback: {
+    titel: 'Send feedback',
+    ondertitel: 'What went wrong, or what would you like to see?',
+    soortBug: 'Bug report',
+    soortIdee: 'Feature idea',
+    plaatshouderBug: 'What happened, and what did you expect instead?',
+    plaatshouderIdee: 'What would you like Chronicles to do?',
+    versturen: 'Send feedback',
+    verzenden: 'Sending…',
+    sluiten: 'Close',
+    tekensOver: (n: number): string => `${n} characters left`,
+    leegTitel: 'Nothing to send yet',
+    leegTekst: 'Write a line or two first.',
+    geluktTitel: 'Thank you!',
+    geluktTekst:
+      'Your feedback came through. We read everything, even when we cannot reply to all of it.',
+    misluktTitel: 'Could not send',
+    misluktTekst: 'Your message is still here — check your connection and try again.',
+    geenSessie: 'Sign in to send feedback.',
+    ok: 'OK',
   },
   // De dagelijkse herinnering. Bewust zonder app-naam (die staat al in de kop van de melding)
   // en zonder streakgetal: een notificatie wordt dagen vooruit gepland, dus elk getal erin is
@@ -111,6 +324,32 @@ const en = {
     jaarLabel: (jaar: number) =>
       jaar < 0 ? `${Math.abs(jaar)} BC` : jaar < 1000 ? `AD ${jaar}` : `${jaar}`,
   },
+  /**
+   * Interactief lezen: de quiz, de peiling en het keuzepunt onder een hoofdstuk.
+   *
+   * `keuzeNa` zegt met opzet *niet* dat je keuze het verhaal verandert. Er vertakt niets — de
+   * hoofdstukken liggen vast in de bundel. Wat je na het kiezen te zien krijgt is echt: hoe
+   * andere lezers besloten. Dezelfde afweging als bij de paywall: liever iets kleiners dat waar
+   * is dan een belofte die het scherm niet waarmaakt.
+   */
+  interactief: {
+    quizKop: 'Quick check',
+    quizControleer: 'Check answer',
+    quizGoedTitel: 'Correct',
+    quizGoedTekst: 'You were paying attention.',
+    quizFoutTitel: 'Not quite',
+    quizJuisteAntwoord: (antwoord: string): string => `The answer is ${antwoord}.`,
+    quizVerder: 'Continue reading',
+    optieLabel: (letter: string, tekst: string): string => `Option ${letter}: ${tekst}`,
+    pollKop: 'What do you think?',
+    pollVoor: 'Answer to see what other readers chose.',
+    pollStemmen: (n: number): string =>
+      n === 1 ? '1 reader has answered' : `${n} readers have answered`,
+    pollEerste: 'You are the first to answer.',
+    keuzeKop: 'Your call',
+    keuzeVoor: 'What would you have done?',
+    keuzeNa: 'History went its own way — this is how other readers decided.',
+  },
   personage: {
     ontgrendeldTitel: 'Character Unlocked!',
     ontgrendeldBeschrijving: "You've unlocked a new character! View your collection in the Profile tab.",
@@ -118,6 +357,14 @@ const en = {
   },
   advertentie: {
     label: 'Advertisement',
+    /**
+     * De onderbreking na een uitgelezen verhaal is een *placeholder* — er is nog geen AdMob. De
+     * tekst zegt dat dan ook, in plaats van een advertentie na te spelen die er niet is.
+     */
+    plaatshouder: 'A sponsored message would appear here.',
+    overslaanIn: (n: number): string => `Skip in ${n}s`,
+    overslaan: 'Skip',
+    proKnop: 'Remove ads with Pro',
   },
   /** Inloggen, registreren en uitloggen (R8.AUTH deel 2). */
   auth: {

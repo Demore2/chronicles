@@ -22,15 +22,28 @@ if (!supabaseUrl || !supabasePublishableKey) {
   );
 }
 
+/**
+ * `web.output` staat op `"static"`, dus Expo Router rendert elke route eerst in **Node** voordat
+ * er een browser aan te pas komt. Die pass importeert dit bestand ook, en daar bestaat `window`
+ * niet. `createClient` roept meteen `_initialize` → `storage.getItem` aan, de web-implementatie
+ * van AsyncStorage grijpt naar `window.localStorage`, en de afwijzing die daaruit volgt vangt
+ * niemand op: de hele dev-server viel om met `ReferenceError: window is not defined` (exit 7).
+ *
+ * Op de server is er ook niets zinnigs te bewaren — er is geen gebruiker, geen URL en geen
+ * volgende render die de sessie nodig heeft. Dus: geen opslag, geen timer, geen callback-parser.
+ */
+const isServerRender = Platform.OS === 'web' && typeof window === 'undefined';
+
 export const supabase = createClient(supabaseUrl, supabasePublishableKey, {
   auth: {
     // Sessie overleeft een herstart via AsyncStorage — dezelfde opslag als de Zustand-stores.
-    storage: AsyncStorage,
-    persistSession: true,
-    autoRefreshToken: true,
+    // Zonder opslag valt supabase-js terug op geheugen, wat op de server precies goed is.
+    storage: isServerRender ? undefined : AsyncStorage,
+    persistSession: !isServerRender,
+    autoRefreshToken: !isServerRender,
     // Alleen het web kan een OAuth-callback uit de URL lezen; op native bestaat er geen URL
     // om te parsen en zet dit alleen maar een onnodige listener klaar.
-    detectSessionInUrl: Platform.OS === 'web',
+    detectSessionInUrl: Platform.OS === 'web' && !isServerRender,
   },
 });
 

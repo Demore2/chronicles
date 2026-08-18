@@ -1,0 +1,112 @@
+{
+  "quizzes": [
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 3,
+      "question": "Roughly how much did Galileo's own telescope magnify what he looked at?",
+      "options": [
+        "About three times",
+        "About ten times",
+        "About thirty times",
+        "About a hundred times"
+      ],
+      "correct_answer": 2,
+      "explanation": "Thirty times was enough to show craters on the Moon and four points of light beside Jupiter. He built it within weeks of merely hearing rumours of the Dutch spyglass, without ever seeing one."
+    },
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 5,
+      "question": "Which book made Galileo famous in 1610 — and marked him as dangerous?",
+      "options": [
+        "The Starry Messenger",
+        "Dialogue Concerning the Two Chief World Systems",
+        "Two New Sciences",
+        "On the Revolutions of the Heavenly Spheres"
+      ],
+      "correct_answer": 0,
+      "explanation": "The Starry Messenger reported the telescope's findings to a wide readership. Fame cut both ways: it meant Rome now knew exactly who he was, and in 1616 Pope Paul V summoned him."
+    },
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 6,
+      "question": "Where was Galileo sent after the Inquisition sentenced him in 1633?",
+      "options": [
+        "Exile in the Netherlands",
+        "A prison cell in Rome",
+        "House arrest at Arcetri near Florence",
+        "A monastery in Pisa"
+      ],
+      "correct_answer": 2,
+      "explanation": "He was barred from publishing, from discussing heliocentrism, and from receiving visitors unapproved. It was at Arcetri, under those terms, that he wrote Two New Sciences."
+    },
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 2,
+      "question": "What did Galileo say explained the feather's slow fall, contrary to Aristotle?",
+      "options": [
+        "Its lighter weight",
+        "Air resistance",
+        "The shape of its edges",
+        "Its distance from the ground"
+      ],
+      "correct_answer": 1,
+      "explanation": "Remove the air, he argued, and cannonball and feather would land together. Scholars had repeated Aristotle's rule for two thousand years without once testing it."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 6,
+      "question": "Galileo denied that the Earth moved rather than defy the Inquisition. How do you read that denial?",
+      "options": [
+        "Sensible survival",
+        "A betrayal of his work",
+        "The only way to keep writing"
+      ]
+    },
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 5,
+      "question": "He kept quiet after 1616, then published the Dialogue in 1632. What do you think drove him back?",
+      "options": [
+        "Confidence he could outwit the censors",
+        "Simple pride",
+        "A duty to the evidence"
+      ]
+    },
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 8,
+      "question": "What was Galileo's most lasting contribution?",
+      "options": [
+        "The telescope observations",
+        "The method of testing ideas",
+        "Standing up to the Church"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 6,
+      "choice_point_id": "recant-before-the-inquisition",
+      "prompt": "You are seventy, standing before the Inquisition, ordered to renounce what your own eyes have shown you. What do you say?",
+      "options": [
+        "Recant and go home",
+        "Refuse and take the consequences",
+        "Recant, then keep writing in secret"
+      ]
+    },
+    {
+      "story_id": "galileo-galilei",
+      "chapter_index": 5,
+      "choice_point_id": "publish-the-dialogue",
+      "prompt": "You have been warned by the Pope, and you hold a finished manuscript that clearly favours the Sun. What do you do with it?",
+      "options": [
+        "Publish it",
+        "Burn it",
+        "Circulate it quietly among friends"
+      ]
+    }
+  ]
+}

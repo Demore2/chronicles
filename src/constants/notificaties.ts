@@ -43,11 +43,21 @@ export const HERINNERING_ID = 'dagelijkse-leesherinnering';
 const KANAAL_ID = 'dagelijkse-herinnering';
 
 /**
- * 19:00 lokale tijd. Bewust 's avonds: de app is een leesapp, en dit is het moment waarop je
- * nog een hoofdstuk kunt lezen vóór de dag (en de streak) om is.
+ * 19:00 lokale tijd — de **beginwaarde**, niet meer het vaste tijdstip.
+ *
+ * Bewust 's avonds: de app is een leesapp, en dit is het moment waarop je nog een hoofdstuk kunt
+ * lezen vóór de dag (en de streak) om is. Wie er anders over denkt verzet hem in Instellingen; het
+ * gekozen tijdstip staat in `notificatie-store` en komt via `useDagelijkseHerinnering` hier binnen.
  */
-export const HERINNERING_UUR = 19;
-export const HERINNERING_MINUUT = 0;
+export const STANDAARD_HERINNERING_UUR = 19;
+export const STANDAARD_HERINNERING_MINUUT = 0;
+
+/** Oude namen, nog gebruikt door code van vóór het instelbare tijdstip. */
+export const HERINNERING_UUR = STANDAARD_HERINNERING_UUR;
+export const HERINNERING_MINUUT = STANDAARD_HERINNERING_MINUUT;
+
+/** Het rooster van de kiezer: uren 0–23, minuten in stappen van vijf. */
+export const HERINNERING_MINUUT_STAP = 5;
 
 async function zorgVoorKanaal() {
   if (Platform.OS !== 'android') return;
@@ -92,8 +102,20 @@ export const notificaties = {
     }
   },
 
-  /** Plant (of herplant) de dagelijkse herinnering. Geeft terug of het gelukt is. */
-  async planDagelijkseHerinnering(titel: string, tekst: string): Promise<boolean> {
+  /**
+   * Plant (of herplant) de dagelijkse herinnering op het gegeven tijdstip. Geeft terug of het
+   * gelukt is.
+   *
+   * Het tijdstip is een parameter en geen constante: de gebruiker kiest het in Instellingen. Door
+   * de vaste `HERINNERING_ID` overschrijft elke nieuwe planning de vorige, dus een verzet tijdstip
+   * levert geen tweede melding op — precies zoals bij een taalwissel.
+   */
+  async planDagelijkseHerinnering(
+    titel: string,
+    tekst: string,
+    uur: number = STANDAARD_HERINNERING_UUR,
+    minuut: number = STANDAARD_HERINNERING_MINUUT
+  ): Promise<boolean> {
     if (!ondersteund) return false;
     try {
       await zorgVoorKanaal();
@@ -103,8 +125,8 @@ export const notificaties = {
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DAILY,
           channelId: KANAAL_ID,
-          hour: HERINNERING_UUR,
-          minute: HERINNERING_MINUUT,
+          hour: uur,
+          minute: minuut,
         },
       });
       return true;

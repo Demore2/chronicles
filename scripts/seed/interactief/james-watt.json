@@ -1,0 +1,98 @@
+{
+  "quizzes": [
+    {
+      "story_id": "james-watt",
+      "chapter_index": 2,
+      "question": "What was the central flaw of the Newcomen engine that Watt identified?",
+      "options": [
+        "It could not be built large enough",
+        "The same chamber was heated and cooled every cycle",
+        "It required too many skilled operators",
+        "Its cylinder was made of the wrong metal"
+      ],
+      "correct_answer": 1,
+      "explanation": "Newcomen's engines had been pumping mine water for decades before Watt was handed a model to repair — nobody had thought the waste worth fixing because coal at the pithead was almost free."
+    },
+    {
+      "story_id": "james-watt",
+      "chapter_index": 3,
+      "question": "How much fuel did Watt's improved design use compared with a Newcomen engine doing the same work?",
+      "options": [
+        "About half",
+        "About a quarter",
+        "About three quarters",
+        "Roughly the same, but faster"
+      ],
+      "correct_answer": 1,
+      "explanation": "The saving was what sold the engines: Boulton and Watt often charged customers a share of the fuel they no longer burned."
+    },
+    {
+      "story_id": "james-watt",
+      "chapter_index": 5,
+      "question": "Which group near Birmingham did Watt join to discuss science and its practical uses?",
+      "options": [
+        "The Royal Society",
+        "The Lunar Society",
+        "The Glasgow Philosophical Club",
+        "The Society of Instrument Makers"
+      ],
+      "correct_answer": 1,
+      "explanation": "The Lunar Society was informal and met in members' houses, yet its conversations shaped much of British industry — Boulton was part of the same circle."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "james-watt",
+      "chapter_index": 3,
+      "question": "Watt had the invention, Boulton the capital and the workshops. Whose contribution mattered more to the engine's success?",
+      "options": [
+        "Watt's design",
+        "Boulton's business",
+        "Neither would have worked alone"
+      ]
+    },
+    {
+      "story_id": "james-watt",
+      "chapter_index": 4,
+      "question": "Watt was skeptical that his engine belonged in transport. Why do you think he held back?",
+      "options": [
+        "He doubted it could be made safe",
+        "He was absorbed in factory work",
+        "He mistrusted high-pressure steam"
+      ]
+    },
+    {
+      "story_id": "james-watt",
+      "chapter_index": 7,
+      "question": "The industrial revolution brought wealth along with overcrowding, pollution and child labour. How would you weigh it?",
+      "options": [
+        "Worth the cost",
+        "The cost was too high",
+        "Too early to judge even now"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "james-watt",
+      "chapter_index": 3,
+      "choice_point_id": "take-boultons-offer",
+      "prompt": "You have a working model that quarters the fuel bill, but no capital and no factory. Boulton offers a partnership on his terms. What would you do?",
+      "options": [
+        "Accept the partnership",
+        "Seek money elsewhere",
+        "Build the engines yourself"
+      ]
+    },
+    {
+      "story_id": "james-watt",
+      "chapter_index": 6,
+      "choice_point_id": "retire-from-the-works",
+      "prompt": "Around 1800 Watt handed the business to his son and others. In his place, what would you have done?",
+      "options": [
+        "Retire to experiments",
+        "Stay and run the works"
+      ]
+    }
+  ]
+}

@@ -19,6 +19,7 @@ import { Radii, Spacing } from '@/constants/theme';
 import type { ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
+import { logRegistreren } from '@/hooks/useAnalytics';
 import { signup } from '@/hooks/useAuth';
 import type { Vertalingen } from '@/i18n';
 
@@ -77,6 +78,11 @@ export default function SignupScreen() {
       setFout(resultaat.error);
       return;
     }
+    // Ook wanneer de bevestigingsmail nog moet worden geopend: het account bestáát op dit moment
+    // (`signup()` gaf een user terug), en dat is wat `sign_up` meet. Pas hierna meten zou de
+    // registraties structureel te laag zetten met precies de lezers die hun mail nooit openen —
+    // en dat is nu juist het gat dat je wilt kunnen zien.
+    logRegistreren('email');
     if (resultaat.bevestigingNodig) {
       // E-mailbevestiging staat aan in Supabase: er is nog geen sessie, dus doorsturen zou
       // een lege app opleveren. De gebruiker blijft hier met de instructie in beeld.

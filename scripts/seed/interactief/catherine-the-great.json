@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 3,
+      "question": "How long had Peter III been on the throne before Catherine moved against him?",
+      "options": [
+        "Six weeks",
+        "Six months",
+        "Two years",
+        "Ten years"
+      ],
+      "correct_answer": 1,
+      "explanation": "In half a year he had offended the army, the nobility and the Church at once. Catherine did not have to build a faction so much as collect one already waiting."
+    },
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 5,
+      "question": "Which power did Catherine fight to win Russian access to the Black Sea?",
+      "options": [
+        "The Ottoman Empire",
+        "Prussia",
+        "Austria",
+        "Sweden"
+      ],
+      "correct_answer": 0,
+      "explanation": "The Ottomans held the southern territories Russia wanted. Prussia and Austria were partners in the Polish partition rather than enemies — for the moment."
+    },
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 7,
+      "question": "Who led the great peasant rebellion of the 1770s?",
+      "options": [
+        "Grigory Orlov",
+        "Emelian Pugachev",
+        "Peter III",
+        "Paul"
+      ],
+      "correct_answer": 1,
+      "explanation": "Pugachev was a Cossack, and the rising drew its strength from exactly the serf population whose bondage Catherine went on to tighten."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 4,
+      "question": "Catherine made careful reforms rather than radical ones. Why do you think she held back?",
+      "options": [
+        "She could not afford to lose the nobility",
+        "She never truly believed the ideas",
+        "The empire was too vast to change quickly"
+      ]
+    },
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 5,
+      "question": "The partition of Poland was the most controversial act of her reign. How do you judge it?",
+      "options": [
+        "A crime of convenience",
+        "Ordinary statecraft of the age",
+        "A defence Russia could not avoid"
+      ]
+    },
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 8,
+      "question": "What kept a foreign-born princess on the Russian throne for thirty-four years?",
+      "options": [
+        "The loyalty of the army and nobles",
+        "Her own political skill",
+        "Luck and the weakness of rivals"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 3,
+      "choice_point_id": "raise-the-army-against-peter",
+      "prompt": "Her husband was Tsar, disliked by everyone who mattered, and she had officers willing to ride with her. In her place, what would you do?",
+      "options": [
+        "Raise troops and take the throne",
+        "Wait and rule through her son",
+        "Remain the dutiful wife"
+      ]
+    },
+    {
+      "story_id": "catherine-the-great",
+      "chapter_index": 7,
+      "choice_point_id": "strengthen-or-loosen-serfdom",
+      "prompt": "The wars needed the nobility's money, and that money came from serfdom. In her place, what would you do?",
+      "options": [
+        "Keep serfdom and fund the wars",
+        "Loosen it and risk the nobles",
+        "Give up the expansion"
+      ]
+    }
+  ]
+}

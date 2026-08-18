@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 2,
+      "question": "How did Malala first tell the world what life under Taliban rule was like?",
+      "options": [
+        "A blog for BBC Urdu, written under a pseudonym",
+        "A letter to the Pakistani prime minister",
+        "A speech at her father's school",
+        "An interview with a Birmingham newspaper"
+      ],
+      "correct_answer": 0,
+      "explanation": "The pseudonym was meant to keep her safe. Her identity became public within a couple of years, and by then the Taliban knew exactly whose voice they had been reading."
+    },
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 4,
+      "question": "Where was Malala taken for her longer course of treatment after the shooting?",
+      "options": [
+        "Mingora",
+        "Islamabad",
+        "Birmingham, England",
+        "Oslo"
+      ],
+      "correct_answer": 2,
+      "explanation": "She was first operated on in Pakistan, then flown to Birmingham. The city became her family's home, and she later studied at Oxford."
+    },
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 6,
+      "question": "With whom did Malala share the 2014 Nobel Peace Prize?",
+      "options": [
+        "Kailash Satyarthi",
+        "Ziauddin Yousafzai",
+        "Muhammad Ali Jinnah",
+        "Kofi Annan"
+      ],
+      "correct_answer": 0,
+      "explanation": "Satyarthi had spent decades campaigning against child labour in India. Pairing a Pakistani girl with an Indian man was a deliberate choice by the committee."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 3,
+      "question": "Malala kept giving interviews even as the danger grew. What do you think drove her most?",
+      "options": [
+        "Her father's example",
+        "Anger at the school closures",
+        "Belief that publicity was protection"
+      ]
+    },
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 5,
+      "question": "What did more for the cause of girls' education — her blog, the shooting, or the UN speech?",
+      "options": [
+        "The blog from Swat",
+        "The attack and its aftermath",
+        "The speech at the United Nations"
+      ]
+    },
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 7,
+      "question": "Why do you think 250 million children remain out of school?",
+      "options": [
+        "Poverty above all",
+        "War and displacement",
+        "Deliberate discrimination"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 2,
+      "choice_point_id": "write-under-a-pseudonym",
+      "prompt": "At twelve, Malala was offered the chance to describe Taliban rule for the BBC. In her place, what would you have done?",
+      "options": [
+        "Write under a false name",
+        "Write openly under your own name",
+        "Stay silent and keep studying"
+      ]
+    },
+    {
+      "story_id": "malala-yousafzai",
+      "chapter_index": 4,
+      "choice_point_id": "speak-of-the-gunman",
+      "prompt": "Recovering in hospital, Malala was asked about the man who shot her. In her place, what would you have said?",
+      "options": [
+        "Speak of him with compassion",
+        "Demand he be punished",
+        "Refuse to discuss him"
+      ]
+    }
+  ]
+}

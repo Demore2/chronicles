@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 2,
+      "question": "When Leonardo wrote to Duke Ludovico Sforza of Milan around 1482, what did he mainly offer?",
+      "options": [
+        "His skill as a painter of altarpieces",
+        "His services as an engineer and weapons designer",
+        "His knowledge of Latin and philosophy",
+        "His experience carving marble"
+      ],
+      "correct_answer": 1,
+      "explanation": "He led with military and architectural work because that was what princes paid for. The painting commissions followed once he was inside the court."
+    },
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 3,
+      "question": "How did Leonardo write the thousands of observations in his Milan notebooks?",
+      "options": [
+        "In Latin verse",
+        "In mirror script, written backwards",
+        "In coded numbers",
+        "In Greek shorthand"
+      ],
+      "correct_answer": 1,
+      "explanation": "The reversed hand kept his pages effectively private, and it scattered his ideas for centuries — much of the material was not read or published until long after his death."
+    },
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 7,
+      "question": "How many completed paintings did Leonardo leave behind at his death in 1519?",
+      "options": [
+        "Fewer than twenty",
+        "About fifty",
+        "More than a hundred",
+        "Exactly seven"
+      ],
+      "correct_answer": 0,
+      "explanation": "Against those few finished panels stand thousands of notebook pages. The unfinished commissions cost him patrons in his lifetime and made his reputation after it."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 1,
+      "question": "Leonardo was barred from university because of his birth. Do you think that shut a door or opened one?",
+      "options": [
+        "It cost him a real education",
+        "It freed him to study the world directly",
+        "It made little difference to a mind like his"
+      ]
+    },
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 3,
+      "question": "Leonardo abandoned commissions whenever a new idea took hold. What do you make of that?",
+      "options": [
+        "A failure of discipline",
+        "The price of real curiosity",
+        "A quarrel with his patrons, not with himself"
+      ]
+    },
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 5,
+      "question": "He watched birds for hours and never flew. Was the flight work worth the years?",
+      "options": [
+        "Yes — the principles outlived him",
+        "No — it took him from finished work",
+        "It was never really about flying"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 2,
+      "choice_point_id": "leave-florence-for-milan",
+      "prompt": "Leonardo was one of Florence's most promising artists, yet he wrote to a duke in another city offering to build weapons. In his place, what would you have done?",
+      "options": [
+        "Go to Milan for a rich patron",
+        "Stay in Florence as a painter",
+        "Work alone without patronage"
+      ]
+    },
+    {
+      "story_id": "leonardo-da-vinci",
+      "chapter_index": 4,
+      "choice_point_id": "dissect-the-corpses",
+      "prompt": "To paint the body correctly, Leonardo cut open corpses — controversial and dangerous work. In his place, would you have taken up the knife?",
+      "options": [
+        "Dissect and learn the truth",
+        "Paint from the surface only",
+        "Study others' anatomical drawings"
+      ]
+    }
+  ]
+}

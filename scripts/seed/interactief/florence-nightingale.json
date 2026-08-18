@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 3,
+      "question": "What did Florence Nightingale's analysis of hospital records at Scutari reveal?",
+      "options": [
+        "Most deaths came from battle wounds",
+        "Most deaths came from disease caused by poor sanitation",
+        "Most deaths came from lack of medicine",
+        "Most deaths came from cold and exposure"
+      ],
+      "correct_answer": 1,
+      "explanation": "Her charts turned an argument about cleanliness into a matter of counted deaths — harder for officials to dismiss than any appeal to pity."
+    },
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 5,
+      "question": "Where did Florence Nightingale establish her nurse training school in 1860?",
+      "options": [
+        "St Thomas' Hospital, London",
+        "The Barrack Hospital, Scutari",
+        "A training institution in Germany",
+        "A private hospital in Harley Street"
+      ],
+      "correct_answer": 0,
+      "explanation": "Schools built on the same model followed in America and across Europe, so a single London ward became the pattern for a worldwide profession."
+    },
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 2,
+      "question": "According to the chapter, what was killing most British soldiers in the Crimean War?",
+      "options": [
+        "Enemy bullets",
+        "Starvation",
+        "Typhus, dysentery, typhoid and cholera",
+        "Wounds left untreated by surgeons"
+      ],
+      "correct_answer": 2,
+      "explanation": "Newspaper reports of these deaths caused public outrage at home, which is what made an official invitation to Nightingale politically possible."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 1,
+      "question": "Her family opposed her nursing plans for years. What do you think drove them hardest?",
+      "options": [
+        "Fear of losing social standing",
+        "Genuine worry for her safety",
+        "Refusal to see a daughter work at all"
+      ]
+    },
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 4,
+      "question": "Which part of her work do you think saved more lives?",
+      "options": [
+        "Scrubbing wards and changing bedding",
+        "Collecting and publishing the statistics",
+        "Training the nurses who came after"
+      ]
+    },
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 6,
+      "question": "She spent her later decades confined at home, writing reports. How do you read that?",
+      "options": [
+        "Illness she worked around",
+        "A shield from public life",
+        "The most effective work she did"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 2,
+      "choice_point_id": "sail-for-scutari",
+      "prompt": "The reports from the military hospitals were appalling, and she had a settled post in London. In her place, what would you do?",
+      "options": [
+        "Sail for Scutari with the nurses",
+        "Stay and build the London hospital",
+        "Wait for the army to ask twice"
+      ]
+    },
+    {
+      "story_id": "florence-nightingale",
+      "chapter_index": 1,
+      "choice_point_id": "defy-the-family",
+      "prompt": "Her family forbade nursing and expected an advantageous marriage. In her place, what would you do?",
+      "options": [
+        "Pursue the training regardless",
+        "Accept the marriage and wait",
+        "Negotiate for charitable work instead"
+      ]
+    }
+  ]
+}

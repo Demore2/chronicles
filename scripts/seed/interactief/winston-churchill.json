@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 2,
+      "question": "Which campaign, backed by Churchill as First Lord of the Admiralty, damaged his reputation and led to his resignation?",
+      "options": [
+        "The Gallipoli Campaign",
+        "The Somme offensive",
+        "The Norwegian campaign",
+        "The siege of Ladysmith"
+      ],
+      "correct_answer": 0,
+      "explanation": "The heavy casualties made him a convenient scapegoat, and he spent years afterwards as a political outcast, rebuilding his standing through journalism and books."
+    },
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 4,
+      "question": "What happened to Churchill in July 1945, weeks after Germany's surrender?",
+      "options": [
+        "He was made Leader of the Opposition after an election defeat",
+        "He resigned over the atomic bomb",
+        "He was re-elected with a large majority",
+        "He retired from Parliament altogether"
+      ],
+      "correct_answer": 0,
+      "explanation": "British voters chose Labour instead. Churchill felt the country had repaid his wartime leadership poorly, but he stayed on in Parliament rather than withdraw."
+    },
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 5,
+      "question": "Where did Churchill deliver his 1946 speech describing an \"Iron Curtain\" across Europe?",
+      "options": [
+        "Fulton, Missouri",
+        "Yalta",
+        "Westminster",
+        "Chicago"
+      ],
+      "correct_answer": 0,
+      "explanation": "He spoke in collaboration with President Truman, and the phrase outlived them both as the standard metaphor for a divided Europe."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 2,
+      "question": "Churchill was dismissed as a warmonger for his warnings about Hitler. Why do you think so few listened?",
+      "options": [
+        "Gallipoli had ruined his credibility",
+        "No one wanted another war",
+        "Appeasement seemed reasonable at the time"
+      ]
+    },
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 4,
+      "question": "Which mattered more to Churchill's wartime record — the speeches or the alliances?",
+      "options": [
+        "The speeches to the British people",
+        "The alliances with Roosevelt and Stalin",
+        "Neither without the other"
+      ]
+    },
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 6,
+      "question": "Churchill returned as Prime Minister at seventy-six and served until he was eighty. What do you make of that?",
+      "options": [
+        "The country still needed him",
+        "He stayed too long",
+        "A fitting end to a long career"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 3,
+      "choice_point_id": "fight-on-alone",
+      "prompt": "In May 1940, with France falling and invasion expected, Churchill refused any negotiation with Hitler. In his place, what would you have done?",
+      "options": [
+        "Fight on alone",
+        "Explore terms",
+        "Wait for America first"
+      ]
+    },
+    {
+      "story_id": "winston-churchill",
+      "chapter_index": 4,
+      "choice_point_id": "accept-the-verdict",
+      "prompt": "Voted out months after victory, Churchill took the post of Leader of the Opposition. In his place, what would you have done?",
+      "options": [
+        "Stay and lead the opposition",
+        "Leave politics for writing",
+        "Demand another election"
+      ]
+    }
+  ]
+}

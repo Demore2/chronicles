@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 4,
+      "question": "What figures does Ashoka's own Rock Edict XIII give for the cost of the Kalinga war?",
+      "options": [
+        "100,000 deported, 150,000 killed",
+        "150,000 deported, 100,000 killed",
+        "150,000 killed, no deportations recorded",
+        "100,000 deported and 100,000 killed"
+      ],
+      "correct_answer": 1,
+      "explanation": "The deportations may have been the crueller half: marching villagers hundreds of kilometres to settle new land killed by hunger and disease long after the fighting ended."
+    },
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 6,
+      "question": "At Kandahar in Afghanistan, in which languages was Ashoka's message carved?",
+      "options": [
+        "Prakrit and Brahmi",
+        "Greek and Aramaic",
+        "Kharoshthi and Persian",
+        "Sanskrit and Greek"
+      ],
+      "correct_answer": 1,
+      "explanation": "The bilingual slab was found by workmen in 1958. Ashoka was preaching abstention from killing to the descendants of Alexander's garrisons, in the language of Plato."
+    },
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 8,
+      "question": "Who deciphered the Brahmi script and made the edicts readable again?",
+      "options": [
+        "Megasthenes",
+        "Firuz Shah Tughluq",
+        "James Prinsep",
+        "H. G. Wells"
+      ],
+      "correct_answer": 2,
+      "explanation": "Prinsep cracked the script in 1837, but the king he read called himself only Devanampiya Piyadasi. The name Ashoka was not confirmed on stone until the Maski inscription surfaced in 1915."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 4,
+      "question": "Kalinga was the last territory Ashoka ever conquered. What do you think turned him?",
+      "options": [
+        "Genuine horror at the slaughter",
+        "Political calculation about a costly empire",
+        "Exhaustion after a long fight for the throne"
+      ]
+    },
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 6,
+      "question": "Rock Edict XIII was carved all over the empire, but not in Kalinga itself. Why?",
+      "options": [
+        "The conquered were not to be reminded",
+        "Local officials needed different orders",
+        "Remorse was aimed at the loyal, not the beaten"
+      ]
+    },
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 8,
+      "question": "Later Buddhist writers blamed Ashoka's pacifism for the Mauryan collapse. What do you think?",
+      "options": [
+        "An empire that stops conquering dies",
+        "Weak successors would have lost it anyway",
+        "The bureaucracy was too slow to hold it"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 3,
+      "choice_point_id": "turn-the-army-east",
+      "prompt": "Kalinga was rich, proud and wedged between your heartland and your southern provinces. In Ashoka's place, what would you do with it?",
+      "options": [
+        "Invade and complete the map",
+        "Buy its loyalty with trade terms",
+        "Leave it alone and garrison the border"
+      ]
+    },
+    {
+      "story_id": "ashoka-maurya",
+      "chapter_index": 7,
+      "choice_point_id": "police-the-sangha",
+      "prompt": "Monks were quarrelling over doctrine, and the emperor could order dissenters stripped of their robes. In his place, would you intervene?",
+      "options": [
+        "Expel those who split the order",
+        "Fund the monasteries and stay out",
+        "Let the monks judge their own"
+      ]
+    }
+  ]
+}

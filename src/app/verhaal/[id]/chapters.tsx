@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -12,8 +12,11 @@ import Animated, {
 import { AnimatedPressable } from '@/components/animated-pressable';
 import { HoofdstukTegel } from '@/components/hoofdstuk-tegel';
 import { LegeStaat } from '@/components/lege-staat';
+import { StoryLimitModal } from '@/components/story-limit-modal';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { ANALYTICS_GEBEURTENIS } from '@/constants/analytics';
+import { DAGELIJKSE_VERHAAL_LIMIET } from '@/constants/monetisatie';
 import { Motion } from '@/constants/motion';
 import { Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
@@ -21,7 +24,11 @@ import { berekenLeestijdMinuten } from '@/content/leestijd';
 import { getVerhaal } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
+import { logEvent } from '@/hooks/useAnalytics';
 import { useVertaling } from '@/hooks/use-vertaling';
+import { useAbonnementStore } from '@/store/abonnement-store';
+import { useStoryProgressStore } from '@/store/story-progress-store';
+import { wachtOpHydratie } from '@/store/sync-hulp';
 
 export default function ChaptersScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -53,6 +60,68 @@ export default function ChaptersScreen() {
     width: `${voortgangBreedte.get()}%` as `${number}%`,
   }));
 
+  // --- Dagelijkse leeslimiet (gratis lezers) ---
+  //
+  // Dit scherm is de trechter waar élke route naar een verhaal doorheen komt (`verhaal/[id].tsx`
+  // stuurt hierheen door), dus hier wordt geteld en hier wordt tegengehouden. In de reader zou het
+  // te laat zijn: dan staat de lezer al in hoofdstuk één.
+  const [limietBereikt, setLimietBereikt] = useState(false);
+  const verhaalId = verhaal?.id;
+  const tijdperkId = verhaal?.tijdperkId;
+  const aantalHoofdstukken = verhaal?.chapters.length ?? 0;
+
+  useEffect(() => {
+    if (!verhaalId) return;
+    let afgebroken = false;
+
+    // Eerst wachten tot beide stores uit AsyncStorage gelezen zijn. Zonder die garantie kijken we
+    // vlak na een koude start naar lege beginwaarden: een uitgelezen verhaal lijkt dan ongelezen,
+    // en de teller van vandaag lijkt op nul te staan.
+    Promise.all([
+      wachtOpHydratie(useStoryProgressStore),
+      wachtOpHydratie(useAbonnementStore),
+    ]).then(() => {
+      if (afgebroken) return;
+
+      // Een verhaal dat je al helemaal uit hebt kost geen plek: de limiet doseert nieuwe inhoud,
+      // hij zet je eigen boekenkast niet op slot. Zonder deze regel kun je met de teller vol geen
+      // hoofdstuk teruglezen dat je gisteren al las.
+      const gelezen = useStoryProgressStore.getState().getChapterProgress(verhaalId);
+      const isUitgelezen =
+        aantalHoofdstukken > 0 && gelezen.completedChapters.length >= aantalHoofdstukken;
+      // Dit effect is ook de plek waar het openen geteld wordt (Firebase). Niet in
+      // `verhaal/[id].tsx`: dat is een omleiding die een deeplink rechtstreeks naar dit scherm
+      // overslaat, en dan zou de bovenkant van de trechter systematisch te laag uitvallen.
+      const meting = { story_id: verhaalId, era: tijdperkId, chapter_count: aantalHoofdstukken };
+
+      if (isUitgelezen) {
+        setLimietBereikt(false);
+        logEvent(ANALYTICS_GEBEURTENIS.verhaalGestart, { ...meting, is_reread: true });
+        return;
+      }
+
+      const abonnement = useAbonnementStore.getState();
+      if (abonnement.magVerhaalOpenen(verhaalId)) {
+        abonnement.registreerVerhaalGeopend(verhaalId);
+        setLimietBereikt(false);
+        logEvent(ANALYTICS_GEBEURTENIS.verhaalGestart, { ...meting, is_reread: false });
+        return;
+      }
+      setLimietBereikt(true);
+      // Het directe signaal voor het gratis/Pro-model: hoe vaak loopt een lezer tegen de muur,
+      // en bij welk verhaal? Dat is niet af te leiden uit `story_started`, want die blijft hier
+      // juist uit.
+      logEvent(ANALYTICS_GEBEURTENIS.limietBereikt, {
+        ...meting,
+        daily_limit: DAGELIJKSE_VERHAAL_LIMIET,
+      });
+    });
+
+    return () => {
+      afgebroken = true;
+    };
+  }, [verhaalId, tijdperkId, aantalHoofdstukken]);
+
   if (!verhaal) {
     return (
       <ThemedView style={styles.container}>
@@ -73,12 +142,28 @@ export default function ChaptersScreen() {
   )?.id;
 
   function handleChapterPress(chapterId: number) {
+    // Vangnet: de melding ligt over het scherm, dus hier komt normaal geen tik doorheen.
+    if (limietBereikt) return;
     if (progress.isChapterUnlocked(chapterId)) {
       router.push({
         pathname: '/verhaal/[id]/reader',
         params: { id: verhaal!.id, chapterId: String(chapterId) },
       });
     }
+  }
+
+  /**
+   * "Tot morgen" sluit niet alleen het venster maar verlaat ook het verhaal — anders kijk je naar
+   * een hoofdstukoverzicht dat je niet mag openen, en dat leest als een kapotte app in plaats van
+   * als een limiet.
+   */
+  function handleLimietSluiten() {
+    setLimietBereikt(false);
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace('/');
   }
 
   return (
@@ -137,6 +222,8 @@ export default function ChaptersScreen() {
           </ThemedText>
         </View>
       </ScrollView>
+
+      <StoryLimitModal visible={limietBereikt} onClose={handleLimietSluiten} />
     </ThemedView>
   );
 }

@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   FadeInDown,
@@ -11,23 +11,40 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AdBanner } from '@/components/ad-banner';
+import { AdModal } from '@/components/ad-modal';
 import { AnimatedPressable } from '@/components/animated-pressable';
 import { BlokWeergave } from '@/components/blok-weergave';
 import { CharacterUnlockModal } from '@/components/character-unlock-modal';
+import { InteractieveSectie } from '@/components/interactieve-sectie';
 import { LegeStaat } from '@/components/lege-staat';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { ANALYTICS_GEBEURTENIS } from '@/constants/analytics';
 import { haptics } from '@/constants/haptics';
+import { AD_ONDERBREKING_ENABLED } from '@/constants/monetisatie';
 import { Motion, staggerVertraging } from '@/constants/motion';
 import { Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
 import { getVerhaal } from '@/content/verhalen';
+import { useAbonnement } from '@/hooks/use-abonnement';
 import { biedHerinneringAan } from '@/hooks/use-dagelijkse-herinnering';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
+import { logEvent } from '@/hooks/useAnalytics';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
+
+/**
+ * Hoeveel hele seconden er sinds `start` voorbij zijn, of `undefined` als er geen start is.
+ *
+ * Staat buiten de component omdat `Date.now()` een onzuivere aanroep is: binnen de component zou
+ * de lintregel hem als een klok-aflezing tijdens het renderen zien, ook al draait hij alleen in
+ * een handler. `undefined` valt in `lib/analytics.ts` vanzelf uit de parameters weg.
+ */
+function secondenSinds(start: number | null): number | undefined {
+  return start === null ? undefined : Math.round((Date.now() - start) / 1000);
+}
 
 export default function ReaderScreen() {
   const { id, chapterId: chapterIdParam } = useLocalSearchParams<{ id: string; chapterId: string }>();
@@ -37,8 +54,34 @@ export default function ReaderScreen() {
   const { t, v } = useVertaling();
   const characterStore = useCharacterUnlockStore();
   const voortgangStore = useVoortgangStore();
+  const { isPremium } = useAbonnement();
 
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [showAdModal, setShowAdModal] = useState(false);
+
+  /**
+   * Wanneer dit hoofdstuk in beeld kwam, voor `time_spent_seconds` bij het afvinken.
+   *
+   * Een `useRef` met een effect en geen waarde die bij het monteren wordt gezet: "Next Chapter"
+   * gaat via `router.replace`, dus het scherm blijft staan en alleen `chapterId` verandert. Zonder
+   * dit effect zou hoofdstuk acht de leestijd van hoofdstuk één rapporteren.
+   *
+   * Het meet schermtijd, niet leestijd — de app weet niet of de telefoon in een broekzak zat. Voor
+   * "hoe lang doet iemand over een hoofdstuk" is het bruikbaar zolang je de mediaan leest en niet
+   * het gemiddelde.
+   *
+   * Begint op `null` en wordt door het effect gevuld: `useRef(Date.now())` zou de klok tijdens het
+   * renderen aflezen, en dat is precies wat de `react-hooks`-regel "Cannot call impure function
+   * during render" tegenhoudt.
+   */
+  const hoofdstukGestartOp = useRef<number | null>(null);
+
+  /**
+   * Krijgt deze lezer de onderbreking na het uitlezen te zien? De reader beslist dat zelf en laat
+   * het niet aan `AdModal` over: die kan `null` renderen, en dan zou het scherm blijven wachten op
+   * een `onClose` die nooit komt.
+   */
+  const toontOnderbreking = AD_ONDERBREKING_ENABLED && !isPremium;
 
   // Scrollvoortgang leeft op de UI-thread (LAUNCH-PLAN.md B4). Hier stond een `useState` die op
   // elk scroll-event met `scrollEventThrottle={16}` werd gezet — dat rerenderde het hele
@@ -58,6 +101,10 @@ export default function ReaderScreen() {
   const chapterId = chapterIdParam ? parseInt(chapterIdParam, 10) : 1;
   const chapter = verhaal?.chapters.find((ch) => ch.id === chapterId);
   const progress = useStoryProgress(verhaal?.id ?? '', verhaal?.chapters.length ?? 0);
+
+  useEffect(() => {
+    hoofdstukGestartOp.current = Date.now();
+  }, [chapterId, id]);
 
   const allChaptersRead = progress.completedChapters.length === verhaal?.chapters.length;
   const characterUnlocked = verhaal ? characterStore.isCharacterUnlocked(verhaal.id) : false;
@@ -105,6 +152,28 @@ export default function ReaderScreen() {
 
   function handleCompleteChapter() {
     haptics.succes();
+
+    // De telling gebeurt vóór `completeChapter`, want die zet state en `progress` is binnen deze
+    // handler nog de oude waarde. Een `Set` in plaats van "+1": het hoofdstuk kan er al in zitten
+    // als de knop op een of andere manier twee keer af gaat.
+    const voltooidNa = new Set([...progress.completedChapters, chapterId]).size;
+    const totaal = verhaal!.chapters.length;
+    const meting = { story_id: verhaal!.id, era: verhaal!.tijdperkId, chapter_count: totaal };
+
+    logEvent(ANALYTICS_GEBEURTENIS.hoofdstukVoltooid, {
+      ...meting,
+      chapter_index: chapterId,
+      chapters_done: voltooidNa,
+      time_spent_seconds: secondenSinds(hoofdstukGestartOp.current),
+    });
+
+    // "Uitgelezen" is hier: het laatste hoofdstuk is af. Bewust een andere gebeurtenis dan
+    // `character_unlocked` hieronder — tussen die twee zit een knop, en het verschil tussen de
+    // aantallen is precies hoeveel lezers die knop niet indrukken.
+    if (voltooidNa >= totaal) {
+      logEvent(ANALYTICS_GEBEURTENIS.verhaalVoltooid, meting);
+    }
+
     progress.completeChapter(chapterId);
     // Een afgerond hoofdstuk is de enige actie die als "vandaag gelezen" telt (B6). Het openen
     // van een verhaal deed dat eerst ook, waardoor je een streak kon opbouwen zonder te lezen.
@@ -140,12 +209,36 @@ export default function ReaderScreen() {
     if (verhaal) {
       voortgangStore.markStoryCompleted(verhaal.id);
       characterStore.unlockCharacter(verhaal.id, verhaal.personage.naam);
+      logEvent(ANALYTICS_GEBEURTENIS.personageOntgrendeld, {
+        story_id: verhaal.id,
+        era: verhaal.tijdperkId,
+        character_name: verhaal.personage.naam,
+        // +1 omdat `unlockCharacter` de state pas na deze render bijwerkt. `getTotalUnlocked()`
+        // hier aanroepen zou het aantal van vóór deze ontgrendeling geven.
+        total_unlocked: characterStore.getTotalUnlocked() + 1,
+      });
       setShowUnlockModal(true);
     }
   }
 
   function handleCloseUnlockModal() {
     setShowUnlockModal(false);
+    // De onderbreking komt ná het ontgrendelen, niet ervoor: het personage is de beloning voor
+    // acht hoofdstukken, en daar hoort geen advertentie tussen te staan. Zonder onderbreking (Pro,
+    // of de vlag uit) gaat het scherm meteen dicht, precies zoals daarvoor.
+    if (toontOnderbreking) {
+      setShowAdModal(true);
+      return;
+    }
+    verlaatVerhaal();
+  }
+
+  function handleCloseAdModal() {
+    setShowAdModal(false);
+    verlaatVerhaal();
+  }
+
+  function verlaatVerhaal() {
     // Alles wat er voor dit verhaal op de stack ligt afpellen in plaats van Home er bovenop te
     // duwen; anders loopt de terugknop na het ontgrendelen weer door de reader heen.
     if (router.canDismiss()) {
@@ -208,6 +301,16 @@ export default function ReaderScreen() {
             </Animated.View>
           ))}
         </View>
+
+        {/* De quiz, de peiling en het keuzepunt van dit hoofdstuk (Supabase). Staan ná de blokken
+            en vóór de banner, en renderen `null` als er niets is of de verbinding ontbreekt — het
+            hoofdstuk leest zonder ze precies zoals daarvoor. Ze blokkeren "Mark Complete" niet:
+            dat is het verschil met het oude quizscherm, dat er als aparte route tussen stond. */}
+        <InteractieveSectie
+          verhaalId={verhaal.id}
+          chapterId={chapterId}
+          accent={tijdperk?.kleur ?? theme.accent}
+        />
 
         <View style={styles.advertentie}>
           <AdBanner />
@@ -276,6 +379,8 @@ export default function ReaderScreen() {
           onClose={handleCloseUnlockModal}
         />
       </Modal>
+
+      <AdModal visible={showAdModal} onClose={handleCloseAdModal} />
     </ThemedView>
   );
 }

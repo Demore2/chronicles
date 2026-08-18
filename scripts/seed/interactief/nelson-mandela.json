@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 3,
+      "question": "What was the name of the armed wing of the ANC that Mandela co-founded in 1961?",
+      "options": [
+        "Umkhonto we Sizwe",
+        "African National Congress Youth League",
+        "Spear of the Thembu",
+        "Free Mandela Movement"
+      ],
+      "correct_answer": 0,
+      "explanation": "The name means Spear of the Nation. Its early plan was sabotage of government installations rather than attacks on people, a distinction Mandela pressed at his trial."
+    },
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 4,
+      "question": "What work were prisoners on Robben Island forced to do?",
+      "options": [
+        "Breaking limestone in a quarry",
+        "Fishing off the island coast",
+        "Building the prison walls",
+        "Farming the island's fields"
+      ],
+      "correct_answer": 0,
+      "explanation": "The glare off the white limestone permanently damaged Mandela's eyes — years later photographers were asked not to use flashbulbs near him."
+    },
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 7,
+      "question": "Which institution did Mandela establish as president to deal with crimes committed under apartheid?",
+      "options": [
+        "The Truth and Reconciliation Commission",
+        "The Springbok Council",
+        "The National Unity Tribunal",
+        "The Robben Island Inquiry"
+      ],
+      "correct_answer": 0,
+      "explanation": "Perpetrators could confess and be forgiven while victims were heard. The aim was to break the cycle of revenge rather than to fill the courts."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 3,
+      "question": "The ANC turned to sabotage in 1961 after years of peaceful protest. Was that the right decision?",
+      "options": [
+        "Yes, nothing else was left",
+        "No, non-violence had more to give",
+        "It was justified but came too early"
+      ]
+    },
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 6,
+      "question": "What do you think mattered most in bringing the apartheid government to the negotiating table?",
+      "options": [
+        "International sanctions and isolation",
+        "Resistance inside South Africa",
+        "De Klerk's own decisions"
+      ]
+    },
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 7,
+      "question": "Mandela stepped down after a single term. Why do you think he did?",
+      "options": [
+        "To prove power should rotate",
+        "He judged his work finished",
+        "Age and exhaustion"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 5,
+      "choice_point_id": "learn-the-jailers-language",
+      "prompt": "In prison Mandela learned Afrikaans, the language of the government that jailed him, and studied his guards. In his place, what would you have done?",
+      "options": [
+        "Learn their language",
+        "Keep your distance",
+        "Speak only to fellow prisoners"
+      ]
+    },
+    {
+      "story_id": "nelson-mandela",
+      "chapter_index": 6,
+      "choice_point_id": "punish-the-apartheid-leaders",
+      "prompt": "After twenty-seven years in prison, Mandela refused to call for the punishment of apartheid's leaders. In his place, what would you have demanded?",
+      "options": [
+        "Forgiveness and a new constitution",
+        "Trials for those responsible",
+        "Removal from public life only"
+      ]
+    }
+  ]
+}

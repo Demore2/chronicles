@@ -15,6 +15,10 @@ import { useNotificatieStore } from '@/store/notificatie-store';
 export function useDagelijkseHerinnering() {
   const { t } = useVertaling();
   const herinneringAan = useNotificatieStore((state) => state.herinneringAan);
+  // Het tijdstip staat om dezelfde reden in de dependencies als de tekst: een geplande notificatie
+  // draagt zijn uur in zich, dus een verzet tijdstip moet opnieuw gezet worden.
+  const uur = useNotificatieStore((state) => state.herinneringUur);
+  const minuut = useNotificatieStore((state) => state.herinneringMinuut);
   const titel = t((s) => s.notificatie.titel);
   const tekst = t((s) => s.notificatie.tekst);
 
@@ -35,14 +39,14 @@ export function useDagelijkseHerinnering() {
         useNotificatieStore.getState().setHerinnering(false);
         return;
       }
-      await notificaties.planDagelijkseHerinnering(titel, tekst);
+      await notificaties.planDagelijkseHerinnering(titel, tekst, uur, minuut);
     }
 
     synchroniseer();
     return () => {
       afgebroken = true;
     };
-  }, [herinneringAan, titel, tekst]);
+  }, [herinneringAan, titel, tekst, uur, minuut]);
 }
 
 /**

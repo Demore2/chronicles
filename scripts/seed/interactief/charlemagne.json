@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 2,
+      "question": "Why did Pope Hadrian call on Charles for help in 773?",
+      "options": [
+        "Byzantine armies had landed in Italy",
+        "The Lombards threatened papal territories",
+        "The Saxons had raided Rome",
+        "Muslim forces had crossed the Pyrenees"
+      ],
+      "correct_answer": 1,
+      "explanation": "Charles beat the Lombards and then took their crown for himself. The lands he handed to the Church afterwards bound papacy and Frankish throne together for centuries."
+    },
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 3,
+      "question": "What title did Pope Leo III give Charles on Christmas Day, 800?",
+      "options": [
+        "King of the Lombards",
+        "Emperor of the Romans",
+        "Protector of the Holy See",
+        "King of all the Franks"
+      ],
+      "correct_answer": 1,
+      "explanation": "He was the first ruler in western Europe to carry an imperial title since Rome fell. In Constantinople, where a real Roman emperor still sat, the coronation was read as an insult."
+    },
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 7,
+      "question": "What became of the empire after the death of Charles's son Louis the Pious?",
+      "options": [
+        "It passed whole to one grandson",
+        "Louis's three sons divided it between them",
+        "The Pope took it under his rule",
+        "It was conquered by the Saxons"
+      ],
+      "correct_answer": 1,
+      "explanation": "Frankish custom split inheritances, the same custom that had once forced Charles to share with his brother Carloman. This time no brother died early to undo the division."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 2,
+      "question": "The Saxon wars ran for more than thirty years. What do you think kept them going so long?",
+      "options": [
+        "The Saxons would not give up their religion",
+        "Charles's methods bred new revolts",
+        "The land was too wide to hold"
+      ]
+    },
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 4,
+      "question": "Which of Charles's works do you think mattered most to his empire?",
+      "options": [
+        "Roads, coinage and standard measures",
+        "The palace school at Aachen",
+        "Counts and bishops answerable to him"
+      ]
+    },
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 7,
+      "question": "Why did the empire not outlive its builder?",
+      "options": [
+        "No successor had his force of will",
+        "Division among heirs was inevitable",
+        "It was always too large to govern"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 2,
+      "choice_point_id": "exile-carlomans-family",
+      "prompt": "Carloman's death left Charles sole ruler, and he drove his brother's widow and children into exile. In his place, what would you have done?",
+      "options": [
+        "Send them into exile",
+        "Let them keep Carloman's lands",
+        "Keep them at court under watch"
+      ]
+    },
+    {
+      "story_id": "charlemagne",
+      "chapter_index": 5,
+      "choice_point_id": "lead-armies-in-old-age",
+      "prompt": "In his seventies Charles still rode with his armies and shared their hardships. In his place, what would you have done?",
+      "options": [
+        "Ride out with the army",
+        "Rule from Aachen",
+        "Send an heir in your name"
+      ]
+    }
+  ]
+}

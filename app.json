@@ -21,6 +21,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.chronicles.historyapp",
+      "googleServicesFile": "./google-services.json",
       "blockedPermissions": [
         "com.anddoes.launcher.permission.UPDATE_COUNT",
         "com.android.launcher.permission.INSTALL_SHORTCUT",
@@ -65,7 +66,16 @@
           "icon": "./assets/images/notification-icon.png",
           "color": "#3B6E7D"
         }
-      ]
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Chronicles asks for a picture only when you choose one as your profile avatar. It stays on this device.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ],
+      "@react-native-firebase/app"
     ],
     "experiments": {
       "typedRoutes": true,

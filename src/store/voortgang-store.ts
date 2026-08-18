@@ -79,8 +79,19 @@ function datumSleutel(datum: Date): string {
   return `${jaar}-${maand}-${dag}`;
 }
 
-function vandaag(nu: Date = new Date()): string {
+/**
+ * Vandaag als lokale datumsleutel (`YYYY-MM-DD`).
+ *
+ * Geëxporteerd omdat `abonnement-store` dezelfde vraag stelt ("is het nog dezelfde dag?") en het
+ * antwoord daar op precies dezelfde manier moet uitpakken. Twee eigen datumfuncties zijn twee
+ * kansen om er weer een UTC-versie van te maken — zie de opmerking bij `datumSleutel`.
+ */
+export function vandaagSleutel(nu: Date = new Date()): string {
   return datumSleutel(nu);
+}
+
+function vandaag(nu: Date = new Date()): string {
+  return vandaagSleutel(nu);
 }
 
 function gisteren(nu: Date = new Date()): string {

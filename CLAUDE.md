@@ -123,9 +123,11 @@ AsyncStorage for persistence). Three bottom tabs (`src/app/(tabs)/`): index (lab
 Voortgang (Progress), Profiel (Profile). The `ontdek` and `kaart` routes are still registered in
 `(tabs)/_layout.tsx` with `href: null` so Expo Router doesn't surface them.
 
-Stack screens outside the tab group (`collectie/[id]`, `tijdperk/[id]`, `verhaal/[id]/*`) share a
-custom `AppHeader` (`src/app/_layout.tsx`) but usually hide its title (`options={{ title: '' }}`)
-in favour of their own coloured header block, so the back chevron still comes from `AppHeader`.
+Stack screens outside the tab group (`collectie/[id]`, `tijdperk/[id]`, `verhaal/[id]/*`,
+`profiel/settings`, `profiel/upload-avatar`) share a custom `AppHeader` (`src/app/_layout.tsx`) but
+usually hide its title (`options={{ title: '' }}`) in favour of their own coloured header block, so
+the back chevron still comes from `AppHeader`. The two `profiel/*` screens are the exception: they
+set a translated `title` from inside the screen with `<Stack.Screen options={{ title }} />`.
 
 **`src/app/verhaal/[id].tsx` is a redirect, not a screen** — it marks the story as seen and
 `router.replace`s to `/verhaal/[id]/chapters`. The real screens are `verhaal/[id]/chapters.tsx`
@@ -167,9 +169,11 @@ URL) plus `alt` and an optional `bijschrift`. `sleutelmoment` carries a plain `j
 negative means BC, and the "753 BC" / "753 v.Chr." formatting lives in i18n (`blok.jaarLabel`),
 not in the component.
 
-**There is no `quiz` variant** — quizzes were removed from the app; `verhaal/[id]/quiz.tsx` and
-`verhaal/[id]/chapter-quiz.tsx` are "Quiz verwijderd" tombstone screens, and
-`scripts/validate-content.mjs` still carries a dead `case 'quiz'` branch that nothing can trigger.
+**There is no `quiz` variant** — `verhaal/[id]/quiz.tsx` and `verhaal/[id]/chapter-quiz.tsx` are
+"Quiz verwijderd" tombstone screens, and `scripts/validate-content.mjs` still carries a dead
+`case 'quiz'` branch that nothing can trigger. Er is sinds "Interactief lezen" wél weer een quiz,
+maar die is **geen `Blok` en geen scherm**: hij komt uit Supabase en staat ónder de blokken. Wat
+verwijderd is en verwijderd blijft, is de quiz als route die het volgende hoofdstuk blokkeerde.
 
 `Collectie` is a curated cross-cutting list of `verhaalIds`. **`src/content/collecties.ts`
 currently exports an empty array**, so Home's "Storylines" row and `collectie/[id]` render nothing.
@@ -240,9 +244,11 @@ queries) — add cross-cutting queries there rather than inline in screens.
 - `src/app/login.tsx` / `src/app/signup.tsx` share `auth-veld.tsx`, `auth-knop.tsx` and
   `constants/auth-validatie.ts` (min. 6 chars, strength = length only). "Forgot password?" is a
   stub — no `resetPasswordForEmail` flow yet.
-- Uitloggen staat onderaan Profiel. It does **not** clear local reading progress (that lives in
-  AsyncStorage per device), and the dialog says so; don't reword it into a warning that isn't true.
-  `Alert` doesn't exist in react-native-web, so the handler falls back to `window.confirm`.
+- Uitloggen staat onderaan **Instellingen** (`/profiel/settings`, was Profiel). It does **not**
+  clear local reading progress (that lives in AsyncStorage per device), and the dialog says so;
+  don't reword it into a warning that isn't true. `Alert` doesn't exist in react-native-web, so
+  every confirm/alert goes through `bevestig()` / `meld()` in **`src/constants/dialoog.ts`**, which
+  falls back to `window.confirm` / `window.alert`. Use those, not `Alert.alert` directly.
 
 ### Voortgang sync (R8.AUTH deel 3, R8.SYNC-B)
 
@@ -327,6 +333,65 @@ use those, not a hardcoded red.
   for "chapters done". `voortgangStore.bekekenIds` counts *stories opened* — that mix-up was the
   B6 bug on Profiel.
 
+### Profiel & Instellingen
+
+Profiel is opgesplitst: **`(tabs)/profiel.tsx` gaat over voortgang, `profiel/settings.tsx` over
+knoppen.** Thema, taal, de dagelijkse herinnering, de synchronisatiestatus, het privacybeleid en
+uitloggen zijn verhuisd, niet nagebouwd — verwacht ze niet meer op Profiel zelf.
+
+- **De schermen heten `src/app/profiel/settings.tsx` en `src/app/profiel/upload-avatar.tsx`, niet
+  `(tabs)/profiel/…`.** Dat kan niet: `(tabs)/profiel.tsx` mag niet worden verwijderd (zie
+  "File deletion") en zou dan samen met een `(tabs)/profiel/index.tsx` dezelfde route `/profiel`
+  opeisen. Ze staan dus als stack-scherm naast de tabbladen, net als `verhaal/[id]`, en zijn in
+  `src/app/_layout.tsx` geregistreerd (`upload-avatar` als `presentation: 'modal'`).
+- Profiel bestaat uit vier componenten: `profile-header.tsx` (avatar, naam, streak),
+  `profile-stats.tsx` (de drie tellers), `profile-character-collection.tsx` (kop + teller +
+  horizontale rij `character-card.tsx` + aanmoedigingsregel) en `pro-access-banner.tsx`.
+  `profile-card-collection.tsx` — het oude 70px-cirkelraster rond `CharacterGrid` — is daarmee
+  **orphaned**; `character-grid.tsx` zelf wordt nog wel gebruikt door het avatarscherm.
+- **Een vergrendelde `CharacterCard` verklapt niets**: naam, portret en teaser zijn de beloning
+  voor het uitlezen, dus die verschijnen pas na het ontgrendelen. Zichtbaar blijven het tijdperk
+  en `verhaal.portretKleur`, zodat de rij niet als grijze blokken leest. De volgorde is bewust de
+  contentvolgorde en niet ontgrendeld-eerst — een rij die zichzelf herschikt laat je je eigen
+  collectie steeds opnieuw zoeken.
+- **`PRO_BANNER_ENABLED` (in `pro-access-banner.tsx`) staat nu op `true`** en is de enige
+  schakelaar voor het hele Pro-aanbod: de banner, het `pro-paywall.tsx`-venster erachter én de
+  regel "Your plan" in Instellingen, die zonder de vlag terugvalt op "Soon". **Zet hem terug op
+  `false` vóór een productiebuild zolang Play Billing een stub is** — zelfde afweging als
+  `ADS_ENABLED`: een reviewer die een prijs ziet zonder werkende aankoop wijst af. De paywall zelf
+  liegt niet (geen "100+ stories" — het aantal komt uit `verhalen.length`, geen proefperiode die
+  niet bestaat, en een voorbehoud onder de prijzen), maar eerlijk is niet hetzelfde als toegestaan.
+- **Het spreekwolkje op Profiel opent `feedback-modal.tsx`, geen mailto.** Het bericht gaat als rij
+  naar `public.feedback` in Supabase (kolommen `soort` `'bug' | 'idee'`, `bericht`, `app_versie`,
+  `platform`; RLS staat alleen insert/select op je eigen rijen toe, geen update/delete). Dus geen
+  gesimuleerde `setTimeout`-bevestiging: "verzonden" betekent hier verzonden, en mislukt het, dan
+  blíjft de getypte tekst staan. Bewust géén offline wachtrij zoals bij de voortgangssync — dit is
+  een losse mededeling en geen groeiende toestand. "Contact support" in Instellingen blijft wél een
+  mailto: dat is een gesprek, dit is een melding.
+- `settings-section.tsx` levert `SettingsSectie` + `SettingsItem`. De sectie zet zelf de
+  scheidingslijnen tussen zijn kinderen (`Children.toArray`), dus een voorwaardelijk verborgen
+  regel laat geen lijn achter. Een `SettingsItem` zonder `onPress` is informatie en krijgt geen
+  chevron; `rechts` vervangt de chevron door bijvoorbeeld een `Switch`.
+- `SettingsSectie` heeft sinds de e-mailvoorkeuren een optionele `voet`: een kleine regel *onder*
+  de kaart, voor uitleg die bij de hele sectie hoort in plaats van bij één regel.
+- **Wat nog niet bestaat draagt een "Soon"-badge en zegt dat ook** (`nogNiet()` → `meld()`) in
+  plaats van stilletjes niets te doen. Wachtwoord wijzigen en het app-icoon zijn zulke regels;
+  de e-mailvoorkeuren en het abonnement zijn dat sinds deze fase niet meer. Links die er wél zijn
+  hangen aan een placeholder-vlag —
+  `privacyBeleidIsGepubliceerd`, plus `APP_IS_GEPUBLICEERD`, `supportEmailIsIngesteld` en
+  `voorwaardenZijnGepubliceerd` in het nieuwe **`src/constants/app-info.ts`**. Zolang die `false`
+  zijn wordt de link niet geopend maar als "binnenkort" getoond, zodat een release nooit een dode
+  link bevat. `APP_VERSIE` komt uit `expo-constants`, niet uit een tweede keer overgetypt getal.
+- **De avatar (`src/store/profile-store.ts`) heeft twee soorten**: `{ soort: 'personage' }`
+  verwijst naar een verhaal-id (bytes zitten in de bundel, overleeft alles) en
+  `{ soort: 'foto' }` is een `expo-image-picker`-URI op dít toestel. Een verdwenen fotobestand
+  valt in `profile-header.tsx` via `onError` terug op het standaardicoon zónder de keuze te
+  wissen. Resolven doe je met `avatarBron(avatar)`, niet met een eigen `if`.
+- **`expo-image-picker` is nieuw en native**: na het pullen van deze wijziging is een JS-reload
+  niet genoeg, de dev client moet opnieuw gebouwd worden. Het plugin-blok in `app.json` blokkeert
+  `CAMERA` en `RECORD_AUDIO` (we openen alleen de galerij) — zie `docs/README.md` voor de
+  permissietabel.
+
 ### Streak (`voortgang-store.ts`, `use-streak.ts`, LAUNCH-PLAN.md B6)
 
 Three rules, all of them the fix for a real bug:
@@ -347,8 +412,21 @@ seeded for users who never read anything.
 
 ### Notifications (`src/constants/notificaties.ts`, `use-dagelijkse-herinnering.ts`, B6)
 
-One optional daily reminder at 19:00 local, **off by default**. Same shape as `haptics.ts`:
-intents, no throwing, no-op on web.
+One optional daily reminder, **off by default**, at a time the user picks (19:00 local to start
+with). Same shape as `haptics.ts`: intents, no throwing, no-op on web.
+
+- **The time lives in `notificatie-store` (`herinneringUur`/`herinneringMinuut`), not in
+  `notificaties.ts`.** `STANDAARD_HERINNERING_UUR/MINUUT` there are only the initial values;
+  `planDagelijkseHerinnering(titel, tekst, uur, minuut)` takes the time as a parameter and
+  `useDagelijkseHerinnering` has it in its dependencies, so verzetten reschedules exactly like a
+  language switch does. No persist migration was needed — zustand lays the stored state over the
+  initial one, so an older install simply keeps 19:00.
+- The picker is `components/daily-reminder-settings.tsx` (`HerinneringSchakelaar` +
+  `HerinneringTijd`), **deliberately not `@react-native-community/datetimepicker`**: that one is
+  native (so it needs a dev-client rebuild) and does not exist on web, which is where this project
+  previews its screens. The two exports are separate on purpose — `SettingsSectie` draws its
+  dividers between its *direct* children, so one component returning two rows would lose the line
+  between them.
 
 - **Permission is asked after the first completed chapter**, never at startup — `biedHerinneringAan()`
   from the reader, guarded by `toestemmingGevraagd` in `notificatie-store.ts`. Android shows that
@@ -528,6 +606,77 @@ the Play Console** — `listing.md` (all copy plus the answer to every Console f
   "every chapter opens with an illustrated scene" line is backed by 152 `afbeelding` blocks, not by
   assumption.
 
+### Interactief lezen (`src/lib/interactief.ts`, `use-interactie.ts`, Supabase)
+
+Quiz, peiling en keuzepunt onder een hoofdstuk. **Dit is de enige laag waar leescontent van de
+server komt** — de verhalen zelf zitten in de bundel en werken offline, deze niet.
+
+- Vijf tabellen: `story_quizzes` / `story_polls` / `story_choices` (de vragen, alleen leesbaar) en
+  `poll_responses` / `user_choices` (de antwoorden, één rij per gebruiker per vraag).
+  **`chapter_index` bevat `Chapter.id` en telt vanaf 1**, niet vanaf 0; een check-constraint
+  `>= 1` legt dat vast, want de kolomnaam suggereert het tegendeel.
+- **De reader doet één aanroep, niet zes**: de RPC `hoofdstuk_interactie(story_id, chapter_index)`
+  geeft de vragen, de uitslagen én je eigen antwoord in één `jsonb` terug. Hij is
+  `security definer` omdat een uitslag een *aggregaat* is: client-side tellen zou betekenen dat je
+  alle rijen van `poll_responses` mag lezen, en dan lees je meteen wie wat gestemd heeft. De
+  RLS-policies daarop geven je dus alleen je **eigen** rijen; aantallen komen uitsluitend uit de
+  RPC. `anon` heeft nergens toegang — de hele app zit achter `AuthPoort`.
+- **De schrijf-policies zijn `auth.uid() = user_id`, niet `auth.role() = 'authenticated'`.** Die
+  tweede controleert alleen dát je ingelogd bent, niet wíe je bent: iedereen kon er een rij met
+  andermans `user_id` mee invoegen en een peiling volstemmen. Unique constraints op
+  `(poll_id, user_id)` en `(choice_id, user_id)` houden dubbel stemmen tegen; de client schrijft
+  met `ignoreDuplicates` (`on conflict do nothing`), zodat daar geen update-policy voor nodig is.
+- **Alles is additief en blokkeert niets.** `InteractieveSectie` staat ná de blokken en vóór de
+  advertentiebalk, rendert `null` bij laden, mislukken óf een hoofdstuk zonder interactie, en laat
+  "Mark Complete" ongemoeid. Een mislukte fetch geeft géén foutmelding: de app kan "netwerk stuk"
+  niet onderscheiden van "hier is niets", en de meeste hoofdstukken hebben niets — een melding zou
+  offline dus onder vrijwel elk hoofdstuk verschijnen over iets dat er niet was.
+- **Quizantwoorden worden niet bewaard** (er is geen `quiz_responses`-tabel): een quiz is een
+  zelftest tijdens het lezen, geen cijfer. De uitslag verschijnt **inline**, niet in een modal —
+  die zwaarte is voor het ontgrendelde personage en de onderbreking daarna.
+- **Een keuzepunt vertakt het verhaal niet, en de tekst belooft dat ook niet.** Hier stond
+  "your choice affects the story"; er is geen tweede versie van hoofdstuk 4. Wat je ná je keuze
+  ziet is wél echt: hoe andere lezers besloten. Zelfde afweging als bij de paywall.
+- Stemmen zijn **optimistisch** en draaien terug als het schrijven mislukt. Bewust geen offline
+  wachtrij zoals bij de voortgangssync — een stem is een losse mededeling, geen groeiende
+  toestand.
+- Seed-data zit in de database, niet in de repo. Alle 20 verhalen hebben nu interactie; de
+  Oudheid-vijf (`julius-caesar`, `spartacus`, `rome-rise`, `pompeii-disaster`, `marie-curie`)
+  is met de hand geschreven, de andere vijftien komen uit `generate-interactive-content.mjs`
+  (zie hieronder). Unique constraints op `(story_id, chapter_index, question)` en
+  `(story_id, choice_point_id)` maken opnieuw seeden idempotent.
+
+#### Interactie genereren (`scripts/audit-interactive-content.mjs`, `generate-interactive-content.mjs`)
+
+```bash
+npm run audit:interactief                    # wie heeft wel/geen interactie (--json, --check)
+npm run generate:interactief -- --only <id>  # schrijven; ook de "template" voor een nieuw verhaal
+npm run generate:interactief -- --apply      # na het nalezen: naar Supabase
+```
+
+- **Beide scripts hebben `SUPABASE_SERVICE_ROLE_KEY` nodig, en dat is geen luiheid.** De drie
+  tabellen hebben precies één policy: `select` voor `authenticated`. Een select met de
+  publishable key (rol `anon`) geeft daardoor **nul rijen en geen foutmelding** — een audit die
+  dat gelooft meldt dat álle verhalen leeg zijn, ook de vijf die dat niet zijn. `eisLeesbareTelling()`
+  in `scripts/interactief-hulp.mjs` weigert daarom conclusies te trekken uit een blinde telling,
+  en `--apply` weigert helemaal. De sleutel hoort in `.env.local` en **nooit** achter een
+  `EXPO_PUBLIC_`-voorvoegsel: dan bakt babel hem in de app-bundel.
+- **Genereren en toepassen zijn twee stappen.** Een quiz heeft een juist antwoord — een
+  historische bewering die de app als waar toont. Het script controleert wat een machine kan
+  controleren (bestaat het hoofdstuknummer in dít verhaal, valt het antwoord binnen de opties,
+  zijn de vragen uniek, passen de aantallen binnen de check-constraints) en legt de rest in
+  `scripts/seed/interactief/<id>.json` + `seed.sql` neer om na te lezen. Zonder `--apply` raakt
+  het de database niet aan.
+- De prompt krijgt de **echte hoofdstuktekst** uit de bundel mee, niet alleen de titel, en de
+  geldige hoofdstuknummers. Daar staat ook in dat een keuzepunt niets vertakt — anders schrijft
+  het model "your choice changes the story", precies wat hierboven bewust is weggehaald.
+- Structured outputs (`output_config.format`) accepteert **geen `minItems` groter dan 1**; de
+  aantallen (2-3 quizzen, 4 opties, …) staan daarom in de prompt en worden door de validatie in
+  het script afgedwongen, niet door het schema.
+- Er is géén admin-knop in de app die dit aanroept, en die moet er ook niet komen: de
+  Anthropic-sleutel zou dan in de bundel zitten en de insert zou hoe dan ook op RLS stuklopen.
+  Zie `scripts/seed/interactief/README.md`.
+
 ### Ads (`src/components/ad-banner.tsx`, LAUNCH-PLAN.md A4)
 
 **`ADS_ENABLED` is `false` and `<AdBanner />` renders `null`.** The banner was a placeholder box
@@ -536,6 +685,98 @@ a classic Play rejection reason. Per the no-delete convention the component, all
 (`collectie/[id]`, `regio/[id]`, `tijdperk/[id]`, `verhaal/[id]/reader`) and the
 `advertentie.label` i18n key all stay put; v1.1 flips one flag alongside a real AdMob integration.
 Don't re-enable it while it's still a placeholder.
+
+### Gratis vs Pro (`src/constants/monetisatie.ts`, `abonnement-store.ts`)
+
+Het gratis model is: een beperkt aantal **nieuwe** verhalen per dag, plus één onderbreking aan het
+eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
+**`src/constants/monetisatie.ts`** — `DAGELIJKSE_VERHAAL_LIMIET` (2), `VERHAAL_LIMIET_ENABLED` en
+`AD_ONDERBREKING_ENABLED`, allebei nu `true`.
+
+- **Allebei die vlaggen zijn releaseblokkers zolang Billing een stub is**, en zwaarder dan
+  `PRO_BANNER_ENABLED`: een limiet die alleen met een aankoop opgeheven kan worden terwijl er niets
+  te kopen valt, is een muur zonder deur. Zet ze op `false` vóór de productiebuild, of lever ze
+  samen met een werkende aankoop.
+- **`useAbonnement()` leest sinds deze fase `abonnement-store`** in plaats van hardcoded `false`
+  terug te geven. `isPro` wordt alleen gezet door de **`__DEV__`-schakelaar onderaan Instellingen**
+  ("Simulate Pro"), want er is geen Play Billing. Eén bron voor banner, advertenties, limiet en de
+  regel "Your plan".
+- **De limiet telt verhaal-id's, geen aantallen.** `gestarteVerhalen` + `dagSleutel` (lokale
+  datumsleutel, via `vandaagSleutel()` uit `voortgang-store` — dezelfde functie als de streak, niet
+  een tweede eigen datumberekening). Een teller die per bezoek ophoogt telt hetzelfde verhaal na
+  élk hoofdstuk opnieuw, want de reader gaat met `router.back()` terug naar het overzicht.
+- **De dag rolt om bij het schrijven, niet bij het lezen.** `magVerhaalOpenen` is een zuivere
+  functie van de state; alleen `registreerVerhaalGeopend` reset de lijst. Een getter die state zet
+  is een component die tijdens zijn eigen render muteert.
+- **De poort staat in `verhaal/[id]/chapters.tsx`**, de trechter waar elke route naar een verhaal
+  doorheen komt — in de reader zou het te laat zijn. Hij wacht eerst op de hydratie van
+  `story-progress-store` én `abonnement-store` (`wachtOpHydratie`), want vlak na een koude start
+  lijkt een uitgelezen verhaal ongelezen en de teller leeg. **Een uitgelezen verhaal kost geen
+  plek** en een verhaal dat vandaag al open ging ook niet: de limiet doseert nieuwe inhoud, hij
+  zet je eigen collectie niet op slot.
+- `story-limit-modal.tsx` heeft geen kruisje — "Come back tomorrow" sluit én verlaat het verhaal,
+  anders staar je naar een overzicht dat je niet mag openen. `ad-modal.tsx` verschijnt ná het
+  ontgrendelen van het personage (nooit ertussen) en is een **placeholder die dat ook zegt**; de
+  reader beslist zelf of hij komt (`toontOnderbreking`), want een `AdModal` die `null` rendert zou
+  het scherm laten wachten op een `onClose` die nooit komt.
+- **E-mailvoorkeuren** (`email-preferences.tsx` + `email-voorkeur-store.ts`) zijn vier lokale
+  schakelaars; er wordt nog geen mail verstuurd en de voetnoot onder de sectie zegt dat. Ze staan
+  **standaard uit**: de AVG kent geen geldige toestemming die je al aangevinkt aantreft. Gaat
+  Chronicles ooit mailen, dan horen ze bij het account en niet bij het toestel — dan is dit de
+  store die naar Supabase gaat.
+
+### Analytics (Firebase, `src/lib/analytics.ts`, `hooks/useAnalytics.ts`)
+
+`@react-native-firebase/app` + `/analytics` (v26, **volledig modulair** — er is geen
+`analytics()`-default-export meer; het is `getAnalytics()` + losse functies).
+
+- **`src/lib/analytics.ts` is de enige plek die Firebase aanraakt**, en hij gooit nooit. Zelfde
+  vorm als `haptics.ts`: bedoelingen, geen API. De module wordt **lui ge`require`d achter een
+  `Platform`-controle** — op web bestaat hij niet, en in een dev-client die van vóór deze fase is
+  ook niet. Een statische `import` zou de app daar op het eerste frame laten klappen. Mislukt het
+  laden één keer, dan wordt het niet opnieuw geprobeerd (`sdk === null`).
+- **Namen staan in `src/constants/analytics.ts`, nooit los in een scherm.** Firebase legt de
+  eerste spelling van een gebeurtenis vast en kan hem daarna niet hernoemen of samenvoegen, dus
+  een typefout kost data die je pas maanden later mist. Sleutels Nederlands, waarden Engels — de
+  waarde is wat er in het dashboard staat.
+- **`login`, `sign_up` en `screen_view` zijn gereserveerd** en gaan níét via `logEvent` (die
+  weigert ze). Daarvoor zijn `logInloggen` / `logRegistreren` / `analytics.logScherm`.
+- **`useAnalytics()` hoort één keer in de root layout**, net als `useAuth()` en
+  `useVoortgangSync()`, en móét ná `useAuth()` staan. Hij past de toestemming toe, zet het
+  gebruiker-id (en `null` bij uitloggen), houdt de drie gebruikerseigenschappen bij vanuit de
+  stores, en meldt élke schermwissel. Losse gebeurtenissen staan in de schermen zelf.
+- **Schermnamen komen uit `useSegments()`, niet uit `usePathname()`.** Het pad bevat het verhaal-id
+  (`/verhaal/julius-caesar/reader`), en dan worden negentien verhalen negentien schermen; de
+  segmenten houden het patroon vast (`verhaal/[id]/reader`). Groepsmappen (`(tabs)`) vallen weg.
+- **`paywall_upgrade_pressed`, niet `subscription_upgrade` of `purchase`.** Billing is een stub;
+  een omzetgebeurtenis die geen omzet oplevert vervuilt het omzetrapport blijvend. Er gaat om
+  dezelfde reden geen bedrag of valuta in mee.
+- **`story_completed` en `character_unlocked` zijn twee gebeurtenissen**, precies omdat er sinds B4
+  een knop tussen zit. Het verschil tussen die aantallen is hoeveel lezers die knop niet indrukken.
+- **Toestemming staat in `store/analytics-store.ts`, standaard aan**, met een schakelaar in
+  Instellingen → Privacy (`components/analytics-preferences.tsx`). Bewust device-lokaal: Firebase
+  telt per installatie, dus dit hoort *niet* bij de stores die naar Supabase gaan. Andere afweging
+  dan bij de e-mailvoorkeuren (die staan uit) — de redenering staat bij
+  `STANDAARD_ANALYTICS_TOESTEMMING`, inclusief wat ertegen pleit. Wie hem op `false` zet moet ook
+  `firebase_analytics_collection_enabled=false` in het manifest zetten: de runtime-schakelaar komt
+  te laat om de app-start zelf nog tegen te houden.
+- **`src/app/profiel/analytics.tsx` is een `__DEV__`-scherm** en toont geen cijfers — Firebase heeft
+  geen API waarmee een app zijn eigen DAU kan opvragen (dat is de Data API, met een serviceaccount,
+  dus een sleutel in de bundel). Wat het wél beantwoordt is "komt er iets aan, en zo nee waarom
+  niet": native module beschikbaar, toestemming, projectid, app-instance-id. Tekst hardgecodeerd in
+  het Engels, zoals de "Simulate Pro"-regel — geen lezer ziet het. Zelfde reden als bij
+  `(tabs)/profiel.tsx` staat het als stack-scherm naast de tabbladen.
+- **`google-services.json` hoort in de repo-root en moet gecommit worden**, niet in `android/`:
+  die map staat in `.gitignore` én in `.easignore` (EAS draait zijn eigen prebuild), dus een
+  bestand daar overleeft geen `prebuild --clean` en bereikt de cloudbuild nooit. `app.json` wijst
+  er met `expo.android.googleServicesFile` naar. **Zonder dat bestand faalt `expo prebuild`** —
+  bewust luidruchtig, want een build waar Analytics stilletjes uit is gevallen is erger.
+- **Native module**: na het pullen van deze wijziging is een JS-reload niet genoeg, de dev client
+  moet opnieuw gebouwd worden (`npx expo run:android`). Het dev-dashboard zegt dat ook als je het
+  vergeet.
+- **Data Safety en de privacypagina moeten mee.** `docs/README.md` is bijgewerkt (inclusief de val
+  "approximate location": Firebase leidt land af uit het IP, ook zonder locatiepermissie);
+  `docs/privacy-policy.html` nog niet — zie "Known gaps".
 
 ### Reusable interaction patterns
 
@@ -579,6 +820,7 @@ delete it, and don't wire it back up without reading why it was dropped.
 | `components/flag.tsx` | R2 — only consumers are orphaned |
 | `components/tijdperk-kaart.tsx`, `components/tijdperken-carousel.tsx` | superseded by `tijdperk-rij.tsx` (R4) |
 | `components/placeholder-screen.tsx` | Voortgang/Profiel are fully built |
+| `components/profile-card-collection.tsx` | superseded by `profile-character-collection.tsx` (kaarten i.p.v. cirkelraster) |
 | `verhaal/[id]/quiz.tsx`, `verhaal/[id]/chapter-quiz.tsx` | quizzes removed; now tombstone screens |
 | `app/land/[landId]/**`, `components/story-card.tsx`, `components/tijdperk-section.tsx`, `constants/stub-data.ts` | pre-Regio/Tijdperk content model; last three are empty stubs |
 
@@ -602,8 +844,10 @@ what the previous phase left behind. Update both at the end of every phase.
 Built and working: data model, design system, three tabs, era rows on Home, story chapter reader
 with persisted per-chapter progress, bundled portraits and chapter scenes, the six block types,
 motion + haptics, character unlock + Profiel collection grid, streaks (local dates, expiring, only
-a finished chapter counts), an optional daily reminder notification, full i18n (en/nl/fr/de)
-with a language picker, theme picker.
+a finished chapter counts), an optional daily reminder notification at a time you pick, email
+preferences, the free/Pro model (daily story limit + one placeholder interstitial, both behind
+flags), interactief lezen (quiz/peiling/keuzepunt per hoofdstuk, uit Supabase), full i18n
+(en/nl/fr/de) with a language picker, theme picker, Firebase Analytics (opt-out, schakelaar in Instellingen → Privacy).
 
 Known gaps:
 - **Collections are empty** (`collecties.ts` exports `[]`) — Home's Storylines row and
@@ -617,14 +861,36 @@ Known gaps:
   regenerate, don't recompress files one by one.
 - **The preference stores don't sync.** `voortgang-store`, `story-progress-store` and
   `character-unlock-store` all do since R8.SYNC-B, so a second device gets the same chapters and
-  the same collection. Language, theme and the reminder setting are still device-local (the
-  `profiles` row has `language`/`theme` columns that nothing writes yet).
+  the same collection. Language, theme, the reminder setting (now including its **time**), the
+  **avatar** (`profile-store`), the **email preferences** (`email-voorkeur-store`) and the
+  **daily story counter** (`abonnement-store`) are all still device-local (the `profiles` row has
+  `language`/`theme` columns that nothing writes yet, and no avatar or email column at all — a
+  photo avatar would also need Storage for the bytes, not just a column). The story counter being
+  local means two devices each get their own daily allowance; that is a Billing-era problem, not a
+  today problem.
+- **Account deletion is a mailto, not a button that deletes.** Play requires an in-app route for
+  apps with accounts; Instellingen offers one and it now works — `SUPPORT_EMAIL` is filled in
+  (`businessthedemoreagency@gmail.com`), so "Contact support" and "Delete account" open a real
+  mail instead of showing "Soon". **Every deletion request therefore lands in that inbox and has to
+  be handled by hand**; an edge function that does it in-app is still open.
+- **Firebase Analytics needs `google-services.json` in the repo root.** It is not in the repo —
+  create the Firebase project, add an Android app with package `com.chronicles.historyapp`, and
+  drop the file there. Until then `expo prebuild` and every EAS build fail on the
+  `@react-native-firebase/app` plugin. See "Analytics".
 - **The privacy policy still describes a device-only app** — an account and now reading progress
   live on a server. `docs/privacy-policy.html`, the Data Safety answers in `docs/README.md` and
   `src/constants/juridisch.ts` all predate auth and must be updated before the production build.
   Nothing in the code fails when they are wrong.
-- **Google Play Billing is a stub** — `useAbonnement()` is a placeholder that always returns
-  `{ isPremium: false }`.
+- **Google Play Billing is a stub** — nothing can actually be bought; `useAbonnement()` now reads
+  `abonnement-store`, whose `isPro` only moves via the `__DEV__` "Simulate Pro" switch. `ADS_ENABLED`
+  in `ad-banner.tsx` is still `false`, but **three other flags are on**: `PRO_BANNER_ENABLED`
+  (`pro-access-banner.tsx`), and `VERHAAL_LIMIET_ENABLED` + `AD_ONDERBREKING_ENABLED`
+  (`constants/monetisatie.ts`). Together they show an offer that cannot be completed *and* gate
+  content behind it. Fine for development, **release blockers all three** — flip them to `false`
+  before the next production AAB unless Billing has landed in the meantime.
+- **Feedback needs `public.feedback`.** `feedback-modal.tsx` inserts into it, so a fresh Supabase
+  project needs that table (see the migration `create_feedback_table`) or the send button fails
+  with a policy/relation error. Nothing reads the rows yet — they wait in the dashboard.
 - **The privacy policy is written but not published.** `PRIVACY_BELEID_URL` in
   `src/constants/juridisch.ts` is still a placeholder, so Profiel hides the "About" section — see
   "Legal & privacy" below.

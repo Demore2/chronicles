@@ -13,6 +13,7 @@ import { isGeldigEmail } from '@/constants/auth-validatie';
 import { Radii, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
+import { logInloggen } from '@/hooks/useAnalytics';
 // De losse `login` in plaats van `useAuth()`: de hook zet ook de sessie-listener op en die
 // hoort maar op één plek te draaien (de root layout). Zie de opmerking bij `useAuth`.
 import { login } from '@/hooks/useAuth';
@@ -45,6 +46,11 @@ export default function LoginScreen() {
       setFout(resultaat.error);
       return;
     }
+    // Firebase' eigen `login`-gebeurtenis, niet een eigen naam: die voedt de standaardrapporten
+    // over nieuwe versus terugkerende lezers. `method` is er maar één zolang er geen Google- of
+    // Apple-login is, en juist daarom staat hij erbij — anders is de dag dat die erbij komt niet
+    // terug te zien in de cijfers.
+    logInloggen('email');
     // De poort in de root layout stuurt óók door zodra de store een user heeft; dit is de
     // snelle weg zodat er geen frame met het inlogscherm blijft staan. Twee keer naar
     // dezelfde route vervangen is een no-op.

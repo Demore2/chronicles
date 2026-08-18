@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 3,
+      "question": "How did Charles VII test Jeanne when she reached Chinon?",
+      "options": [
+        "He hid among his courtiers dressed like a servant",
+        "He asked her to read aloud from a letter",
+        "He sent her to argue before the university",
+        "He ordered her to ride an untrained horse"
+      ],
+      "correct_answer": 0,
+      "explanation": "The recognition trick mattered because the king's own legitimacy was in doubt; if God's messenger knew him, so should everyone else. The theologians at Poitiers still examined her for weeks afterwards."
+    },
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 5,
+      "question": "Where did Charles VII travel in July 1429 for his coronation?",
+      "options": [
+        "Reims",
+        "Rouen",
+        "Chinon",
+        "Orléans"
+      ],
+      "correct_answer": 0,
+      "explanation": "Reims was the traditional coronation city, and the campaign along the Loire opened the road to it. Two years later Jeanne would be tried in Rouen, a city still held by the English."
+    },
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 6,
+      "question": "Who took Jeanne prisoner in May 1430?",
+      "options": [
+        "Burgundian forces at Compiègne",
+        "English archers at Orléans",
+        "French collaborators at Reims",
+        "The tribunal's guards at Rouen"
+      ],
+      "correct_answer": 0,
+      "explanation": "The Burgundians sold her on to the English for a large sum. As a captured commander she should have been held for ransom, but no ransom was ever offered for her."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 2,
+      "question": "Her father finally let a seventeen-year-old girl leave for Vaucouleurs. Why do you think he agreed?",
+      "options": [
+        "He believed her voices",
+        "He could not break her will",
+        "He thought the war would reach Domrémy anyway"
+      ]
+    },
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 4,
+      "question": "What broke the siege of Orléans?",
+      "options": [
+        "Jeanne riding at the front",
+        "The soldiers' restored belief",
+        "English exhaustion after years of war"
+      ]
+    },
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 7,
+      "question": "The English expected her execution to end French resistance. What did it actually do?",
+      "options": [
+        "Made her a martyr and hardened France",
+        "Changed little on its own",
+        "Cost France its boldest commander"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 2,
+      "choice_point_id": "speak-of-the-voices",
+      "prompt": "A voice in the garden tells a thirteen-year-old she is chosen, and her world burns witches. In her place, what would you do?",
+      "options": [
+        "Keep it secret",
+        "Tell the parish priest",
+        "Set out for Vaucouleurs"
+      ]
+    },
+    {
+      "story_id": "joan-of-arc",
+      "chapter_index": 6,
+      "choice_point_id": "hold-firm-at-rouen",
+      "prompt": "The Rouen tribunal has already decided the verdict and only wants a confession. In her place, what would you do?",
+      "options": [
+        "Hold to the voices",
+        "Say whatever they want",
+        "Refuse to answer at all"
+      ]
+    }
+  ]
+}

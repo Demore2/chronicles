@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 2,
+      "question": "What made the Apple II different from other personal computers sold in 1977?",
+      "options": [
+        "It came fully assembled and ready to use",
+        "It was sold as a kit for buyers to solder",
+        "It needed no screen of any kind",
+        "It stored data on floppy disks only"
+      ],
+      "correct_answer": 0,
+      "explanation": "The finished plastic case mattered as much as the circuitry: it let a machine built by hobbyists sit on a desk in a home or a small office without looking like an experiment."
+    },
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 4,
+      "question": "Which of Jobs's ventures during his twelve years away from Apple never achieved commercial success?",
+      "options": [
+        "NeXT",
+        "Pixar",
+        "Apple Computer",
+        "Toy Story"
+      ],
+      "correct_answer": 0,
+      "explanation": "NeXT machines were admired and unaffordable. The failure taught Jobs to work without Apple's market position behind him — a lesson he carried back in 1997."
+    },
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 6,
+      "question": "Where did Jobs introduce the iPhone on January 9, 2007?",
+      "options": [
+        "The Macworld conference",
+        "A press event at NeXT",
+        "A Pixar film premiere",
+        "An iTunes launch in New York"
+      ],
+      "correct_answer": 0,
+      "explanation": "He told the audience Apple was going to reinvent the phone, and within a few years every manufacturer was redesigning its products in answer to it."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 3,
+      "question": "Jobs was harsh with designers and engineers, and the work came out remarkable. What do you make of that?",
+      "options": [
+        "The results justified it",
+        "Good work needed no cruelty",
+        "Others simply learned to endure him"
+      ]
+    },
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 5,
+      "question": "Which move mattered most in saving Apple after 1997?",
+      "options": [
+        "The colorful iMac",
+        "The iPod and iTunes",
+        "Tying hardware, software and services together"
+      ]
+    },
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 8,
+      "question": "Which of his transformations do you think will last longest?",
+      "options": [
+        "The smartphone",
+        "Animated film",
+        "The idea that design sells"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 4,
+      "choice_point_id": "forced-out-of-apple",
+      "prompt": "In 1985 Jobs was pushed out of the company he had founded. In his place, what would you have done?",
+      "options": [
+        "Start a rival company",
+        "Wait for the board to call back",
+        "Leave the industry entirely"
+      ]
+    },
+    {
+      "story_id": "steve-jobs",
+      "chapter_index": 7,
+      "choice_point_id": "keep-working-through-illness",
+      "prompt": "Diagnosed with cancer in 2004, Jobs stayed involved in every detail of Apple's products. In his place, what would you have chosen?",
+      "options": [
+        "Keep working as before",
+        "Hand the details to others",
+        "Step away completely"
+      ]
+    }
+  ]
+}

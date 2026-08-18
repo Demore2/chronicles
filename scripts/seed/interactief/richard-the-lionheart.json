@@ -1,0 +1,99 @@
+{
+  "quizzes": [
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 3,
+      "question": "What did Richard do after a storm wrecked his fleet off Cyprus?",
+      "options": [
+        "Conquered the island and sold it",
+        "Turned back to England for repairs",
+        "Demanded ships from Philip II",
+        "Wintered there until spring"
+      ],
+      "correct_answer": 0,
+      "explanation": "The sale funded a crusade that was already draining his treasury — Cyprus paid for the campaign that followed, and stayed in Latin hands long after Richard left the East."
+    },
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 4,
+      "question": "What did the 1192 truce with Saladin actually secure for the Christians?",
+      "options": [
+        "The city of Jerusalem itself",
+        "Safe passage for pilgrims to Jerusalem",
+        "Saladin's conversion",
+        "A Muslim withdrawal from Palestine"
+      ],
+      "correct_answer": 1,
+      "explanation": "Jerusalem stayed under Muslim control, but Richard kept much of the Palestinian coast — the coastal strongholds outlasted him by generations."
+    },
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 5,
+      "question": "How did Richard treat the crossbowman who wounded him in 1199?",
+      "options": [
+        "He had him hanged from the walls",
+        "He forgave him and ordered his release",
+        "He never learned who fired",
+        "He took him into his household"
+      ],
+      "correct_answer": 1,
+      "explanation": "Richard was besieging only a minor castle when the bolt struck. The wound itself did not kill him — the infection that followed did, within days."
+    }
+  ],
+  "polls": [
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 4,
+      "question": "Richard came within sight of Jerusalem and turned away. What do you think weighed heaviest?",
+      "options": [
+        "Thin supply lines",
+        "Saladin's strong position",
+        "Fear of holding a city he could not defend"
+      ]
+    },
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 5,
+      "question": "After his return from captivity Richard longed for another crusade rather than governing. How do you read that?",
+      "options": [
+        "A soldier unfit for peace",
+        "Genuine religious devotion",
+        "Appetite for glory"
+      ]
+    },
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 7,
+      "question": "John lost the Angevin lands Richard had fought for. Whose failure was it?",
+      "options": [
+        "John's, for lacking skill",
+        "Richard's, for draining the treasury",
+        "Nobody's — the empire was too large to hold"
+      ]
+    }
+  ],
+  "choices": [
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 2,
+      "choice_point_id": "take-the-cross",
+      "prompt": "Newly crowned, Richard heard the call for a crusade and left his kingdom for years. In his place, what would you have done?",
+      "options": [
+        "Take the cross at once",
+        "Secure England first",
+        "Send money and knights, stay home"
+      ]
+    },
+    {
+      "story_id": "richard-the-lionheart",
+      "chapter_index": 4,
+      "choice_point_id": "pay-the-ransom",
+      "prompt": "Richard sat in captivity while his brother seized land in England and France, and Eleanor raised a massive ransom. In her place, what would you have done?",
+      "options": [
+        "Pay whatever they asked",
+        "Spend the money fighting John",
+        "Bargain and stall for terms"
+      ]
+    }
+  ]
+}

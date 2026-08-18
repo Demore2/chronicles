@@ -16,6 +16,7 @@ import { SplashScreen } from '@/components/splash-screen';
 import { useDagelijkseHerinnering } from '@/hooks/use-dagelijkse-herinnering';
 import { useEffectieveKleurenSchema, useTheme } from '@/hooks/use-theme';
 import { useVoortgangSync } from '@/hooks/use-voortgang-sync';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/auth-store';
 
@@ -38,6 +39,12 @@ export default function RootLayout() {
   // een nieuwe sessie en probeert het opnieuw zodra het netwerk of de app terugkomt.
   useVoortgangSync();
 
+  // En de enige plek die Firebase Analytics aanstuurt: hij past de opgeslagen toestemming toe,
+  // koppelt de metingen aan de ingelogde gebruiker en meldt elke schermwissel. Losse
+  // gebeurtenissen staan in de schermen zelf. Hij moet ná `useAuth()` staan, zodat de sessie al
+  // in de store zit wanneer hij het gebruiker-id doorgeeft.
+  useAnalytics();
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={kleurenSchema === 'dark' ? DarkTheme : DefaultTheme}>
@@ -50,6 +57,15 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="signup" options={{ headerShown: false }} />
+          {/* Instellingen en de avatarkiezer horen bij de Profiel-tab, maar staan als
+              stack-scherm *naast* de tabbladen — net als `verhaal/[id]`. Ze konden geen
+              `(tabs)/profiel/settings.tsx` worden: dan zou `(tabs)/profiel.tsx` (dat niet
+              verwijderd mag worden, zie CLAUDE.md) dezelfde route `/profiel` opeisen.
+              De titels zetten de schermen zelf, zodat ze vertaald meebewegen. */}
+          <Stack.Screen name="profiel/settings" />
+          <Stack.Screen name="profiel/upload-avatar" options={{ presentation: 'modal' }} />
+          {/* Alleen bereikbaar via de dev-regel onderaan Instellingen; zie het scherm zelf. */}
+          <Stack.Screen name="profiel/analytics" />
         </Stack>
       </ThemeProvider>
     </GestureHandlerRootView>
