@@ -13,12 +13,17 @@ import { useNotificatieStore, type PushVoorkeurSleutel } from '@/store/notificat
 /**
  * De meldingsvoorkeuren van Instellingen, in twee secties.
  *
- * **`MeldingenSectie` — wat bij het lezen hoort, zonder schakelaar.** De dagelijkse herinnering,
- * de streakwaarschuwing en de mijlpalen staan vast aan (`ALTIJD_AAN_SLEUTELS` in
- * `notificatie-store.ts`). Ze zijn alle drie lokaal, gaan over iets dat de lezer zelf opbouwt, en
- * hebben elk hun eigen Android-kanaal — dáár zit de uitknop, en de voetnoot wijst erheen. Een
- * regel zonder schakelaar krijgt "Always on" als waarde in plaats van niets: een rij die er
- * hetzelfde uitziet als een informatieregel maar wél iets doet, laat je zoeken naar de knop.
+ * **`MeldingenSectie` — alleen de dagelijkse herinnering.** Die is het enige waar nog iets aan te
+ * bedienen valt: een schakelaar en een tijdstip, en beide regels komen als `children` binnen uit
+ * `daily-reminder-settings.tsx`.
+ *
+ * **De streakwaarschuwing en de mijlpalen staan vast aan en hebben sinds deze fase géén regel
+ * meer.** Ze stonden er als "Always on"-regels zonder schakelaar, en dat is precies het soort rij
+ * dat je laat zoeken naar een knop die er niet is: drie regels waarvan er één werkt leest als een
+ * scherm waar iets stuk is. Ze zijn en blijven aan (`ALTIJD_AAN_SLEUTELS` in
+ * `notificatie-store.ts` dwingt dat af langs elke weg waarlangs state binnenkomt), ze zijn lokaal,
+ * en ze hebben elk hun eigen Android-kanaal — dáár zit de uitknop, en de voetnoot van de sectie
+ * wijst erheen. Wat verdween is de regel, niet de melding.
  *
  * **`PushVoorkeuren` — wat van de server komt, met schakelaar.** Win-back en aanbevelingen zijn
  * berichten die de lezer niet gevraagd heeft; die blijven een keuze, en ze staan standaard uit.
@@ -67,25 +72,32 @@ const TEKSTEN: Record<
 /** De categorieën die een server nodig hebben, en dus een werkende FCM-koppeling. */
 const SERVER_CATEGORIEEN: PushVoorkeurSleutel[] = ['terugkeerAan', 'aanbevelingenAan'];
 
-/** De categorieën die het toestel zelf plant en die geen schakelaar meer hebben. */
-const VASTE_CATEGORIEEN: PushVoorkeurSleutel[] = ['streakAan', 'prestatiesAan'];
+/**
+ * De categorieën die het toestel zelf plant, vast aan staan en **geen regel meer krijgen**.
+ *
+ * Blijft staan als documentatie van wat er stilletjes aan is: `ALTIJD_AAN_SLEUTELS` in
+ * `notificatie-store.ts` is de plek die het afdwingt, deze lijst is de plek waar je ziet dat dat
+ * bewust niet in beeld komt. Zie de kop van dit bestand.
+ */
+export const VASTE_CATEGORIEEN: PushVoorkeurSleutel[] = ['streakAan', 'prestatiesAan'];
 
 /**
- * De meldingssectie: toestemming (als die ontbreekt), de dagelijkse herinnering met zijn tijdstip,
- * en de twee vaste categorieën.
+ * De meldingssectie: toestemming (als die ontbreekt) en de dagelijkse herinnering met zijn
+ * tijdstip. Verder niets.
  *
  * De herinnering zelf komt als `children` binnen en niet uit dit bestand — die twee regels wonen
- * in `daily-reminder-settings.tsx`, bij de tijdkiezer die erachter hangt. Ze staan bovenaan omdat
- * de herinnering de enige van de drie is waar nog iets aan te bedienen valt.
+ * in `daily-reminder-settings.tsx`, bij de tijdkiezer die erachter hangt.
  */
 export function MeldingenSectie({ children }: { children: ReactNode }) {
   const { t } = useVertaling();
   const { toestemming, vraagAan } = useMeldingToestemming();
 
+  // Geen `voet` meer. Die legde uit waar de vaste meldingen dan wél uit kunnen, maar sinds de
+  // streak- en mijlpaalregels hier verdwenen bestaat de sectie enkel nog uit de herinnering en
+  // zijn tijdstip — allebei bedienbaar. Een alinea onder twee werkende regels legt iets uit wat
+  // er niet meer staat. `instellingen.meldingenVoet` blijft in i18n bestaan.
   return (
-    <SettingsSectie
-      titel={t((s) => s.instellingen.sectieMeldingen)}
-      voet={t((s) => s.instellingen.meldingenVoet)}>
+    <SettingsSectie titel={t((s) => s.instellingen.sectieMeldingen)}>
       {/* Alleen bij een gemeten "nee". Zolang `toestemming` nog `undefined` is verschijnt hier
           niets — een regel die één frame lang om toestemming vraagt en dan wegspringt leest als
           een storing. */}
@@ -98,15 +110,21 @@ export function MeldingenSectie({ children }: { children: ReactNode }) {
         />
       ) : null}
       {children}
-      {VASTE_CATEGORIEEN.map((sleutel) => (
-        <VasteMeldingRegel key={sleutel} sleutel={sleutel} />
-      ))}
+      {/* Hier stonden de regels voor de streakwaarschuwing en de mijlpalen, allebei met "Always
+          on" als waarde. Ze zijn weg omdat ze niets te bedienen gaven; de meldingen zelf staan
+          onveranderd aan. Zie de kop van dit bestand. */}
     </SettingsSectie>
   );
 }
 
-/** Eén categorie zonder schakelaar: label, uitleg en "Always on" aan de rechterkant. */
-function VasteMeldingRegel({ sleutel }: { sleutel: PushVoorkeurSleutel }) {
+/**
+ * Eén categorie zonder schakelaar: label, uitleg en "Always on" aan de rechterkant.
+ *
+ * **ORPHANED** sinds de streak- en mijlpaalregels uit `MeldingenSectie` verdwenen — er is geen
+ * vaste categorie meer die in beeld komt. Blijft staan omdat verwijderen hier geblokkeerd is
+ * (CLAUDE.md, "File deletion") en `export` zodat een ongebruikte functie geen lintmelding wordt.
+ */
+export function VasteMeldingRegel({ sleutel }: { sleutel: PushVoorkeurSleutel }) {
   const { t } = useVertaling();
 
   return (

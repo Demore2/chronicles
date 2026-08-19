@@ -4,11 +4,9 @@ import { Illustratie } from '@/components/illustratie';
 import { ThemedText } from '@/components/themed-text';
 import type { Tijdperk } from '@/constants/types';
 import { CardDimensions, Radii, Spacing, withAlpha } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 
 export function TijdperkKaart({ tijdperk, onPress }: { tijdperk: Tijdperk; onPress: () => void }) {
-  const theme = useTheme();
   const { v } = useVertaling();
 
   return (

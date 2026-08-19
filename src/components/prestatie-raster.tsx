@@ -20,6 +20,15 @@ import { useVoortgangStore } from '@/store/voortgang-store';
 /**
  * De mijlpalen op Profiel: veertien tegels, behaald of nog niet.
  *
+ * **ORPHANED — niets rendert dit meer.** De mijlpalen staan sinds deze fase alleen nog op
+ * Voortgang, in `achievements-grid.tsx`. Twee rasters van dezelfde veertien badges was er één te
+ * veel: ze rekenden hun stand ook nog eens verschillend uit (dit raster leest de ontgrendelingen,
+ * dat raster leidt ze af uit de vier tellers en loopt daardoor niet achter op een verse
+ * ontgrendeling), dus een verschil tussen de twee schermen zag eruit als een bug in de app in
+ * plaats van als twee bronnen. Het bestand blijft staan omdat verwijderen in dit project
+ * geblokkeerd is (zie CLAUDE.md, "File deletion"); wire het niet terug aan zonder eerst deze
+ * reden te weerleggen.
+ *
  * **Een vergrendelde tegel verklapt zijn naam wél**, anders dan een vergrendelde `CharacterCard`.
  * Daar is de naam de beloning voor het uitlezen; hier is hij het doel waar je naartoe werkt, en
  * een raster met veertien vraagtekens vertelt je niet waar je aan begint.

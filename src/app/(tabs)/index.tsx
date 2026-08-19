@@ -6,6 +6,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { CollectieKaart } from '@/components/collectie-kaart';
 import { HorizontaleRij } from '@/components/horizontale-rij';
 import { LegeStaat } from '@/components/lege-staat';
+import { RecommendedStoryCard } from '@/components/recommended-story-card';
 import { SectieKop } from '@/components/sectie-kop';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -100,6 +101,13 @@ export default function OntdekScreen() {
               </ThemedText>
             </View>
           </Pressable>
+
+          {/*
+            Direct onder de hero: de hero is de redactionele keuze (`uitgelicht`), dit is de keuze
+            op maat van deze lezer. Ze staan bewust naast elkaar en niet door elkaar — de kaart
+            haalt zijn eigen suggestie op, dus Home hoeft er niets voor te weten.
+          */}
+          <RecommendedStoryCard />
 
           <View style={styles.sectie}>
             <SectieKop titel={t((s) => s.ontdek.verderLezen)} />

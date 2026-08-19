@@ -11,9 +11,9 @@ import { createJSONStorage, persist } from 'zustand/middleware';
  * onderweg is niet. Zodra er wél verstuurd wordt horen deze vier vlaggen bij het account en niet
  * bij het toestel; dan is dit de plek die naar Supabase gaat, zoals de drie voortgangsstores.
  *
- * **Drie staan standaard aan, aanbiedingen niet.** De maandbrief, de nieuwe verhalen en de
- * leestips gaan over de app waar je je net voor aanmeldde; aanbiedingen gaan over iets kopen, en
- * die blijven uit tot de lezer erom vraagt.
+ * **Twee staan standaard aan, twee niet.** De maandbrief en de leestips gaan over de app waar je
+ * je net voor aanmeldde en komen zelden. Nieuwe verhalen en aanbiedingen blijven uit tot de lezer
+ * erom vraagt: het eerste kan bij elk verhaal een mail zijn, het tweede gaat over iets kopen.
  *
  * **Wat daar tegenin gaat, zodat het hier staat en niet in een review opduikt.** De AVG (art.
  * 4(11)/7) en de e-Privacyrichtlijn kennen geen geldige toestemming die je al aangevinkt
@@ -45,14 +45,15 @@ type EmailVoorkeurState = {
 /**
  * De beginstand. Ook de terugvalwaarde bij het wissen van het account (`lokale-gegevens.ts`): een
  * keuze van de vorige lezer mag niet blijven staan voor wie zich daarna op dit toestel aanmeldt.
- * Dat betekent hier dus dat een gewist toestel terugvalt op "de eerste drie aan" en niet op de
- * stand die de vorige lezer koos — precies zoals een verse installatie.
+ * Dat betekent hier dus dat een gewist toestel terugvalt op "maandbrief en leestips aan" en niet
+ * op de stand die de vorige lezer koos — precies zoals een verse installatie.
  */
 export const STANDAARD_EMAIL_VOORKEUREN: Record<EmailVoorkeurSleutel, boolean> = {
   nieuwsbrief: true,
-  nieuweVerhalen: true,
+  /** Kan bij élk nieuw verhaal een mail zijn; dat vraag je zelf aan. */
+  nieuweVerhalen: false,
   tips: true,
-  /** Verkoop, geen inhoud. Dit is de enige van de vier die de lezer zelf moet aanzetten. */
+  /** Verkoop, geen inhoud. Zelfde reden, en de soft opt-in dekt hem sowieso niet. */
   aanbiedingen: false,
 };
 

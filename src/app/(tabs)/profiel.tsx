@@ -8,7 +8,6 @@ import { FeedbackModal } from '@/components/feedback-modal';
 import { ProAccessBanner } from '@/components/pro-access-banner';
 import { ProfileCharacterCollection } from '@/components/profile-character-collection';
 import { ProfileHeader } from '@/components/profile-header';
-import { PrestatieRaster } from '@/components/prestatie-raster';
 import { ProfileStats } from '@/components/profile-stats';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -73,8 +72,13 @@ export default function ProfielScreen() {
           <ProfileHeader />
           <ProfileStats />
           <ProfileCharacterCollection />
-          {/* De mijlpalen ná de personages: die zijn de beloning, dit is de meetlat ernaast. */}
-          <PrestatieRaster />
+          {/* Hier stond `<PrestatieRaster />`. De mijlpalen staan nu alleen nog op Voortgang
+              (`achievements-grid.tsx`), en met opzet op één plek: twee rasters van dezelfde
+              veertien badges, elk met hun eigen teller, laten je bij een verschil zoeken welke
+              van de twee liegt — en ze rekenen niet op dezelfde manier (het raster hier las
+              `prestatie-store`, het raster op Voortgang leidt de stand af uit de vier tellers en
+              loopt dus nooit achter op een verse ontgrendeling). Profiel gaat over wie je bent en
+              wie je hebt vrijgespeeld; Voortgang is de meetlat. */}
         </ScrollView>
 
         {/* Staat buiten de ScrollView zodat hij blijft plakken. Rendert `null` zodra

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
@@ -20,11 +20,8 @@ import {
   PLAY_STORE_URL,
   SUPPORT_EMAIL,
   supportEmailIsIngesteld,
-  VOORWAARDEN_URL,
-  voorwaardenZijnGepubliceerd,
 } from '@/constants/app-info';
 import { bevestig, meld } from '@/constants/dialoog';
-import { PRIVACY_BELEID_URL, privacyBeleidIsGepubliceerd } from '@/constants/juridisch';
 import { DAGELIJKSE_VERHAAL_LIMIET, VERHAAL_LIMIET_ENABLED } from '@/constants/monetisatie';
 import { notificaties } from '@/constants/notificaties';
 import { Radii, Spacing } from '@/constants/theme';
@@ -71,6 +68,7 @@ const SHOW_LANGUAGE_PICKER = false;
 export default function InstellingenScreen() {
   const theme = useTheme();
   const { t, taal, setTaal } = useVertaling();
+  const router = useRouter();
 
   const user = useAuthStore((state) => state.user);
   const authProfiel = useAuthStore((state) => state.profiel);
@@ -88,18 +86,6 @@ export default function InstellingenScreen() {
     meld(
       t((s) => s.instellingen.binnenkortTitel),
       t((s) => s.instellingen.binnenkortTekst)(onderwerp),
-      t((s) => s.instellingen.ok),
-    );
-  }
-
-  /**
-   * De app-icoonregel. Geen `nogNiet()`: die zegt alleen dat iets er nog niet is, en juist bij dit
-   * onderwerp is de vraag wát er dan komt — anders leest "Soon" als een knop die stuk is.
-   */
-  function legAppIcoonUit() {
-    meld(
-      t((s) => s.instellingen.appIcoon),
-      t((s) => s.instellingen.appIcoonBinnenkortTekst),
       t((s) => s.instellingen.ok),
     );
   }
@@ -287,28 +273,21 @@ export default function InstellingenScreen() {
             </View>
           ) : null}
 
-          {/* Eigen melding in plaats van `nogNiet()`: bij een "Soon"-regel is de vraag niet dát
-              het er nog niet is, maar wát er dan komt. De algemene tekst beantwoordt alleen de
-              eerste helft. */}
-          <SettingsItem
-            icoon="apps-outline"
-            label={t((s) => s.instellingen.appIcoon)}
-            uitleg={t((s) => s.instellingen.appIcoonUitleg)}
-            badge={binnenkortBadge}
-            onPress={legAppIcoonUit}
-          />
+          {/* Hier stond de "App icon"-regel met een "Soon"-badge. Weggehaald: alternatieve
+              iconen bestaan niet en zijn ook niet gepland voor v1.0, dus de regel kon alleen
+              zeggen dat ze er niet zijn — een belofte op de plek van een instelling. De teksten
+              (`instellingen.appIcoon*`) blijven staan voor als het er wél komt. */}
         </SettingsSectie>
 
-        {/* De hele sectie alleen op een toestel dat notificaties kan plannen — op web bestaat er
-            niets om te plannen, en dan is een regel die "Always on" belooft onwaar. De sectie zit
-            mee in de voorwaarde omdat ze een eigen kop en voetnoot heeft: zonder dat zou er op web
-            een lege kaart met kop overblijven.
+        {/* De hele sectie alleen op een toestel dat notificaties kan plannen — op web valt er
+            niets te plannen, en dan zou hier een lege kaart met alleen een kop overblijven. De
+            sectie zit daarom mee in de voorwaarde en niet alleen haar regels.
 
             De twee regels van de herinnering komen als kinderen binnen en niet uit
             `MeldingenSectie` zelf: ze horen bij de tijdkiezer die erachter hangt, en
             `SettingsSectie` tekent zijn lijnen tussen zijn *directe* kinderen — één component dat
-            twee regels teruggeeft zou de lijn ertussen kwijtraken. Het tijdstip staat er nu altijd:
-            de herinnering kan niet meer uit. */}
+            twee regels teruggeeft zou de lijn ertussen kwijtraken. `HerinneringTijd` rendert
+            `null` zodra de herinnering uit staat. */}
         {notificaties.ondersteund ? (
           <MeldingenSectie>
             <HerinneringRegel />
@@ -419,28 +398,21 @@ export default function InstellingenScreen() {
                 : () => nogNiet(t((s) => s.instellingen.gegevensVerzoek))
             }
           />
+          {/* Allebei een scherm in de app in plaats van een link naar buiten. Ze stonden hier als
+              "Soon"-regel zolang `VOORWAARDEN_URL` en `PRIVACY_BELEID_URL` placeholders waren;
+              een tekst die in de bundel zit heeft die voorwaarde niet, werkt offline en kan niet
+              naar een 404 wijzen. Play wil het privacybeleid daarnaast nog steeds op een publiek
+              bereikbare URL — dat is `docs/privacy-policy.html`, en die eis staat los van dit
+              scherm (LAUNCH-PLAN.md A5). */}
           <SettingsItem
             icoon="document-text-outline"
             label={t((s) => s.instellingen.voorwaarden)}
-            badge={voorwaardenZijnGepubliceerd ? undefined : binnenkortBadge}
-            onPress={
-              voorwaardenZijnGepubliceerd
-                ? () => openLink(VOORWAARDEN_URL)
-                : () => nogNiet(t((s) => s.instellingen.voorwaarden))
-            }
+            onPress={() => router.push('/profiel/terms')}
           />
-          {/* Play vereist een privacybeleid-link. Zolang `PRIVACY_BELEID_URL` de placeholder is
-              wordt hij niet geopend maar als "binnenkort" getoond — een dode link is erger dan
-              een eerlijke melding (LAUNCH-PLAN.md A5). */}
           <SettingsItem
             icoon="shield-checkmark-outline"
             label={t((s) => s.profiel.privacybeleid)}
-            badge={privacyBeleidIsGepubliceerd ? undefined : binnenkortBadge}
-            onPress={
-              privacyBeleidIsGepubliceerd
-                ? () => openLink(PRIVACY_BELEID_URL)
-                : () => nogNiet(t((s) => s.profiel.privacybeleid))
-            }
+            onPress={() => router.push('/profiel/privacy')}
           />
         </SettingsSectie>
 

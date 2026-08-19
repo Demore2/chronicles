@@ -17,10 +17,23 @@ type IoniconName = ComponentProps<typeof Ionicons>['name'];
 // wordt afgeknepen tot een paar pixels.
 const TAB_BAR_INHOUD_HOOGTE = 64;
 
+// De teruggegeven functie is een component (React rendert hem), dus hij heeft een naam nodig:
+// een anonieme arrow verschijnt in de React DevTools en in foutmeldingen als `Anonymous`, en
+// `react/display-name` markeert dat.
 function tabIcon(filled: IoniconName, outline: IoniconName) {
-  return ({ focused, color, size }: { focused: boolean; color: ColorValue; size: number }) => (
-    <Ionicons name={focused ? filled : outline} color={color as string} size={size} />
-  );
+  function TabBarIcon({
+    focused,
+    color,
+    size,
+  }: {
+    focused: boolean;
+    color: ColorValue;
+    size: number;
+  }) {
+    return <Ionicons name={focused ? filled : outline} color={color as string} size={size} />;
+  }
+
+  return TabBarIcon;
 }
 
 export default function TabsLayout() {

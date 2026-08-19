@@ -16,6 +16,17 @@ const nl: DeepPartial<Vertalingen> = {
     verhaallijnen: 'Verhaallijnen',
     nieuwToegevoegd: 'Nieuw toegevoegd',
   },
+  aanbeveling: {
+    kop: 'Voor jou',
+    startLezen: 'Begin met lezen',
+    reden: {
+      favorite_era: (tijdperk: string): string => `Meer uit ${tijdperk}, je meest gelezen tijdperk`,
+      next_up: (): string => 'Het volgende op je route',
+      first_story: (): string => 'Een mooi beginpunt',
+    },
+    leegTitel: 'Je hebt elk verhaal geopend',
+    leegTekst: 'Niets meer voor te stellen — maak er een af, of lees een favoriet opnieuw.',
+  },
   voortgang: {
     titel: 'Voortgang',
     streak: (n: number) => `${n} ${n === 1 ? 'dag' : 'dagen'} op rij`,
@@ -128,7 +139,7 @@ const nl: DeepPartial<Vertalingen> = {
     sectieEmail: 'E-mail',
     emailVoorkeuren: 'E-mailvoorkeuren',
     emailUitleg:
-      'Chronicles stuurt nog geen e-mail. De eerste drie staan aan tenzij je ze uitzet; aanbiedingen blijven uit tot je erom vraagt. Onderaan elke mail die we sturen staat een afmeldlink, en die werkt definitief.',
+      'Chronicles stuurt nog geen e-mail. Onderaan elke mail die we sturen staat een afmeldlink, en die werkt definitief.',
     emailNieuwsbrief: 'Maandbrief',
     emailNieuwsbriefUitleg: 'Eén mail per maand, over wat we zelf lazen.',
     emailNieuweVerhalen: 'Nieuwe verhalen',
@@ -141,9 +152,9 @@ const nl: DeepPartial<Vertalingen> = {
     // --- Privacy ---
     sectiePrivacy: 'Privacy',
     analytics: 'Gebruiksstatistieken',
-    analyticsUitleg: 'Zo zien we welke verhalen gelezen worden en waar lezers afhaken.',
+    analyticsUitleg: 'Zo maken we Chronicles beter.',
     analyticsVoet:
-      'Chronicles telt welke schermen je opent, welke hoofdstukken je afrondt en welke knoppen je gebruikt, samen met je toesteltype en land. Het hangt aan je account en loopt via Google Firebase. Wat je zelf typt gaat nooit mee. Deze meting hoort bij de app; wil je er bezwaar tegen maken of hem laten verwijderen, schrijf ons dan of verwijder je account op dit scherm.',
+      'Chronicles telt schermen, afgeronde hoofdstukken en tikken, samen met je toesteltype en land — nooit wat je zelf typt. Het hangt aan je account en loopt via Google Firebase; wil je bezwaar maken of het laten verwijderen, schrijf ons dan of verwijder hieronder je account.',
 
     sectiePush: 'Pushmeldingen',
     pushVoet:

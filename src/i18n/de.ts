@@ -16,6 +16,18 @@ const de: DeepPartial<Vertalingen> = {
     verhaallijnen: 'Erzählstränge',
     nieuwToegevoegd: 'Neu hinzugefügt',
   },
+  aanbeveling: {
+    kop: 'Für dich',
+    startLezen: 'Lesen beginnen',
+    reden: {
+      favorite_era: (tijdperk: string): string =>
+        `Mehr aus ${tijdperk}, deiner meistgelesenen Epoche`,
+      next_up: (): string => 'Das Nächste auf deinem Weg',
+      first_story: (): string => 'Ein guter Anfang',
+    },
+    leegTitel: 'Du hast jede Geschichte geöffnet',
+    leegTekst: 'Nichts mehr vorzuschlagen — beende eine begonnene oder lies eine Lieblingsgeschichte erneut.',
+  },
   voortgang: {
     titel: 'Fortschritt',
     streak: (n: number) => `${n} Tag${n === 1 ? '' : 'e'} in Folge`,
@@ -131,7 +143,7 @@ const de: DeepPartial<Vertalingen> = {
     sectieEmail: 'E-Mail',
     emailVoorkeuren: 'E-Mail-Einstellungen',
     emailUitleg:
-      'Chronicles verschickt noch keine E-Mails. Die ersten drei sind an, solange du sie nicht ausschaltest; Angebote bleiben aus, bis du danach fragst. Jede E-Mail, die wir senden, trägt unten einen Abmeldelink, und der gilt endgültig.',
+      'Chronicles verschickt noch keine E-Mails. Jede E-Mail, die wir senden, trägt unten einen Abmeldelink, und der gilt endgültig.',
     emailNieuwsbrief: 'Monatsbrief',
     emailNieuwsbriefUitleg: 'Eine E-Mail im Monat, über unsere eigene Lektüre.',
     emailNieuweVerhalen: 'Neue Geschichten',
@@ -144,9 +156,9 @@ const de: DeepPartial<Vertalingen> = {
     // --- Privacy ---
     sectiePrivacy: 'Datenschutz',
     analytics: 'Nutzungsstatistiken',
-    analyticsUitleg: 'So sehen wir, welche Geschichten gelesen werden und wo Leser aufhören.',
+    analyticsUitleg: 'So machen wir Chronicles besser.',
     analyticsVoet:
-      'Chronicles zählt, welche Bildschirme du öffnest, welche Kapitel du abschließt und welche Schaltflächen du nutzt, zusammen mit Gerätetyp und Land. Es ist mit deinem Konto verknüpft und läuft über Google Firebase. Was du selbst schreibst, geht nie mit. Diese Messung gehört zur App; um ihr zu widersprechen oder sie löschen zu lassen, schreib uns oder lösche dein Konto auf diesem Bildschirm.',
+      'Chronicles zählt Bildschirme, abgeschlossene Kapitel und Tipps auf Schaltflächen, dazu Gerätetyp und Land — nie, was du selbst schreibst. Es ist mit deinem Konto verknüpft und läuft über Google Firebase; um zu widersprechen oder es löschen zu lassen, schreib uns oder lösche unten dein Konto.',
 
     sectiePush: 'Push-Benachrichtigungen',
     pushVoet:

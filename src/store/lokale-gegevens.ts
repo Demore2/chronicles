@@ -5,6 +5,7 @@ import { STANDAARD_EMAIL_VOORKEUREN, useEmailVoorkeurStore } from '@/store/email
 import { useNotificatieStore } from '@/store/notificatie-store';
 import { usePrestatieStore } from '@/store/prestatie-store';
 import { useProfileStore } from '@/store/profile-store';
+import { useRecommendationStore } from '@/store/recommendation-store';
 import { useStoryProgressStore } from '@/store/story-progress-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
@@ -34,6 +35,7 @@ export function wisLokaleGebruikersgegevens(): void {
   useStoryProgressStore.getState().resetSyncStatus();
   useCharacterUnlockStore.getState().resetSyncStatus();
   useAchievementStore.getState().resetSyncStatus();
+  useRecommendationStore.getState().resetSyncStatus();
   // De notificatievoorkeuren zélf blijven staan — dat is een instelling van dit toestel, net als
   // taal en thema. Wat wél weg moet is een openstaande sync: die zou de voorkeuren van de
   // verwijderde lezer naar het volgende account op dit toestel duwen.
@@ -68,6 +70,12 @@ export function wisLokaleGebruikersgegevens(): void {
     heeftOnverzondenWijzigingen: false,
   });
   useCharacterUnlockStore.setState({ unlockedCharacters: [], heeftOnverzondenWijzigingen: false });
+
+  // De aanbevelingen zijn afgeleid uit voortgang die hierboven net is gewist, dus ze zeggen niets
+  // meer — maar ze zijn wél een lijstje verhaal-id's van de verwijderde lezer, en de samenvoeging
+  // bij de volgende login zou ze naar het nieuwe account tillen. Zelfde reden als bij de
+  // personages hierboven.
+  useRecommendationStore.setState({ aanbevelingen: [], heeftOnverzondenWijzigingen: false });
 
   // De avatar: een personage-avatar verwijst naar een verhaal dat je niet meer hebt ontgrendeld,
   // een foto-avatar is een bestand van de vorige lezer.

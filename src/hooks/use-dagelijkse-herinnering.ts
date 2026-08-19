@@ -31,10 +31,11 @@ export function useDagelijkseHerinnering() {
         return;
       }
       // De toestemming kan buiten de app zijn ingetrokken (Instellingen → Meldingen). Vroeger
-      // zette dit de voorkeur terug op uit; dat kan niet meer, want de herinnering hoort bij het
-      // lezen en heeft geen schakelaar meer. De voorkeur blijft dus staan en er wordt niets
-      // gepland — Instellingen leest de systeemtoestemming zélf en toont daar de werkelijkheid,
-      // in plaats van een uitgezette schakelaar die de lezer niet terug kan zetten.
+      // zette dit de voorkeur zélf terug op uit; dat doet het bewust niet meer. De schakelaar
+      // is inmiddels terug, maar hem omzetten namens de lezer maakt van een systeemprobleem een
+      // stille wijziging van zijn keuze — en zet je de toestemming daarna weer aan, dan staat de
+      // herinnering onverwacht uit. De voorkeur blijft dus staan en er wordt niets gepland;
+      // Instellingen leest de systeemtoestemming apart en toont daar de werkelijkheid.
       const mag = await notificaties.heeftToestemming();
       if (afgebroken) return;
       if (!mag) {

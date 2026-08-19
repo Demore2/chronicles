@@ -16,6 +16,19 @@ const fr: DeepPartial<Vertalingen> = {
     verhaallijnen: 'Récits',
     nieuwToegevoegd: 'Nouveautés',
   },
+  aanbeveling: {
+    kop: 'Pour vous',
+    startLezen: 'Commencer la lecture',
+    reden: {
+      favorite_era: (tijdperk: string): string =>
+        `Encore ${tijdperk}, l’époque que vous lisez le plus`,
+      next_up: (): string => 'La suite de votre parcours',
+      first_story: (): string => 'Un bon point de départ',
+    },
+    leegTitel: 'Vous avez ouvert chaque histoire',
+    leegTekst:
+      'Plus rien à suggérer — terminez-en une commencée, ou relisez une préférée.',
+  },
   voortgang: {
     titel: 'Progrès',
     streak: (n: number) => `${n} jour${n === 1 ? '' : 's'} de suite`,
@@ -130,7 +143,7 @@ const fr: DeepPartial<Vertalingen> = {
     sectieEmail: 'E-mail',
     emailVoorkeuren: 'Préférences e-mail',
     emailUitleg:
-      "Chronicles n'envoie encore aucun e-mail. Les trois premiers sont actifs sauf si vous les désactivez ; les offres restent inactives tant que vous ne les demandez pas. Chaque e-mail que nous envoyons porte un lien de désabonnement en bas, et ce lien vaut définitivement.",
+      "Chronicles n'envoie encore aucun e-mail. Chaque e-mail que nous envoyons porte un lien de désabonnement en bas, et ce lien vaut définitivement.",
     emailNieuwsbrief: 'Lettre mensuelle',
     emailNieuwsbriefUitleg: 'Un e-mail par mois, sur nos propres lectures.',
     emailNieuweVerhalen: 'Nouveaux récits',
@@ -143,9 +156,9 @@ const fr: DeepPartial<Vertalingen> = {
     // --- Privacy ---
     sectiePrivacy: 'Confidentialité',
     analytics: 'Statistiques d’utilisation',
-    analyticsUitleg: 'Pour voir quelles histoires sont lues et où les lecteurs s’arrêtent.',
+    analyticsUitleg: 'Pour nous aider à améliorer Chronicles.',
     analyticsVoet:
-      'Chronicles compte les écrans que vous ouvrez, les chapitres que vous terminez et les boutons que vous utilisez, avec votre type d’appareil et votre pays. Ces données sont liées à votre compte et traitées par Google Firebase. Ce que vous écrivez n’est jamais inclus. Cette mesure fait partie de l’app ; pour vous y opposer ou la faire supprimer, écrivez-nous ou supprimez votre compte depuis cet écran.',
+      'Chronicles compte les écrans, les chapitres terminés et les appuis, avec votre type d’appareil et votre pays — jamais ce que vous écrivez. Ces données sont liées à votre compte et traitées par Google Firebase ; pour vous y opposer ou la faire supprimer, écrivez-nous ou supprimez votre compte ci-dessous.',
 
     sectiePush: 'Notifications push',
     pushVoet:

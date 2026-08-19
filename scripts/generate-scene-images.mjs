@@ -130,6 +130,34 @@ const scenePrompts = {
   'pompeii-disaster-8':
     'The archaeological site of Pompeii at sunrise, empty paved streets and roofless houses stretching to the horizon, Vesuvius standing over it all, tourists small in the distance.',
 
+  // Ashoka — het vijfde Oudheid-verhaal, en het enige buiten de Grieks-Romeinse wereld. Elke
+  // prompt zegt daarom expliciet "South Asian" / "ancient India": zonder dat levert het model een
+  // mediterrane scène, dezelfde standaardinvulling als bij `nelson-mandela-6`. Let op hoofdstuk 6:
+  // dat gaat over Ashoka's inscripties, maar `STIJL` verbiedt tekst — de prompt vraagt dus om het
+  // gepolijste steenoppervlak en het hakwerk, niet om leesbare letters.
+  'ashoka-maurya-1':
+    'War elephants and massed infantry of an ancient Indian army before the timber ramparts of a great city on the Ganges plain, South Asian soldiers with cane shields and iron spears, dust and monsoon haze, 4th century BC.',
+  'ashoka-maurya-2':
+    'A young South Asian prince in fine white cotton and gold armbands walking through a cosmopolitan northwest Indian city of scholars and traders, Persian, Greek and Indian merchants among stone courtyards, mountains beyond, 3rd century BC.',
+  'ashoka-maurya-3':
+    'A vast ancient Indian capital of teak palisades and moats along a wide river, wooden watchtowers, barges and bathing steps, clerks and officials crossing timber bridges, low golden light, Mauryan Pataliputra.',
+  'ashoka-maurya-4':
+    'The aftermath of a great battle on the eastern Indian coast, a shallow river running through churned ground, abandoned shields and broken chariots, long lines of South Asian captives being led away, ashen light, no blood, terrible stillness.',
+  'ashoka-maurya-5':
+    'A South Asian emperor in plain undyed robes sitting alone on the steps of a palace terrace at dusk, crown and weapons set aside on the stone beside him, monsoon clouds over the plain, an expression of exhausted remorse.',
+  // Derde poging, en de les zit in het verschil. Poging 1 gaf een gecanneleerde Grieks-Romeinse
+  // zuil; poging 2 voegde "no domes, no arches, no classical columns" toe en leverde een vierkante
+  // pijler mét koepels op de achtergrond. Dit model leest een ontkenning als een onderwerp: elk
+  // ding dat je verbiedt noem je, en genoemd worden is genoeg om het op te roepen. Deze versie
+  // beschrijft daarom alléén wat er wél staat — "cylindrical", "circular", "round" in plaats van
+  // "not square", en een positief ingevulde achtergrond in plaats van een verboden lijst.
+  'ashoka-maurya-6':
+    'A single tall cylindrical Mauryan stone pillar of ancient India standing alone in an open dusty plain, one unbroken round column of mirror-smooth polished pale sandstone tapering gently towards the top, crowned by a bell-shaped inverted lotus capital carrying four sculpted seated lions back to back. Beside a rutted earth road across flat empty farmland, a few low flat-roofed mud-brick huts with thatched roofs far off, scrub and dust, travellers with oxcarts passing, hard midday sun, 3rd century BC.',
+  'ashoka-maurya-7':
+    'A great hemispherical brick and stone stupa under construction in ancient India, bamboo scaffolding and a carved stone railing, Buddhist monks in ochre robes and South Asian labourers on the mound, wooded hills, warm afternoon light.',
+  'ashoka-maurya-8':
+    'A weathered stone pillar standing alone in an overgrown ancient Indian landscape long after the empire has gone, fallen masonry half buried in grass, a herdsman and cattle passing, soft evening light, elegiac mood.',
+
   // ── Middeleeuwen ────────────────────────────────────────────────────────────────────────────
 
   // Joan of Arc

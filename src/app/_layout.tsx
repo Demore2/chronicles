@@ -92,6 +92,12 @@ export default function RootLayout() {
               De titels zetten de schermen zelf, zodat ze vertaald meebewegen. */}
           <Stack.Screen name="profiel/settings" />
           <Stack.Screen name="profiel/upload-avatar" options={{ presentation: 'modal' }} />
+          {/* De voorwaarden en het privacybeleid, geopend vanuit Instellingen. In de app zelf en
+              niet als link naar buiten: ze werken zo offline en hangen niet af van een URL die
+              nog niet gepubliceerd is. Play wil dat privacybeleid daarnaast nog steeds op een
+              bereikbare URL; dat staat uitgelegd in het privacyscherm zelf. */}
+          <Stack.Screen name="profiel/terms" />
+          <Stack.Screen name="profiel/privacy" />
           {/* Grafsteen: het dev-dashboard is eruit gehaald. Niets linkt hierheen; de route blijft
               bestaan omdat het bestand blijft bestaan (zie CLAUDE.md, "File deletion"). */}
           <Stack.Screen name="profiel/analytics" />

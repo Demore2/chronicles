@@ -56,38 +56,43 @@ export type PushVoorkeurSleutel = keyof typeof STANDAARD_PUSH_VOORKEUREN;
 
 /**
  * De categorieën die de app zelf beheert en die in Instellingen geen schakelaar hebben: de
- * dagelijkse herinnering, de streakwaarschuwing en de mijlpalen.
+ * streakwaarschuwing en de mijlpalen.
+ *
+ * **De dagelijkse herinnering hoort hier sinds deze fase niet meer bij.** Die heeft zijn
+ * schakelaar terug, en dat is het verschil dat deze lijst nu maakt: de herinnering is een melding
+ * die je zelf hebt aangezet en op een tijdstip van je eigen keuze — daar hoort een uitknop bij, en
+ * een dagelijkse melding die je binnen de app niet uit kunt zetten is precies het patroon waar
+ * Play naar kijkt. De streak en de mijlpalen zijn gevolgen van je eigen leeswerk, gaan hooguit
+ * incidenteel af, en hebben daarom geen regel nodig.
  *
  * **Waarom ze hier staan en niet alleen in de UI.** Een verborgen schakelaar is geen vaste stand:
  * de opgeslagen state van een oudere installatie kan `false` bevatten, en
- * `voegServerVoorkeurenSamen` legt de rij van een ánder toestel eroverheen. Zonder deze lijst
- * toont het scherm "Always on" terwijl er niets gepland staat — precies de belofte die de app
- * niet mag doen. Alles wat state binnenlaat (hydratie, server, migratie) haalt hem hier langs.
+ * `voegServerVoorkeurenSamen` legt de rij van een ánder toestel eroverheen. Zonder deze lijst is
+ * er een stand die geen enkel scherm kan tonen of terugzetten. Alles wat state binnenlaat
+ * (hydratie, server, migratie) haalt hem hier langs.
  *
  * **Wat dit níét is: een manier om de lezer vast te zetten.** Android houdt zijn eigen knop —
- * elk van deze drie heeft een eigen kanaal (`constants/notificaties.ts`), en een uitgezet kanaal
- * blijft uit. De sectievoetnoot in Instellingen wijst daar naartoe.
+ * beide hebben een eigen kanaal (`constants/notificaties.ts`), en een uitgezet kanaal blijft uit.
+ * De sectievoetnoot in Instellingen wijst daar naartoe.
  */
-export const ALTIJD_AAN_SLEUTELS = ['herinneringAan', 'streakAan', 'prestatiesAan'] as const;
+export const ALTIJD_AAN_SLEUTELS = ['streakAan', 'prestatiesAan'] as const;
 
 type AltijdAanSleutel = (typeof ALTIJD_AAN_SLEUTELS)[number];
 
-/** De vaste stand van die drie, als los object om over binnenkomende state heen te leggen. */
+/** De vaste stand van die twee, als los object om over binnenkomende state heen te leggen. */
 const ALTIJD_AAN: Record<AltijdAanSleutel, true> = {
-  herinneringAan: true,
   streakAan: true,
   prestatiesAan: true,
 };
 
 type NotificatieState = {
   /**
-   * Staat de dagelijkse herinnering aan? Sinds deze wijziging altijd `true` — hij hoort bij het
-   * lezen en heeft geen schakelaar meer in Instellingen (zie `ALTIJD_AAN_SLEUTELS`).
+   * Staat de dagelijkse herinnering aan? **Weer een echte voorkeur, met een schakelaar in
+   * Instellingen** — hij stond een tijd lang in `ALTIJD_AAN_SLEUTELS` en kon niet uit.
    *
-   * Het veld blijft bestaan omdat het de kolom `daily_reminder_enabled` voedt en omdat
-   * `useDagelijkseHerinnering` er nog steeds op plant; wat verdween is de manier om hem uit te
-   * zetten. Of er écht een melding komt hangt daarnaast aan de systeemtoestemming, en dát is wat
-   * het scherm toont.
+   * Standaard `true`, dus wie niets doet houdt zijn herinnering. Of er écht een melding komt hangt
+   * daarnaast aan de systeemtoestemming; Instellingen toont die apart, zodat "aan" nooit een
+   * belofte is die het toestel niet waarmaakt.
    */
   herinneringAan: boolean;
   /**
@@ -172,15 +177,12 @@ export const useNotificatieStore = create<NotificatieState>()(
       heeftOnverzondenWijzigingen: false,
 
       /**
-       * Blijft bestaan voor het sync-contract, maar kan niets meer uitzetten: de herinnering
-       * staat vast aan. Een aanroep met `false` zou de melding stilzetten terwijl Instellingen
-       * "Always on" toont, en dat verschil is nergens te zien — vandaar de guard hier en niet
-       * alleen bij de aanroeper.
+       * Zet de herinnering aan of uit. De guard die hier stond (`if (!aan) return`) is weg: de
+       * schakelaar is terug, dus `false` is weer een geldige keuze en geen stand die het scherm
+       * niet kan tonen. Het annuleren van de geplande melding doet `useDagelijkseHerinnering`,
+       * die deze vlag in zijn dependencies heeft — één plek die plant en annuleert.
        */
-      setHerinnering: (aan) => {
-        if (!aan) return;
-        set({ herinneringAan: true, ...gewijzigd() });
-      },
+      setHerinnering: (aan) => set({ herinneringAan: aan, ...gewijzigd() }),
       // Geen `Notifications.scheduleNotificationAsync` hier: het herplannen doet
       // `useDagelijkseHerinnering`, die het tijdstip als dependency heeft. Eén plek die plant.
       setHerinneringTijd: (uur, minuut) =>
@@ -256,14 +258,17 @@ export const useNotificatieStore = create<NotificatieState>()(
       voegServerVoorkeurenSamen: (vanServer) => {
         if (get().heeftOnverzondenWijzigingen) return;
         set({
+          // De herinnering volgt de server weer, net als zijn tijdstip: het is een keuze van de
+          // lezer en die hoort bij het account, niet bij dit toestel. Wie hem op zijn tablet
+          // uitzet bedoelt dat niet alleen daar.
+          herinneringAan: vanServer.daily_reminder_enabled,
           herinneringUur: vanServer.daily_reminder_hour,
           herinneringMinuut: vanServer.daily_reminder_minute,
           terugkeerAan: vanServer.reengagement_enabled,
           aanbevelingenAan: vanServer.recommendations_enabled,
-          // De drie vaste categorieën komen *niet* van de server: die rij kan van een toestel
-          // komen dat nog de oude versie draait, en dan zou een uitgezette streakmelding hier
-          // terugkomen terwijl het scherm "Always on" toont. Het tijdstip volgt wél de server —
-          // dat is nog steeds een keuze.
+          // De twee vaste categorieën komen *niet* van de server: die rij kan van een toestel
+          // komen dat nog een oudere versie draait, en dan zou een uitgezette streakmelding hier
+          // terugkomen in een stand die geen scherm kan tonen of terugzetten.
           ...ALTIJD_AAN,
         });
       },
@@ -277,14 +282,17 @@ export const useNotificatieStore = create<NotificatieState>()(
       name: 'notificatie-storage',
       storage: createJSONStorage(() => AsyncStorage),
       /**
-       * v1: de dagelijkse herinnering, de streakwaarschuwing en de mijlpaalmelding hebben geen
-       * schakelaar meer. Een installatie van vóór deze versie heeft `herinneringAan: false`
-       * opgeslagen (dat was de standaard), en zonder migratie zou die lezer een scherm zien dat
-       * "Always on" zegt zonder dat er iets gepland staat.
+       * v1 zette de streakwaarschuwing en de mijlpaalmelding vast aan voor installaties van
+       * vóór die versie, die daar nog een opgeslagen `false` voor konden hebben.
        *
-       * Let op wat dit betekent: wie de herinnering ooit bewust uitzette, krijgt hem terug. Dat
-       * is de keuze die met deze wijziging gemaakt is, geen bijwerking — het staat hier zodat het
-       * niet later als bug wordt "gerepareerd". De uitweg is Android's eigen kanaalinstelling.
+       * **De herinnering hoort daar sinds deze fase niet meer bij** en het versienummer blijft
+       * daarom op 1 staan — er is niets te migreren. Wat de drie paden nu doen:
+       * - een installatie op v1 heeft `herinneringAan: true` (v1 forceerde dat) en houdt dat als
+       *   beginstand, met vanaf nu een schakelaar om hem uit te zetten;
+       * - een installatie van vóór v1 komt langs `migrate` en houdt de waarde die er stond, dus
+       *   wie de herinnering ooit uitzette krijgt hem niet ongevraagd terug;
+       * - `ALTIJD_AAN` dekt in beide gevallen nog steeds de twee categorieën die geen regel
+       *   hebben.
        */
       version: 1,
       migrate: (opgeslagen) => ({ ...(opgeslagen as NotificatieState), ...ALTIJD_AAN }),

@@ -6,6 +6,7 @@ import { haalPrestatieOntgrendelingenOp, useAchievementStore } from '@/store/ach
 import { useAuthStore } from '@/store/auth-store';
 import { haalOntgrendelingenOp, useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { haalNotificatieVoorkeurenOp, useNotificatieStore } from '@/store/notificatie-store';
+import { haalAanbevelingenOp, useRecommendationStore } from '@/store/recommendation-store';
 import { haalHoofdstukVoortgangOp, useStoryProgressStore } from '@/store/story-progress-store';
 import { haalVoortgangOp, useVoortgangStore } from '@/store/voortgang-store';
 
@@ -40,6 +41,11 @@ const SYNC_STORES = [
   // Alleen dat — *of* hij behaald is blijft afgeleid uit de vier tellers hierboven en werkt dus
   // offline. Zie de kop van `achievement-store.ts` voor waarom dit niet in `prestatie-store` kan.
   { store: useAchievementStore, haalOp: haalPrestatieOntgrendelingenOp },
+  // De zesde: welk verhaal we voorstelden en waarom. Wélk verhaal dat is blijft afgeleid uit de
+  // voortgang hierboven (`content/aanbeveling.ts`) en werkt dus offline; wat hier meegaat is het
+  // moment en de aanleiding — en het is de weg waarlangs de push-sweep hetzelfde verhaal noemt
+  // als het scherm. Zie de kop van `recommendation-store.ts`.
+  { store: useRecommendationStore, haalOp: haalAanbevelingenOp },
 ] as const;
 
 /** Duwt alles wat openstaat omhoog. Een store zonder wijzigingen kost niets. */

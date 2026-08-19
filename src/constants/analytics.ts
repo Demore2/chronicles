@@ -87,6 +87,16 @@ export const ANALYTICS_EVENTS = {
    * toestel te vroeg gebeurt, en dat is precies het soort fout dat je anders nooit ziet.
    */
   ACHIEVEMENT_UNLOCKED: 'achievement_unlocked',
+  /**
+   * De app heeft een nieuw verhaal voorgesteld (`recommendation-store.genereerAanbeveling`).
+   *
+   * **Alleen als er écht iets nieuws is**, niet bij elke meting. De kaart op Home meet opnieuw bij
+   * elke wijziging in de voortgang en bij elke montage; zou dit daar meelopen, dan telt deze
+   * gebeurtenis hoe vaak Home hertekende en niet hoe vaak er iets aanbevolen werd. Samen met
+   * `notification_opened` (soort `recommendation`) en `story_read` is dit de trechter van de
+   * aanbeveling: voorgesteld → aangetikt → geopend.
+   */
+  RECOMMENDATION_GENERATED: 'recommendation_generated',
 } as const;
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];

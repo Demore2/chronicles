@@ -58,6 +58,14 @@ const storyPrompts = {
     prompt:
       'Mount Vesuvius erupting over Pompeii, 79 AD. Massive volcanic eruption column, ash cloud, pyroclastic flow. Ancient Roman city below in shadows. Dramatic, catastrophic natural disaster. Historical painting style, detailed geological accuracy.',
   },
+  // Het vijfde Oudheid-verhaal. Bewust "South Asian" en "Mauryan" expliciet in de prompt: zonder
+  // die woorden vult het model het standaardgeval in en levert het een mediterrane keizer — zelfde
+  // les als bij de scèneprompts (zie de kop van generate-scene-images.mjs).
+  'ashoka-maurya': {
+    name: 'Ashoka',
+    prompt:
+      'Historical portrait of Ashoka, South Asian Mauryan emperor of ancient India, circa 260 BC. Indian features, dark eyes, beard, wearing draped white cotton robes with heavy gold armbands and a jewelled turban ornament. Grave, contemplative expression, the look of a conqueror turned penitent. Warm Indian light, rich earthy palette. Oil painting style, museum quality.',
+  },
 };
 
 function loadTokenFromEnvFile() {

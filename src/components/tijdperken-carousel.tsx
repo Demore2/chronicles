@@ -36,7 +36,11 @@ export function TijdperkenCarousel({
 
   const [containerBreedte, setContainerBreedte] = useState(schermBreedte);
   const [actieveIndex, setActieveIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  // `useRef(new Animated.Value(0)).current` las een ref tijdens de render, wat
+  // `react-hooks/refs` terecht afkeurt — en het maakte bij élke render een `Animated.Value` aan
+  // die meteen werd weggegooid. De lazy initializer van `useState` doet het één keer en geeft
+  // dezelfde stabiele waarde terug; de setter is niet nodig, de waarde wisselt nooit.
+  const [scrollX] = useState(() => new Animated.Value(0));
   const lijstRef = useRef<Animated.FlatList<Tijdperk>>(null);
 
   const zijPadding = Math.max(0, (containerBreedte - kaartBreedte) / 2);

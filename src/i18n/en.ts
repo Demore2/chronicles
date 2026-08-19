@@ -1,4 +1,5 @@
 import type { PrestatieId } from '@/constants/prestaties';
+import type { AanbevelingReden } from '@/content/aanbeveling';
 
 // Bron van waarheid voor alle UI-sleutels. nl/fr/de moeten dezelfde
 // structuur volgen; ontbrekende sleutels daar vallen terug op deze Engelse
@@ -18,6 +19,25 @@ const en = {
     verhaallijnen: 'Storylines',
     ontdekMeer: 'Discover more',
     nieuwToegevoegd: 'Newly added',
+  },
+  /**
+   * De "Recommended for you"-kaart op Home (`recommended-story-card.tsx`).
+   *
+   * `reden` is getypeerd tegen `AanbevelingReden`, zodat een nieuwe reden zonder tekst een
+   * compileerfout is in plaats van een lege regel — dezelfde afspraak als bij `prestatie.namen`.
+   * Alle drie zijn functies met dezelfde handtekening, ook al gebruiken er twee de tijdperknaam
+   * niet: dan hoeft de kaart niet te weten welke reden een parameter kent.
+   */
+  aanbeveling: {
+    kop: 'Recommended for you',
+    startLezen: 'Start reading',
+    reden: {
+      favorite_era: (tijdperk: string): string => `More from ${tijdperk}, the era you read most`,
+      next_up: (): string => 'Next up in your journey',
+      first_story: (): string => 'A good place to begin',
+    } satisfies Record<AanbevelingReden, (tijdperk: string) => string>,
+    leegTitel: 'You have opened every story',
+    leegTekst: 'Nothing left to suggest — finish one you started, or read a favourite again.',
   },
   voortgang: {
     titel: 'Progress',
@@ -181,13 +201,16 @@ const en = {
     sectieEmail: 'Email',
     emailVoorkeuren: 'Email preferences',
     /**
-     * Drie dingen in één voetnoot, en alle drie nodig: er gaat vandaag nog niets uit, de eerste
-     * drie staan aan tenzij je ze uitzet, en afmelden kan hoe dan ook onderaan elke mail. Dat
-     * laatste is niet alleen een dienst — het is de route die de wet eist en die hier in de app
-     * niet gedupliceerd wordt.
+     * Kort gehouden, maar niet weggehaald. Twee dingen moeten hier staan: er gaat vandaag nog
+     * niets uit, en afmelden kan onderaan elke mail. Dat tweede is geen dienst maar de route die
+     * de wet eist bij vooraf aangezette vlaggen (zie `email-voorkeur-store.ts`), en die route
+     * wordt hier in de app bewust niet gedupliceerd.
+     *
+     * Wat eruit ging is de opsomming van wélke standaard aan staan: dat zie je aan de vier
+     * schakelaars erboven, en het liep achter zodra er een standaardwaarde wijzigde.
      */
     emailUitleg:
-      'Chronicles sends no email yet. The first three are on unless you switch them off; offers stay off until you ask for them. Every email we send has an unsubscribe link at the bottom, and that link works for good.',
+      'Chronicles sends no email yet. Every email we send has an unsubscribe link at the bottom, and that link works for good.',
     emailNieuwsbrief: 'Monthly letter',
     emailNieuwsbriefUitleg: 'One email a month, with what we have been reading.',
     emailNieuweVerhalen: 'New stories',
@@ -200,16 +223,15 @@ const en = {
     // --- Privacy ---
     sectiePrivacy: 'Privacy',
     analytics: 'Usage statistics',
-    analyticsUitleg: 'Helps us see which stories get read and where people stop.',
+    analyticsUitleg: 'Helps us improve Chronicles.',
     /**
-     * Bewust geen "anoniem": zodra je bent ingelogd hangt de meting aan je account. Zeggen wat er
-     * gebeurt kost één zin meer en is het enige dat een regel zonder schakelaar draaglijk maakt.
-     *
-     * De laatste zin is er sinds de schakelaar weg is. Zonder knop moet er een route staan, want
-     * "je kunt hier niets aan doen" is geen mededeling die je over gegevens kunt doen.
+     * Ingekort tot twee zinnen, maar niet geschrapt, en de twee dingen die moesten blijven staan
+     * er nog: wát er gemeten wordt (bewust niet "anoniem" — ingelogd hangt het aan je account) en
+     * wélke route je hebt zonder schakelaar. "Hier valt niets aan te doen" is geen mededeling die
+     * je over gegevens kunt doen; zie `analytics-preferences.tsx` en `docs/privacy-policy.html`.
      */
     analyticsVoet:
-      'Chronicles counts screens you open, chapters you finish and buttons you press, together with your device type and country. It is tied to your account and handled by Google Firebase. It never includes what you write. This measurement is part of the app; to object to it, or to have it removed, write to us or delete your account from this screen.',
+      'Chronicles counts screens, finished chapters and taps, with your device type and country — never what you write. It is tied to your account and handled by Google Firebase; to object, or to have it removed, write to us or delete your account below.',
 
     // --- Push-notificaties ---
     //

@@ -12,11 +12,17 @@ import {
 } from '@/store/email-voorkeur-store';
 
 /**
- * De hele e-mailsectie van Instellingen — kop, vier schakelaars en de voetnoot.
+ * De hele e-mailsectie van Instellingen — kop en vier schakelaars.
  *
- * Het component levert de sectie zelf en niet alleen de regels: `SettingsSectie` tekent zijn
- * scheidingslijnen tussen zijn directe kinderen, en de voetnoot ("we sturen nog niets") hoort bij
- * de sectie als geheel. Zo staat in Instellingen één regel en zit alles wat over e-mail gaat hier.
+ * Het component levert de sectie zelf en niet alleen de regels, zodat in Instellingen één regel
+ * staat en alles wat over e-mail gaat hier zit.
+ *
+ * **De voetnoot is eruit.** Die zei twee dingen: er gaat nog geen mail uit, en onderaan elke mail
+ * staat een afmeldlink. Dat tweede is geen bijzaak maar de voorwaarde waaronder deze schakelaars
+ * standaard aan mogen staan (zie `email-voorkeur-store.ts` voor de soft opt-in) — het staat nu
+ * in het privacybeleid, dat sinds deze wijziging een eigen scherm in de app is
+ * (`app/profiel/privacy.tsx`) en niet langer een "binnenkort"-melding. Verdwijnt die tekst dáár,
+ * dan staat hij nergens meer.
  *
  * Wat de voorkeuren (nog niet) doen staat in `email-voorkeur-store.ts`.
  */
@@ -27,36 +33,25 @@ const ICONEN: Record<EmailVoorkeurSleutel, IoniconNaam> = {
   aanbiedingen: 'pricetag-outline',
 };
 
-/** Sleutel → i18n-paar. Expliciet, zodat een nieuwe voorkeur zonder tekst een typefout is. */
-const TEKSTEN: Record<
-  EmailVoorkeurSleutel,
-  { label: (s: Vertalingen) => string; uitleg: (s: Vertalingen) => string }
-> = {
-  nieuwsbrief: {
-    label: (s) => s.instellingen.emailNieuwsbrief,
-    uitleg: (s) => s.instellingen.emailNieuwsbriefUitleg,
-  },
-  nieuweVerhalen: {
-    label: (s) => s.instellingen.emailNieuweVerhalen,
-    uitleg: (s) => s.instellingen.emailNieuweVerhalenUitleg,
-  },
-  tips: {
-    label: (s) => s.instellingen.emailTips,
-    uitleg: (s) => s.instellingen.emailTipsUitleg,
-  },
-  aanbiedingen: {
-    label: (s) => s.instellingen.emailAanbiedingen,
-    uitleg: (s) => s.instellingen.emailAanbiedingenUitleg,
-  },
+/**
+ * Sleutel → label. Expliciet, zodat een nieuwe voorkeur zonder tekst een typefout is.
+ *
+ * **Alleen het label.** De vier regels droegen elk een zin uitleg; vier schakelaars met vier
+ * verklaringen eronder leest als een formulier in plaats van als een rij keuzes, en "Monthly
+ * letter" of "Offers" zegt al wat het is. De `…Uitleg`-sleutels blijven in i18n staan.
+ */
+const LABELS: Record<EmailVoorkeurSleutel, (s: Vertalingen) => string> = {
+  nieuwsbrief: (s) => s.instellingen.emailNieuwsbrief,
+  nieuweVerhalen: (s) => s.instellingen.emailNieuweVerhalen,
+  tips: (s) => s.instellingen.emailTips,
+  aanbiedingen: (s) => s.instellingen.emailAanbiedingen,
 };
 
 export function EmailVoorkeuren() {
   const { t } = useVertaling();
 
   return (
-    <SettingsSectie
-      titel={t((s) => s.instellingen.sectieEmail)}
-      voet={t((s) => s.instellingen.emailUitleg)}>
+    <SettingsSectie titel={t((s) => s.instellingen.sectieEmail)}>
       {EMAIL_VOORKEUR_SLEUTELS.map((sleutel) => (
         <EmailVoorkeurRegel key={sleutel} sleutel={sleutel} />
       ))}
@@ -73,8 +68,7 @@ function EmailVoorkeurRegel({ sleutel }: { sleutel: EmailVoorkeurSleutel }) {
   return (
     <SettingsItem
       icoon={ICONEN[sleutel]}
-      label={t(TEKSTEN[sleutel].label)}
-      uitleg={t(TEKSTEN[sleutel].uitleg)}
+      label={t(LABELS[sleutel])}
       rechts={
         <Switch
           value={aan}

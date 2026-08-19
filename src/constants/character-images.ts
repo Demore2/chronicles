@@ -19,6 +19,7 @@ const IMAGES = {
   'spartacus': require('../../assets/images/characters/spartacus.webp'),
   'rome-rise': require('../../assets/images/characters/rome-rise.webp'),
   'pompeii-disaster': require('../../assets/images/characters/pompeii-disaster.webp'),
+  'ashoka-maurya': require('../../assets/images/characters/ashoka-maurya.webp'),
 
   // Middeleeuwen
   'joan-of-arc': require('../../assets/images/characters/joan-of-arc.webp'),

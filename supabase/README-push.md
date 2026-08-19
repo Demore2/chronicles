@@ -35,7 +35,7 @@ toestel zelf niet kan weten.**
 | Dagelijkse herinnering (19:00, instelbaar) | **Lokaal**, `expo-notifications` | Werkt offline, staat op de seconde in de tijdzone van het toestel, kost geen infrastructuur |
 | Streak loopt vanavond af | **Lokaal**, vooruit gepland | Het toestel kent de streak zelf; zie `use-streak-herinnering.ts` |
 | "Je hoofdstuk staat nog open" (win-back) | **Server**, FCM | Het toestel kan geen melding plannen voor een dag waarop de app dicht blijft |
-| "Spartacus wacht op je" (aanbeveling) | **Server**, FCM | Vereist kennis van de hele catalogus en van wat je nog niet las |
+| "Spartacus wacht op je" (aanbeveling) | **Server**, FCM | Het toestel kan geen melding plannen voor een dag waarop de app dicht blijft. *Wélk* verhaal komt sinds `push_kandidaten_gebruikt_story_recommendations` uit `public.story_recommendations` — zie hieronder |
 | Mijlpaal bereikt ("Tien hoofdstukken ver") | **Lokaal**, vooruit niets | Af te leiden uit voortgang die op het toestel staat; zie `constants/prestaties.ts` |
 
 Dit is bewust anders dan het oorspronkelijke plan, dat óók de dagelijkse herinnering via een
@@ -50,6 +50,15 @@ achteruitgang.
   (migraties `push_notificaties`, `push_verhaalcatalogus_en_kandidaten`,
   `push_streak_in_plaats_van_ontgrendeling`, `push_functies_vaste_search_path`).
 - **RPC's**: `push_kandidaten(doel_uur)` (service role only) en `markeer_melding_geopend(uuid)`.
+  De `aanbeveling`-CTE kiest **eerst** een ongeopend verhaal dat de app zelf voorstelde
+  (`public.story_recommendations`, nieuwste eerst) en valt daarna pas terug op de oude afleiding
+  (favoriet tijdperk → `volgorde` → id). Zo noemen de kaart op Home en de melding hetzelfde
+  verhaal; de terugval is er voor een lezer wiens toestel nog nooit een aanbeveling omhoog
+  stuurde. De bestaande `not exists`-filter op `story_progress` zorgt dat een aanbeveling die de
+  lezer inmiddels opende vanzelf afvalt.
+  **De app stuurt zelf geen push.** `send-push` weigert een lezerstoken (403
+  `alleen_service_role`), en een melding over een aanbeveling die je op dat moment op je scherm
+  ziet is geen melding maar ruis. Zie de kop van `src/store/recommendation-store.ts`.
 - **Edge functions**: `send-push` en `push-sweep`, allebei `verify_jwt: true` **plus** een eigen
   controle dat de aanroeper de service role is.
 - **Catalogus**: 20 verhalen, gevuld. Bijwerken met `npm run sync:verhaalcatalogus`

@@ -13,8 +13,8 @@
  * hoofdstuktegel) en als `{ type: 'afbeelding' }`-blok in het hoofdstuk zelf.
  *
  * Genereren: `npm run generate:images:scenes` (zie scripts/generate-scene-images.mjs voor de
- * prompts). Alle 19 verhalen × 8 hoofdstukken = 152 beelden; de Oudheid kwam in B2 (Fase 5), de
- * overige 15 verhalen in B2b (Fase 6.5).
+ * prompts). Alle 20 verhalen × 8 hoofdstukken = 160 beelden; de Oudheid kwam in B2 (Fase 5), de
+ * overige 15 verhalen in B2b (Fase 6.5), en Ashoka sloot als laatste aan.
  */
 
 import type { ImageSourcePropType } from 'react-native';
@@ -59,6 +59,16 @@ const IMAGES = {
   'pompeii-disaster-6': require('../../assets/images/scenes/pompeii-disaster-6.webp'),
   'pompeii-disaster-7': require('../../assets/images/scenes/pompeii-disaster-7.webp'),
   'pompeii-disaster-8': require('../../assets/images/scenes/pompeii-disaster-8.webp'),
+
+  // Oudheid — Ashoka
+  'ashoka-maurya-1': require('../../assets/images/scenes/ashoka-maurya-1.webp'),
+  'ashoka-maurya-2': require('../../assets/images/scenes/ashoka-maurya-2.webp'),
+  'ashoka-maurya-3': require('../../assets/images/scenes/ashoka-maurya-3.webp'),
+  'ashoka-maurya-4': require('../../assets/images/scenes/ashoka-maurya-4.webp'),
+  'ashoka-maurya-5': require('../../assets/images/scenes/ashoka-maurya-5.webp'),
+  'ashoka-maurya-6': require('../../assets/images/scenes/ashoka-maurya-6.webp'),
+  'ashoka-maurya-7': require('../../assets/images/scenes/ashoka-maurya-7.webp'),
+  'ashoka-maurya-8': require('../../assets/images/scenes/ashoka-maurya-8.webp'),
 
   // Middeleeuwen — Joan of Arc
   'joan-of-arc-1': require('../../assets/images/scenes/joan-of-arc-1.webp'),

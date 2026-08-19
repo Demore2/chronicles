@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
 import { SettingsItem } from '@/components/settings-section';
@@ -13,14 +13,22 @@ import { useVertaling } from '@/hooks/use-vertaling';
 import { useNotificatieStore } from '@/store/notificatie-store';
 
 /**
- * De dagelijkse herinnering in Instellingen: één regel die zegt dát hij aan staat, en eronder het
- * tijdstip.
+ * De dagelijkse herinnering in Instellingen: een schakelaar, en eronder het tijdstip.
  *
- * **De schakelaar is weg.** De herinnering hoort bij het lezen zelf en staat vast aan (zie
- * `ALTIJD_AAN_SLEUTELS` in `notificatie-store.ts`); wat overblijft is het tijdstip, en dat is nog
- * wél een keuze. Daarmee verdween ook de plek waar de toestemming gevraagd werd — die vraag stelt
- * de reader na het eerste hoofdstuk (`biedHerinneringAan`), en ontbreekt ze, dan zet
- * `notification-preferences.tsx` er een regel voor bovenaan de sectie.
+ * **De schakelaar is terug.** Hij is een tijd lang weg geweest — de herinnering stond toen vast
+ * aan via `ALTIJD_AAN_SLEUTELS` — en dat is teruggedraaid: een melding die elke dag afgaat en die
+ * je binnen de app niet uit kunt zetten, verwijst de lezer voor iets alledaags naar de
+ * Android-instellingen. De streakwaarschuwing en de mijlpalen staan nog wél vast aan en hebben
+ * juist gééń regel meer; zie de kop van `notification-preferences.tsx` voor dat onderscheid.
+ *
+ * **De tijdregel verdwijnt als de herinnering uit staat.** Een tijdstip kiezen voor een melding
+ * die niet komt is een instelling zonder gevolg. `SettingsSectie` tekent zijn lijnen tussen zijn
+ * kinderen met `Children.toArray`, dus een weggelaten regel laat geen zwevende scheidingslijn
+ * achter.
+ *
+ * Het vragen om toestemming zit hier niet: dat doet de reader na het eerste afgeronde hoofdstuk
+ * (`biedHerinneringAan`), en ontbreekt de toestemming, dan zet `notification-preferences.tsx` er
+ * een regel voor bovenaan de sectie.
  *
  * Twee losse exports in plaats van één component, omdat `SettingsSectie` zijn scheidingslijnen
  * tussen zijn *directe* kinderen tekent (`Children.toArray`). Eén component dat twee regels
@@ -32,25 +40,43 @@ import { useNotificatieStore } from '@/store/notificatie-store';
  * volgt het palet in plaats van dat van het systeem.
  */
 export function HerinneringRegel() {
+  const theme = useTheme();
   const { t } = useVertaling();
+  const herinneringAan = useNotificatieStore((state) => state.herinneringAan);
+  const setHerinnering = useNotificatieStore((state) => state.setHerinnering);
 
   return (
     <SettingsItem
       icoon="notifications-outline"
       label={t((s) => s.profiel.herinnering)}
       uitleg={t((s) => s.profiel.herinneringUitleg)}
-      waarde={t((s) => s.instellingen.altijdAan)}
+      rechts={
+        <Switch
+          value={herinneringAan}
+          onValueChange={setHerinnering}
+          trackColor={{ false: theme.backgroundSelected, true: theme.accent }}
+          thumbColor={theme.background}
+        />
+      }
     />
   );
 }
 
-/** De tijdregel eronder. Staat er altijd: de herinnering kan niet meer uit. */
+/**
+ * De tijdregel eronder. Rendert `null` zolang de herinnering uit staat — zie de kop: een tijdstip
+ * voor een melding die niet komt.
+ */
 export function HerinneringTijd() {
   const { t } = useVertaling();
+  const herinneringAan = useNotificatieStore((state) => state.herinneringAan);
   const uur = useNotificatieStore((state) => state.herinneringUur);
   const minuut = useNotificatieStore((state) => state.herinneringMinuut);
   const setHerinneringTijd = useNotificatieStore((state) => state.setHerinneringTijd);
   const [kiezerOpen, setKiezerOpen] = useState(false);
+
+  // Ná de hooks, niet ervoor: een vroege return boven `useState` zou de hookvolgorde laten
+  // verspringen op het moment dat de schakelaar omgaat.
+  if (!herinneringAan) return null;
 
   return (
     <>
