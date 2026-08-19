@@ -57,10 +57,10 @@ Per gegevenstype, zoals het formulier het uitvraagt:
 |---|---|---|---|---|
 | Email address | Ja (Supabase Auth) | Nee | Account management | Verplicht |
 | User IDs | Ja (Supabase user-id; gaat óók naar Firebase via `analytics.zetGebruiker`) | Ja — Google (Firebase) | Account management, Analytics | Verplicht |
-| App interactions | Ja (Firebase Analytics: schermweergaven en de gebeurtenissen uit `src/constants/analytics.ts`) | Ja — Google (Firebase) | Analytics | **Optioneel** — Instellingen → Privacy |
+| App interactions | Ja (Firebase Analytics: schermweergaven en de gebeurtenissen uit `src/constants/analytics.ts`) | Ja — Google (Firebase) | Analytics | **Verplicht** — de schakelaar is eruit |
 | Crash logs / diagnostics | Nee | Nee | — | — |
-| Approximate location | **Ja, indirect** | Ja — Google (Firebase) | Analytics | Optioneel, zelfde schakelaar |
-| Device or other IDs | Ja (Firebase app-instance-id; **plus het FCM-registratietoken** in `user_devices` zodra push aan staat) | Ja — Google (Firebase) | Analytics, **App functionality** (bezorgen van meldingen) | Optioneel — Analytics via Privacy, push via Instellingen → Pushmeldingen |
+| Approximate location | **Ja, indirect** | Ja — Google (Firebase) | Analytics | **Verplicht**, zelfde reden |
+| Device or other IDs | Ja (Firebase app-instance-id; **plus het FCM-registratietoken** in `user_devices` zodra push aan staat) | Ja — Google (Firebase) | Analytics, **App functionality** (bezorgen van meldingen) | Deels — het Analytics-id is **verplicht**, het FCM-token optioneel via Instellingen → Pushmeldingen |
 | Photos | Nee — de avatar blijft op het toestel (`profile-store`, AsyncStorage) | Nee | — | — |
 
 **Push-notificaties voegen één regel toe aan dit formulier en één aan de bestaande.** Zodra een
@@ -68,9 +68,11 @@ lezer "Nudge me back" of "Story suggestions" aanzet, bewaart `public.user_device
 FCM-registratietoken van zijn installatie plus toestelmodel, tijdzone en app-versie, en houdt
 `public.notifications_sent` bij wat er gestuurd is en of erop getikt is. Dat is een **Device ID**
 met als doel *App functionality*, niet Analytics — het token bezorgt een bericht, het meet niets.
-Allebei de categorieën staan **standaard uit**, dus voor een lezer die er niet aan komt verzamelt
-de app hier niets. De **drie** lokale meldingen (dagelijkse herinnering, streak, mijlpalen)
-verlaten het toestel nooit en horen dus in geen enkele rij thuis — de mijlpalen worden op het
+Allebei de categorieën staan **standaard uit** en houden hun schakelaar, dus voor een lezer die er
+niet aan komt verzamelt de app hier niets. De **drie** lokale meldingen (dagelijkse herinnering,
+streak, mijlpalen) staan sinds deze wijziging vast aan en hebben géén schakelaar meer in de app —
+Android's kanaalinstelling is hun uitknop. Ze verlaten het toestel nooit en horen dus nog steeds in
+geen enkele rij thuis — de mijlpalen worden op het
 toestel zelf afgeleid uit voortgang die er al staat, dus ook zij voegen geen categorie toe. Het
 enige wat er voor hen naar de server gaat is de aan/uit-schakelaar zelf
 (`notification_preferences.achievements_enabled`), die net als de andere voorkeuren onder de
@@ -81,9 +83,11 @@ maar Firebase leidt land en regio af uit het IP-adres van elk verzoek. Dat telt 
 verzamelde bij-benadering-locatie. Wie hier "No" invult terwijl Analytics aan staat, vult het
 formulier onjuist in.
 
-**"Optional" mag alleen aangekruist worden zolang de schakelaar er is.** Instellingen → Privacy →
-*Usage statistics* zet `analytics.zetVerzamelenAan(false)`; verdwijnt die regel, dan verandert het
-antwoord in "Required".
+**"Optional" kán hier niet meer aangekruist worden — die schakelaar is eruit.** Instellingen →
+Privacy toont *Usage statistics* nu als "Always on" en zet niets meer; `analytics-store` blijft
+bestaan en staat vast op `true`. Dat is precies het geval dat hierboven al voorzien was, dus de
+drie Analytics-rijen staan op **Required**. Komt de schakelaar terug (één component:
+`components/analytics-preferences.tsx`), dan gaan ze weer op Optional.
 
 ### Accountverwijdering (`supabase/functions/delete-account`)
 
@@ -125,11 +129,17 @@ route die aankomt en een antwoord binnen 30 dagen — beide staan zo ook in `pri
 
 ### Firebase Analytics in het bijzonder
 
-- **Toestemming staat standaard aan** (`STANDAARD_ANALYTICS_TOESTEMMING` in
-  `src/constants/analytics.ts`). Dat is een keuze en geen natuurwet: voor EU-lezers is
-  "gerechtvaardigd belang" als grondslag voor niet-essentiële statistiek een standpunt dat de
-  EDPB betwist. Wil je op zeker spelen, zet die constante dan op `false` — en zet er dan ook
-  `firebase_analytics_collection_enabled=false` in het Android-manifest bij, want de runtime-
+- **Meten staat vast aan en er is geen schakelaar meer.** `STANDAARD_ANALYTICS_TOESTEMMING` in
+  `src/constants/analytics.ts` is nog steeds `true`, maar `components/analytics-preferences.tsx`
+  toont sinds deze wijziging alleen nog de mededeling — niemand zet hem meer op `false`.
+  **Dat is de zwaarste openstaande AVG-vraag van dit project**: voor EU-lezers is
+  "gerechtvaardigd belang" als grondslag voor niet-essentiële statistiek al een betwist standpunt
+  (de EDPB deelt het niet), en zonder weigermogelijkheid ín de app valt dat argument helemaal weg.
+  Wat er in de plaats kwam is een route per e-mail (privacypagina, "Your rights") plus
+  accountverwijdering; dat is een bezwaarrecht op papier en geen opt-out in de hand.
+  Wil je op zeker spelen, dan is de terugweg één component: zet de `Switch` terug en de rijen
+  hierboven weer op Optional. Zet je de meting helemaal uit, dan hoort er ook
+  `firebase_analytics_collection_enabled=false` in het Android-manifest bij — de runtime-
   schakelaar komt te laat om de app-start zelf nog tegen te houden.
 - **`google-services.json` hoort in de repo-root**, niet in `android/`. Die map is genegeerd én
   uitgesloten in `.easignore` (EAS draait zijn eigen `expo prebuild`), dus een bestand daar

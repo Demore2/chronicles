@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 import { AnalyticsVoorkeuren } from '@/components/analytics-preferences';
-import { HerinneringSchakelaar, HerinneringTijd } from '@/components/daily-reminder-settings';
+import { HerinneringRegel, HerinneringTijd } from '@/components/daily-reminder-settings';
 import { EmailVoorkeuren } from '@/components/email-preferences';
-import { PushVoorkeuren } from '@/components/notification-preferences';
+import { MeldingenSectie, PushVoorkeuren } from '@/components/notification-preferences';
 import { PRO_BANNER_ENABLED } from '@/components/pro-access-banner';
 import { ProPaywall } from '@/components/pro-paywall';
 import { SettingsItem, SettingsSectie } from '@/components/settings-section';
@@ -37,7 +37,6 @@ import { useDeleteAccount } from '@/hooks/useDeleteAccount';
 import { taalCodes, taalNamen } from '@/i18n/taal-namen';
 import { useAbonnementStore, useVerhalenVandaag } from '@/store/abonnement-store';
 import { useAuthStore } from '@/store/auth-store';
-import { useNotificatieStore } from '@/store/notificatie-store';
 import { useThemaStore, type ThemaVoorkeur } from '@/store/thema-store';
 
 const THEMA_OPTIES: { waarde: ThemaVoorkeur; icoonNaam: IoniconNaam }[] = [
@@ -77,7 +76,6 @@ export default function InstellingenScreen() {
   const authProfiel = useAuthStore((state) => state.profiel);
   const themaVoorkeur = useThemaStore((state) => state.themaVoorkeur);
   const setThemaVoorkeur = useThemaStore((state) => state.setThemaVoorkeur);
-  const herinneringAan = useNotificatieStore((state) => state.herinneringAan);
   const { isPremium } = useAbonnement();
   const setPro = useAbonnementStore((state) => state.setPro);
   const verhalenVandaag = useVerhalenVandaag();
@@ -90,6 +88,18 @@ export default function InstellingenScreen() {
     meld(
       t((s) => s.instellingen.binnenkortTitel),
       t((s) => s.instellingen.binnenkortTekst)(onderwerp),
+      t((s) => s.instellingen.ok),
+    );
+  }
+
+  /**
+   * De app-icoonregel. Geen `nogNiet()`: die zegt alleen dat iets er nog niet is, en juist bij dit
+   * onderwerp is de vraag wát er dan komt — anders leest "Soon" als een knop die stuk is.
+   */
+  function legAppIcoonUit() {
+    meld(
+      t((s) => s.instellingen.appIcoon),
+      t((s) => s.instellingen.appIcoonBinnenkortTekst),
       t((s) => s.instellingen.ok),
     );
   }
@@ -237,7 +247,7 @@ export default function InstellingenScreen() {
                     ]}>
                     <Ionicons
                       name={optie.icoonNaam}
-                      size={20}
+                      size={18}
                       color={actief ? theme.background : theme.text}
                     />
                     <ThemedText type="small" style={{ color: actief ? theme.background : theme.text }}>
@@ -277,31 +287,39 @@ export default function InstellingenScreen() {
             </View>
           ) : null}
 
+          {/* Eigen melding in plaats van `nogNiet()`: bij een "Soon"-regel is de vraag niet dát
+              het er nog niet is, maar wát er dan komt. De algemene tekst beantwoordt alleen de
+              eerste helft. */}
           <SettingsItem
             icoon="apps-outline"
             label={t((s) => s.instellingen.appIcoon)}
+            uitleg={t((s) => s.instellingen.appIcoonUitleg)}
             badge={binnenkortBadge}
-            onPress={() => nogNiet(t((s) => s.instellingen.appIcoon))}
+            onPress={legAppIcoonUit}
           />
         </SettingsSectie>
 
-        {/* De hele sectie alleen op een toestel dat notificaties kan plannen — op web bestaat de
-            schakelaar niet, in plaats van een schakelaar die niets doet. De sectie zit mee in de
-            voorwaarde omdat er sinds de e-mailvoorkeuren een eigen kop is: zonder dat zou er op
-            web een lege kaart met kop overblijven. Het tijdstip verschijnt pas als de herinnering
-            aan staat, en die voorwaarde staat hier en niet in het component, zodat
-            `SettingsSectie` het kind kan wegfilteren en er geen lijn zonder regel overblijft. */}
+        {/* De hele sectie alleen op een toestel dat notificaties kan plannen — op web bestaat er
+            niets om te plannen, en dan is een regel die "Always on" belooft onwaar. De sectie zit
+            mee in de voorwaarde omdat ze een eigen kop en voetnoot heeft: zonder dat zou er op web
+            een lege kaart met kop overblijven.
+
+            De twee regels van de herinnering komen als kinderen binnen en niet uit
+            `MeldingenSectie` zelf: ze horen bij de tijdkiezer die erachter hangt, en
+            `SettingsSectie` tekent zijn lijnen tussen zijn *directe* kinderen — één component dat
+            twee regels teruggeeft zou de lijn ertussen kwijtraken. Het tijdstip staat er nu altijd:
+            de herinnering kan niet meer uit. */}
         {notificaties.ondersteund ? (
-          <SettingsSectie titel={t((s) => s.instellingen.sectieMeldingen)}>
-            <HerinneringSchakelaar />
-            {herinneringAan ? <HerinneringTijd /> : null}
-          </SettingsSectie>
+          <MeldingenSectie>
+            <HerinneringRegel />
+            <HerinneringTijd />
+          </MeldingenSectie>
         ) : null}
 
-        {/* Los van de sectie hierboven: die gaat over de herinnering die de app zélf plant, deze
-            over meldingen die van de server komen (plus de streakwaarschuwing, die lokaal is maar
-            wél iets anders belooft dan "elke dag om 19:00"). Het component levert zijn eigen kop
-            en voetnoot, net als `EmailVoorkeuren` en `AnalyticsVoorkeuren`. */}
+        {/* Los van de sectie hierboven: die gaat over wat de app zélf plant en wat vast aan staat,
+            deze over de twee meldingen die van de server komen en die wél een keuze blijven. Het
+            component levert zijn eigen kop en voetnoot, net als `EmailVoorkeuren` en
+            `AnalyticsVoorkeuren`, en rendert niets zonder werkende FCM-koppeling. */}
         {notificaties.ondersteund ? <PushVoorkeuren /> : null}
 
         <EmailVoorkeuren />

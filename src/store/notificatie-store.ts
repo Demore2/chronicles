@@ -23,17 +23,16 @@ export function huidigeTijdzone(): string {
 }
 
 /**
- * De drie push-categorieën die de lezer los kan aan- en uitzetten, náást de dagelijkse
- * herinnering.
+ * De vier meldingscategorieën náást de dagelijkse herinnering.
  *
- * **Twee ervan staan standaard uit**, en dat is dezelfde afweging als bij `email-voorkeur-store`:
- * een win-back of een aanbeveling is een bericht dat de lezer niet gevraagd heeft, en de AVG kent
- * geen geldige toestemming die je al aangevinkt aantreft.
+ * **Twee ervan zijn een keuze en twee niet meer.** `terugkeerAan` en `aanbevelingenAan` komen van
+ * de server, zijn een bericht dat de lezer niet gevraagd heeft, en staan daarom standaard uit met
+ * een schakelaar in Instellingen — dezelfde afweging als bij `email-voorkeur-store`.
  *
- * `streakAan` staat wél aan, en dat is verdedigbaar om drie redenen: hij gaat over iets dat de
- * lezer zélf heeft opgebouwd, hij vertrekt nooit van het toestel (expo-notifications, geen FCM),
- * en hij kan alleen afgaan als er al toestemming voor meldingen is gegeven — dát is hier de
- * toestemming, niet dit vinkje. Zonder streak gebeurt er sowieso niets.
+ * `streakAan` en `prestatiesAan` zijn sinds deze wijziging **vast aan** en hebben geen schakelaar
+ * meer (zie `ALTIJD_AAN_SLEUTELS` hieronder). Ze bleven al staan omdat ze over iets gaan dat de
+ * lezer zélf opbouwt, nooit van het toestel vertrekken (expo-notifications, geen FCM) en alleen
+ * kunnen afgaan als de systeemtoestemming er al is — dát is de toestemming, niet dit vinkje.
  */
 export const STANDAARD_PUSH_VOORKEUREN = {
   /** Win-back-push vanaf de server: "je hoofdstuk staat nog open". */
@@ -55,8 +54,41 @@ export const STANDAARD_PUSH_VOORKEUREN = {
 
 export type PushVoorkeurSleutel = keyof typeof STANDAARD_PUSH_VOORKEUREN;
 
+/**
+ * De categorieën die de app zelf beheert en die in Instellingen geen schakelaar hebben: de
+ * dagelijkse herinnering, de streakwaarschuwing en de mijlpalen.
+ *
+ * **Waarom ze hier staan en niet alleen in de UI.** Een verborgen schakelaar is geen vaste stand:
+ * de opgeslagen state van een oudere installatie kan `false` bevatten, en
+ * `voegServerVoorkeurenSamen` legt de rij van een ánder toestel eroverheen. Zonder deze lijst
+ * toont het scherm "Always on" terwijl er niets gepland staat — precies de belofte die de app
+ * niet mag doen. Alles wat state binnenlaat (hydratie, server, migratie) haalt hem hier langs.
+ *
+ * **Wat dit níét is: een manier om de lezer vast te zetten.** Android houdt zijn eigen knop —
+ * elk van deze drie heeft een eigen kanaal (`constants/notificaties.ts`), en een uitgezet kanaal
+ * blijft uit. De sectievoetnoot in Instellingen wijst daar naartoe.
+ */
+export const ALTIJD_AAN_SLEUTELS = ['herinneringAan', 'streakAan', 'prestatiesAan'] as const;
+
+type AltijdAanSleutel = (typeof ALTIJD_AAN_SLEUTELS)[number];
+
+/** De vaste stand van die drie, als los object om over binnenkomende state heen te leggen. */
+const ALTIJD_AAN: Record<AltijdAanSleutel, true> = {
+  herinneringAan: true,
+  streakAan: true,
+  prestatiesAan: true,
+};
+
 type NotificatieState = {
-  /** Wil de gebruiker de dagelijkse herinnering? Los van de systeemtoestemming. */
+  /**
+   * Staat de dagelijkse herinnering aan? Sinds deze wijziging altijd `true` — hij hoort bij het
+   * lezen en heeft geen schakelaar meer in Instellingen (zie `ALTIJD_AAN_SLEUTELS`).
+   *
+   * Het veld blijft bestaan omdat het de kolom `daily_reminder_enabled` voedt en omdat
+   * `useDagelijkseHerinnering` er nog steeds op plant; wat verdween is de manier om hem uit te
+   * zetten. Of er écht een melding komt hangt daarnaast aan de systeemtoestemming, en dát is wat
+   * het scherm toont.
+   */
   herinneringAan: boolean;
   /**
    * Is er al één keer om toestemming gevraagd? Android laat het systeemvenster maar één keer
@@ -127,7 +159,7 @@ function gewijzigd() {
 export const useNotificatieStore = create<NotificatieState>()(
   persist(
     (set, get) => ({
-      herinneringAan: false,
+      herinneringAan: true,
       toestemmingGevraagd: false,
       herinneringUur: STANDAARD_HERINNERING_UUR,
       herinneringMinuut: STANDAARD_HERINNERING_MINUUT,
@@ -139,7 +171,16 @@ export const useNotificatieStore = create<NotificatieState>()(
       syncError: null,
       heeftOnverzondenWijzigingen: false,
 
-      setHerinnering: (aan) => set({ herinneringAan: aan, ...gewijzigd() }),
+      /**
+       * Blijft bestaan voor het sync-contract, maar kan niets meer uitzetten: de herinnering
+       * staat vast aan. Een aanroep met `false` zou de melding stilzetten terwijl Instellingen
+       * "Always on" toont, en dat verschil is nergens te zien — vandaar de guard hier en niet
+       * alleen bij de aanroeper.
+       */
+      setHerinnering: (aan) => {
+        if (!aan) return;
+        set({ herinneringAan: true, ...gewijzigd() });
+      },
       // Geen `Notifications.scheduleNotificationAsync` hier: het herplannen doet
       // `useDagelijkseHerinnering`, die het tijdstip als dependency heeft. Eén plek die plant.
       setHerinneringTijd: (uur, minuut) =>
@@ -148,7 +189,12 @@ export const useNotificatieStore = create<NotificatieState>()(
       // geweest"), niet een voorkeur van de lezer. Op een tweede telefoon moet het venster wél
       // nog verschijnen.
       markeerToestemmingGevraagd: () => set({ toestemmingGevraagd: true }),
-      zetPushVoorkeur: (sleutel, aan) => set({ [sleutel]: aan, ...gewijzigd() }),
+      // Zelfde guard als bij `setHerinnering`: de streak- en mijlpaalmelding hebben geen
+      // schakelaar meer, dus een `false` hier zou een stand maken die het scherm niet kan tonen.
+      zetPushVoorkeur: (sleutel, aan) => {
+        if (!aan && (ALTIJD_AAN_SLEUTELS as readonly string[]).includes(sleutel)) return;
+        set({ [sleutel]: aan, ...gewijzigd() });
+      },
       // Ook geen sync: het token gaat naar `user_devices` en niet naar de voorkeurenrij.
       setFcmToken: (token) => set({ fcmToken: token }),
 
@@ -210,13 +256,15 @@ export const useNotificatieStore = create<NotificatieState>()(
       voegServerVoorkeurenSamen: (vanServer) => {
         if (get().heeftOnverzondenWijzigingen) return;
         set({
-          herinneringAan: vanServer.daily_reminder_enabled,
           herinneringUur: vanServer.daily_reminder_hour,
           herinneringMinuut: vanServer.daily_reminder_minute,
           terugkeerAan: vanServer.reengagement_enabled,
           aanbevelingenAan: vanServer.recommendations_enabled,
-          streakAan: vanServer.streak_enabled,
-          prestatiesAan: vanServer.achievements_enabled,
+          // De drie vaste categorieën komen *niet* van de server: die rij kan van een toestel
+          // komen dat nog de oude versie draait, en dan zou een uitgezette streakmelding hier
+          // terugkomen terwijl het scherm "Always on" toont. Het tijdstip volgt wél de server —
+          // dat is nog steeds een keuze.
+          ...ALTIJD_AAN,
         });
       },
 
@@ -228,6 +276,28 @@ export const useNotificatieStore = create<NotificatieState>()(
     {
       name: 'notificatie-storage',
       storage: createJSONStorage(() => AsyncStorage),
+      /**
+       * v1: de dagelijkse herinnering, de streakwaarschuwing en de mijlpaalmelding hebben geen
+       * schakelaar meer. Een installatie van vóór deze versie heeft `herinneringAan: false`
+       * opgeslagen (dat was de standaard), en zonder migratie zou die lezer een scherm zien dat
+       * "Always on" zegt zonder dat er iets gepland staat.
+       *
+       * Let op wat dit betekent: wie de herinnering ooit bewust uitzette, krijgt hem terug. Dat
+       * is de keuze die met deze wijziging gemaakt is, geen bijwerking — het staat hier zodat het
+       * niet later als bug wordt "gerepareerd". De uitweg is Android's eigen kanaalinstelling.
+       */
+      version: 1,
+      migrate: (opgeslagen) => ({ ...(opgeslagen as NotificatieState), ...ALTIJD_AAN }),
+      /**
+       * De hydratie is de tweede plek waar oude state binnenkomt: `migrate` draait alleen als het
+       * versienummer verschilt, dus een rij die op v1 is weggeschreven en daarna (bijvoorbeeld
+       * via een oudere build) is aangepast, komt hier langs zonder migratie.
+       */
+      merge: (opgeslagen, huidig) => ({
+        ...huidig,
+        ...(opgeslagen as Partial<NotificatieState>),
+        ...ALTIJD_AAN,
+      }),
       /**
        * `isSyncing` mag nooit opgeslagen worden: een bewaarde `true` laat elke volgende sync
        * meteen terugkeren bij de `if (get().isSyncing) return` hierboven, en dan synchroniseert

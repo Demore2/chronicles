@@ -103,6 +103,12 @@ const en = {
       `${onderwerp} is not part of this version of Chronicles yet.`,
     ok: 'OK',
 
+    /**
+     * Rechts van een regel die informatie is en geen knop. Staat bij de meldingen en bij de
+     * gebruiksstatistieken: allebei categorieën die de app zelf beheert.
+     */
+    altijdAan: 'Always on',
+
     ingelogdAls: 'Signed in as',
     gebruikersnaam: 'Username',
     geenGebruikersnaam: 'Not set',
@@ -110,6 +116,14 @@ const en = {
     synchronisatie: 'Sync',
 
     appIcoon: 'App icon',
+    /**
+     * Bij een "Soon"-regel is de vraag niet dát het er nog niet is, maar wát er dan komt. De
+     * uitleg staat onder het label en de melding erachter vertelt het hele verhaal, in plaats van
+     * de algemene `binnenkortTekst`.
+     */
+    appIcoonUitleg: 'Alternative icons for your home screen.',
+    appIcoonBinnenkortTekst:
+      'A later version lets you swap the Chronicles icon on your home screen for a different one — a light and a dark variant, and one per era. Nothing changes inside the app. It is not in this build yet.',
     abonnement: 'Your plan',
     abonnementGratis: 'Free',
     abonnementPro: 'Pro',
@@ -120,6 +134,17 @@ const en = {
     onbeperkt: 'Unlimited',
 
     // --- Dagelijkse herinnering ---
+    /**
+     * De drie meldingen die bij het lezen zelf horen (herinnering, streak, mijlpaal) hebben geen
+     * schakelaar meer in de app. De voetnoot zegt dat, en zegt er meteen bij wáár ze dan wel uit
+     * kunnen — een categorie zonder uitknop noemen zonder de uitknop te wijzen is een halve zin.
+     */
+    meldingenVoet:
+      'These belong to reading with Chronicles, so there is no switch for them here. Android keeps its own: press and hold a notification, or open Android Settings → Apps → Chronicles → Notifications, to silence one kind without losing the others.',
+    /** Zonder systeemtoestemming kan geen van de drie aankomen. Dan is dit de enige echte knop. */
+    meldingenToestemming: 'Allow notifications',
+    meldingenToestemmingUitleg:
+      'Notifications are switched off for Chronicles, so none of these can reach you. Tap to turn them on.',
     herinneringTijd: 'Reminder time',
     /**
      * Klok­notatie. Een functie en geen `toLocaleTimeString`: de app kent vier talen die niet met
@@ -140,11 +165,13 @@ const en = {
     sectieEmail: 'Email',
     emailVoorkeuren: 'Email preferences',
     /**
-     * Eerlijk over de stand van zaken: er gaat vandaag geen enkele mail de deur uit. De keuzes
-     * bewaren is dus geen loze knop, maar beloven dat er post komt zou dat wél zijn.
+     * Drie dingen in één voetnoot, en alle drie nodig: er gaat vandaag nog niets uit, de eerste
+     * drie staan aan tenzij je ze uitzet, en afmelden kan hoe dan ook onderaan elke mail. Dat
+     * laatste is niet alleen een dienst — het is de route die de wet eist en die hier in de app
+     * niet gedupliceerd wordt.
      */
     emailUitleg:
-      'Chronicles sends no email yet. Your choices are saved here and will apply from the first one.',
+      'Chronicles sends no email yet. The first three are on unless you switch them off; offers stay off until you ask for them. Every email we send has an unsubscribe link at the bottom, and that link works for good.',
     emailNieuwsbrief: 'Monthly letter',
     emailNieuwsbriefUitleg: 'One email a month, with what we have been reading.',
     emailNieuweVerhalen: 'New stories',
@@ -160,10 +187,13 @@ const en = {
     analyticsUitleg: 'Helps us see which stories get read and where people stop.',
     /**
      * Bewust geen "anoniem": zodra je bent ingelogd hangt de meting aan je account. Zeggen wat er
-     * gebeurt kost één zin meer en is het enige dat de schakelaar boven een vinkje uittilt.
+     * gebeurt kost één zin meer en is het enige dat een regel zonder schakelaar draaglijk maakt.
+     *
+     * De laatste zin is er sinds de schakelaar weg is. Zonder knop moet er een route staan, want
+     * "je kunt hier niets aan doen" is geen mededeling die je over gegevens kunt doen.
      */
     analyticsVoet:
-      'Chronicles counts screens you open, chapters you finish and buttons you press, together with your device type and country. It is tied to your account and handled by Google Firebase. It never includes what you write. Turn this off and none of it leaves your device.',
+      'Chronicles counts screens you open, chapters you finish and buttons you press, together with your device type and country. It is tied to your account and handled by Google Firebase. It never includes what you write. This measurement is part of the app; to object to it, or to have it removed, write to us or delete your account from this screen.',
 
     // --- Push-notificaties ---
     //

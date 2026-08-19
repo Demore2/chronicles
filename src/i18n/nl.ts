@@ -80,6 +80,8 @@ const nl: DeepPartial<Vertalingen> = {
       `${onderwerp} zit nog niet in deze versie van Chronicles.`,
     ok: 'Oké',
 
+    altijdAan: 'Altijd aan',
+
     ingelogdAls: 'Ingelogd als',
     gebruikersnaam: 'Gebruikersnaam',
     geenGebruikersnaam: 'Niet ingesteld',
@@ -87,6 +89,9 @@ const nl: DeepPartial<Vertalingen> = {
     synchronisatie: 'Synchronisatie',
 
     appIcoon: 'App-icoon',
+    appIcoonUitleg: 'Andere iconen voor op je beginscherm.',
+    appIcoonBinnenkortTekst:
+      'In een latere versie kun je het Chronicles-icoon op je beginscherm vervangen door een ander — een lichte en een donkere variant, en één per tijdperk. In de app zelf verandert er niets. In deze versie zit het nog niet.',
     abonnement: 'Je abonnement',
     abonnementGratis: 'Gratis',
     abonnementPro: 'Pro',
@@ -95,6 +100,11 @@ const nl: DeepPartial<Vertalingen> = {
       `${gebruikt}/${limiet} verhalen vandaag`,
     onbeperkt: 'Onbeperkt',
 
+    meldingenVoet:
+      'Deze horen bij het lezen zelf, dus er staat hier geen schakelaar voor. Android heeft die wél: houd een melding ingedrukt, of ga naar Instellingen → Apps → Chronicles → Meldingen, om één soort stil te zetten zonder de rest kwijt te raken.',
+    meldingenToestemming: 'Meldingen toestaan',
+    meldingenToestemmingUitleg:
+      'Meldingen staan uit voor Chronicles, dus geen van deze kan aankomen. Tik om ze aan te zetten.',
     herinneringTijd: 'Tijdstip',
     tijdWaarde: (uur: number, minuut: number): string =>
       `${String(uur).padStart(2, '0')}:${String(minuut).padStart(2, '0')}`,
@@ -107,7 +117,7 @@ const nl: DeepPartial<Vertalingen> = {
     sectieEmail: 'E-mail',
     emailVoorkeuren: 'E-mailvoorkeuren',
     emailUitleg:
-      'Chronicles stuurt nog geen e-mail. Je keuzes worden hier bewaard en gelden vanaf de eerste.',
+      'Chronicles stuurt nog geen e-mail. De eerste drie staan aan tenzij je ze uitzet; aanbiedingen blijven uit tot je erom vraagt. Onderaan elke mail die we sturen staat een afmeldlink, en die werkt definitief.',
     emailNieuwsbrief: 'Maandbrief',
     emailNieuwsbriefUitleg: 'Eén mail per maand, over wat we zelf lazen.',
     emailNieuweVerhalen: 'Nieuwe verhalen',
@@ -122,7 +132,7 @@ const nl: DeepPartial<Vertalingen> = {
     analytics: 'Gebruiksstatistieken',
     analyticsUitleg: 'Zo zien we welke verhalen gelezen worden en waar lezers afhaken.',
     analyticsVoet:
-      'Chronicles telt welke schermen je opent, welke hoofdstukken je afrondt en welke knoppen je gebruikt, samen met je toesteltype en land. Het hangt aan je account en loopt via Google Firebase. Wat je zelf typt gaat nooit mee. Zet je dit uit, dan verlaat er niets je toestel.',
+      'Chronicles telt welke schermen je opent, welke hoofdstukken je afrondt en welke knoppen je gebruikt, samen met je toesteltype en land. Het hangt aan je account en loopt via Google Firebase. Wat je zelf typt gaat nooit mee. Deze meting hoort bij de app; wil je er bezwaar tegen maken of hem laten verwijderen, schrijf ons dan of verwijder je account op dit scherm.',
 
     sectiePush: 'Pushmeldingen',
     pushVoet:

@@ -413,8 +413,23 @@ seeded for users who never read anything.
 
 ### Notifications (`src/constants/notificaties.ts`, `use-dagelijkse-herinnering.ts`, B6)
 
-One optional daily reminder, **off by default**, at a time the user picks (19:00 local to start
-with). Same shape as `haptics.ts`: intents, no throwing, no-op on web.
+One daily reminder, **always on**, at a time the user picks (19:00 local to start with). Same
+shape as `haptics.ts`: intents, no throwing, no-op on web.
+
+**The reminder, the streak warning and the milestone note have no in-app switch.**
+`ALTIJD_AAN_SLEUTELS` in `notificatie-store.ts` is the single list, and every path that lets state
+in — persist `merge`, the `version: 1` migration, `voegServerVoorkeurenSamen`, and guards inside
+`setHerinnering`/`zetPushVoorkeur` — forces those three back to `true`. Without that a stored
+`false` from an older install (or a preferences row synced from a device still on the old build)
+would leave Settings saying "Always on" over a notification that is never scheduled. The reader's
+way out is Android's own per-channel control, which the section footnote points at; the two
+*server* categories (win-back, recommendations) keep their switches and stay off by default.
+**Because the reminder no longer flips off**, `useDagelijkseHerinnering` no longer clears the
+preference when permission is missing (it just cancels the schedule), and `biedHerinneringAan()`
+keys off `toestemmingGevraagd` alone — the old `|| herinneringAan` guard would now match on every
+install and the permission prompt would never appear. `useMeldingToestemming()` reads the system
+permission (re-measured on every foreground) so Settings can show a "Allow notifications" row
+instead of a promise the OS is blocking.
 
 - **The time lives in `notificatie-store` (`herinneringUur`/`herinneringMinuut`), not in
   `notificaties.ts`.** `STANDAARD_HERINNERING_UUR/MINUUT` there are only the initial values;
@@ -870,8 +885,14 @@ eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
   reader beslist zelf of hij komt (`toontOnderbreking`), want een `AdModal` die `null` rendert zou
   het scherm laten wachten op een `onClose` die nooit komt.
 - **E-mailvoorkeuren** (`email-preferences.tsx` + `email-voorkeur-store.ts`) zijn vier lokale
-  schakelaars; er wordt nog geen mail verstuurd en de voetnoot onder de sectie zegt dat. Ze staan
-  **standaard uit**: de AVG kent geen geldige toestemming die je al aangevinkt aantreft. Gaat
+  schakelaars; er wordt nog geen mail verstuurd en de voetnoot onder de sectie zegt dat. De eerste
+  drie (maandbrief, nieuwe verhalen, tips) staan sinds deze fase **standaard aan**, aanbiedingen
+  blijven uit. Dat is een keuze met een risico dat in de store staat uitgeschreven: een vooraf
+  aangevinkte vlag is voor een EU-lezer geen geldige toestemming (AVG art. 4(11)/7), en de enige
+  grond die deze stand kan dragen is de *soft opt-in* — eigen, gelijksoortige inhoud, met een
+  afmeldlink in **elke** mail. Die afmeldlink is dus geen nice-to-have maar de voorwaarde, en
+  afmelden loopt bewust via die link en niet via een tweede route in de app. Een bestaande
+  installatie houdt zijn opgeslagen keuzes (de `merge` legt ze over de standaardwaarden). Gaat
   Chronicles ooit mailen, dan horen ze bij het account en niet bij het toestel — dan is dit de
   store die naar Supabase gaat.
 
@@ -916,11 +937,14 @@ eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
   vier aanroepplekken — de compiler wees er twee aan die anders vergeten waren.
 - **`story_finished` en `char_unlocked` zijn twee gebeurtenissen**, precies omdat er sinds B4
   een knop tussen zit. Het verschil tussen die aantallen is hoeveel lezers die knop niet indrukken.
-- **Toestemming staat in `store/analytics-store.ts`, standaard aan**, met een schakelaar in
-  Instellingen → Privacy (`components/analytics-preferences.tsx`). Bewust device-lokaal: Firebase
-  telt per installatie, dus dit hoort *niet* bij de stores die naar Supabase gaan. Andere afweging
-  dan bij de e-mailvoorkeuren (die staan uit) — de redenering staat bij
-  `STANDAARD_ANALYTICS_TOESTEMMING`, inclusief wat ertegen pleit. Wie hem op `false` zet moet ook
+- **Toestemming staat in `store/analytics-store.ts` en staat vast aan.** De schakelaar in
+  Instellingen → Privacy is eruit: `components/analytics-preferences.tsx` toont de regel nu als
+  "Always on" en niets zet `toestemming` nog op `false`. De store blijft bestaan, dus terugdraaien
+  is één component. **Weeg dat af vóór een EU-release**: `docs/README.md` had al staan dat
+  "Optional" in Data Safety alleen mag zolang de schakelaar bestaat, dus de drie Analytics-rijen
+  staan daar nu op **Required**, en `docs/privacy-policy.html` biedt in plaats van een knop een
+  bezwaar per e-mail plus accountverwijdering. Bewust device-lokaal: Firebase telt per installatie,
+  dus dit hoort *niet* bij de stores die naar Supabase gaan. Wie hem op `false` zet moet ook
   `firebase_analytics_collection_enabled=false` in het manifest zetten: de runtime-schakelaar komt
   te laat om de app-start zelf nog tegen te houden.
 - **`src/app/profiel/analytics.tsx` is een grafsteen.** Daar stond een `__DEV__`-dashboard dat
@@ -1013,11 +1037,12 @@ what the previous phase left behind. Update both at the end of every phase.
 Built and working: data model, design system, three tabs, era rows on Home, story chapter reader
 with persisted per-chapter progress, bundled portraits and chapter scenes, the six block types,
 motion + haptics, character unlock + Profiel collection grid, streaks (local dates, expiring, only
-a finished chapter counts), an optional daily reminder notification at a time you pick, fourteen derived
+a finished chapter counts), a daily reminder notification at a time you pick, fourteen derived
 milestones (in-app strip when you are looking, local notification when you are not), email
 preferences, the free/Pro model (daily story limit + one placeholder interstitial, both behind
 flags), interactief lezen (quiz/peiling/keuzepunt per hoofdstuk, uit Supabase), full i18n
-(en/nl/fr/de) with a language picker, theme picker, Firebase Analytics (opt-out, schakelaar in Instellingen → Privacy).
+(en/nl/fr/de) with a language picker, theme picker, Firebase Analytics (always on, no switch — see
+"Analytics" for what that costs in Data Safety terms).
 
 Known gaps:
 - **Collections are empty** (`collecties.ts` exports `[]`) — Home's Storylines row and

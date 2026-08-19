@@ -30,13 +30,15 @@ export function useDagelijkseHerinnering() {
         await notificaties.annuleerDagelijkseHerinnering();
         return;
       }
-      // De toestemming kan buiten de app zijn ingetrokken (Instellingen → Meldingen). Dan is de
-      // voorkeur niet waar te maken en zetten we hem terug, zodat de schakelaar op Profiel de
-      // werkelijkheid toont in plaats van een belofte.
+      // De toestemming kan buiten de app zijn ingetrokken (Instellingen → Meldingen). Vroeger
+      // zette dit de voorkeur terug op uit; dat kan niet meer, want de herinnering hoort bij het
+      // lezen en heeft geen schakelaar meer. De voorkeur blijft dus staan en er wordt niets
+      // gepland — Instellingen leest de systeemtoestemming zélf en toont daar de werkelijkheid,
+      // in plaats van een uitgezette schakelaar die de lezer niet terug kan zetten.
       const mag = await notificaties.heeftToestemming();
       if (afgebroken) return;
       if (!mag) {
-        useNotificatieStore.getState().setHerinnering(false);
+        await notificaties.annuleerDagelijkseHerinnering();
         return;
       }
       await notificaties.planDagelijkseHerinnering(titel, tekst, uur, minuut);
@@ -54,15 +56,17 @@ export function useDagelijkseHerinnering() {
  *
  * Niet bij de eerste start: op dat moment weet de gebruiker nog niet wat de app doet, en een
  * geweigerde Android-melding komt niet terug. Na een afgerond hoofdstuk is er iets om aan te
- * herinneren. Bij toestemming zet dit alleen de voorkeur aan — het plannen zelf doet
+ * herinneren.
+ *
+ * **De voorwaarde is alleen `toestemmingGevraagd`.** Hier stond ook `|| store.herinneringAan`,
+ * uit de tijd dat die vlag pas aanging als je de schakelaar omzette. Nu staat hij vanaf de eerste
+ * start aan, en met die oude voorwaarde zou het systeemvenster dus nooit meer verschijnen — geen
+ * toestemming, geen enkele melding, en niets dat dat laat zien. Het plannen doet
  * `useDagelijkseHerinnering`, die de actuele taal bij de hand heeft.
  */
 export async function biedHerinneringAan(): Promise<void> {
   const store = useNotificatieStore.getState();
-  if (store.toestemmingGevraagd || store.herinneringAan) return;
+  if (store.toestemmingGevraagd) return;
   store.markeerToestemmingGevraagd();
-  const toegestaan = await notificaties.vraagToestemming();
-  if (toegestaan) {
-    store.setHerinnering(true);
-  }
+  await notificaties.vraagToestemming();
 }

@@ -83,6 +83,8 @@ const de: DeepPartial<Vertalingen> = {
       `${onderwerp} ist in dieser Version von Chronicles noch nicht enthalten.`,
     ok: 'OK',
 
+    altijdAan: 'Immer an',
+
     ingelogdAls: 'Angemeldet als',
     gebruikersnaam: 'Benutzername',
     geenGebruikersnaam: 'Nicht festgelegt',
@@ -90,6 +92,9 @@ const de: DeepPartial<Vertalingen> = {
     synchronisatie: 'Synchronisierung',
 
     appIcoon: 'App-Symbol',
+    appIcoonUitleg: 'Andere Symbole für deinen Startbildschirm.',
+    appIcoonBinnenkortTekst:
+      'In einer späteren Version kannst du das Chronicles-Symbol auf deinem Startbildschirm gegen ein anderes tauschen — eine helle und eine dunkle Variante sowie eines je Epoche. In der App selbst ändert sich nichts. In dieser Version ist es noch nicht enthalten.',
     abonnement: 'Dein Tarif',
     abonnementGratis: 'Kostenlos',
     abonnementPro: 'Pro',
@@ -98,6 +103,11 @@ const de: DeepPartial<Vertalingen> = {
       `${gebruikt}/${limiet} Geschichten heute`,
     onbeperkt: 'Unbegrenzt',
 
+    meldingenVoet:
+      'Sie gehören zum Lesen mit Chronicles, deshalb gibt es hier keinen Schalter dafür. Android hat einen: Halte eine Benachrichtigung gedrückt oder öffne Einstellungen → Apps → Chronicles → Benachrichtigungen, um eine Art stummzuschalten, ohne die anderen zu verlieren.',
+    meldingenToestemming: 'Benachrichtigungen erlauben',
+    meldingenToestemmingUitleg:
+      'Benachrichtigungen sind für Chronicles ausgeschaltet, deshalb kann keine davon ankommen. Tippe, um sie einzuschalten.',
     herinneringTijd: 'Uhrzeit',
     tijdWaarde: (uur: number, minuut: number): string =>
       `${String(uur).padStart(2, '0')}:${String(minuut).padStart(2, '0')} Uhr`,
@@ -110,7 +120,7 @@ const de: DeepPartial<Vertalingen> = {
     sectieEmail: 'E-Mail',
     emailVoorkeuren: 'E-Mail-Einstellungen',
     emailUitleg:
-      'Chronicles verschickt noch keine E-Mails. Deine Auswahl wird hier gespeichert und gilt ab der ersten.',
+      'Chronicles verschickt noch keine E-Mails. Die ersten drei sind an, solange du sie nicht ausschaltest; Angebote bleiben aus, bis du danach fragst. Jede E-Mail, die wir senden, trägt unten einen Abmeldelink, und der gilt endgültig.',
     emailNieuwsbrief: 'Monatsbrief',
     emailNieuwsbriefUitleg: 'Eine E-Mail im Monat, über unsere eigene Lektüre.',
     emailNieuweVerhalen: 'Neue Geschichten',
@@ -125,7 +135,7 @@ const de: DeepPartial<Vertalingen> = {
     analytics: 'Nutzungsstatistiken',
     analyticsUitleg: 'So sehen wir, welche Geschichten gelesen werden und wo Leser aufhören.',
     analyticsVoet:
-      'Chronicles zählt, welche Bildschirme du öffnest, welche Kapitel du abschließt und welche Schaltflächen du nutzt, zusammen mit Gerätetyp und Land. Es ist mit deinem Konto verknüpft und läuft über Google Firebase. Was du selbst schreibst, geht nie mit. Schaltest du dies aus, verlässt nichts davon dein Gerät.',
+      'Chronicles zählt, welche Bildschirme du öffnest, welche Kapitel du abschließt und welche Schaltflächen du nutzt, zusammen mit Gerätetyp und Land. Es ist mit deinem Konto verknüpft und läuft über Google Firebase. Was du selbst schreibst, geht nie mit. Diese Messung gehört zur App; um ihr zu widersprechen oder sie löschen zu lassen, schreib uns oder lösche dein Konto auf diesem Bildschirm.',
 
     sectiePush: 'Push-Benachrichtigungen',
     pushVoet:

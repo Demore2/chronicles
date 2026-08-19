@@ -82,6 +82,8 @@ const fr: DeepPartial<Vertalingen> = {
       `${onderwerp} ne fait pas encore partie de cette version de Chronicles.`,
     ok: 'OK',
 
+    altijdAan: 'Toujours actif',
+
     ingelogdAls: 'Connecté en tant que',
     gebruikersnaam: "Nom d'utilisateur",
     geenGebruikersnaam: 'Non défini',
@@ -89,6 +91,9 @@ const fr: DeepPartial<Vertalingen> = {
     synchronisatie: 'Synchronisation',
 
     appIcoon: "Icône de l'app",
+    appIcoonUitleg: "D'autres icônes pour votre écran d'accueil.",
+    appIcoonBinnenkortTekst:
+      "Une version ultérieure vous permettra de remplacer l'icône Chronicles sur votre écran d'accueil par une autre — une variante claire, une sombre, et une par époque. Rien ne change dans l'app elle-même. Ce n'est pas encore dans cette version.",
     abonnement: 'Votre formule',
     abonnementGratis: 'Gratuite',
     abonnementPro: 'Pro',
@@ -97,6 +102,11 @@ const fr: DeepPartial<Vertalingen> = {
       `${gebruikt}/${limiet} récits aujourd'hui`,
     onbeperkt: 'Illimité',
 
+    meldingenVoet:
+      "Elles font partie de la lecture avec Chronicles, il n'y a donc pas d'interrupteur ici. Android en a un : appuyez longuement sur une notification, ou ouvrez Paramètres → Applis → Chronicles → Notifications, pour en faire taire une sans perdre les autres.",
+    meldingenToestemming: 'Autoriser les notifications',
+    meldingenToestemmingUitleg:
+      "Les notifications sont désactivées pour Chronicles ; aucune ne peut donc vous parvenir. Touchez pour les activer.",
     herinneringTijd: 'Heure du rappel',
     tijdWaarde: (uur: number, minuut: number): string =>
       `${String(uur).padStart(2, '0')} h ${String(minuut).padStart(2, '0')}`,
@@ -109,7 +119,7 @@ const fr: DeepPartial<Vertalingen> = {
     sectieEmail: 'E-mail',
     emailVoorkeuren: 'Préférences e-mail',
     emailUitleg:
-      "Chronicles n'envoie encore aucun e-mail. Vos choix sont enregistrés ici et s'appliqueront dès le premier.",
+      "Chronicles n'envoie encore aucun e-mail. Les trois premiers sont actifs sauf si vous les désactivez ; les offres restent inactives tant que vous ne les demandez pas. Chaque e-mail que nous envoyons porte un lien de désabonnement en bas, et ce lien vaut définitivement.",
     emailNieuwsbrief: 'Lettre mensuelle',
     emailNieuwsbriefUitleg: 'Un e-mail par mois, sur nos propres lectures.',
     emailNieuweVerhalen: 'Nouveaux récits',
@@ -124,7 +134,7 @@ const fr: DeepPartial<Vertalingen> = {
     analytics: 'Statistiques d’utilisation',
     analyticsUitleg: 'Pour voir quelles histoires sont lues et où les lecteurs s’arrêtent.',
     analyticsVoet:
-      'Chronicles compte les écrans que vous ouvrez, les chapitres que vous terminez et les boutons que vous utilisez, avec votre type d’appareil et votre pays. Ces données sont liées à votre compte et traitées par Google Firebase. Ce que vous écrivez n’est jamais inclus. Désactivez ceci et rien ne quitte votre appareil.',
+      'Chronicles compte les écrans que vous ouvrez, les chapitres que vous terminez et les boutons que vous utilisez, avec votre type d’appareil et votre pays. Ces données sont liées à votre compte et traitées par Google Firebase. Ce que vous écrivez n’est jamais inclus. Cette mesure fait partie de l’app ; pour vous y opposer ou la faire supprimer, écrivez-nous ou supprimez votre compte depuis cet écran.',
 
     sectiePush: 'Notifications push',
     pushVoet:

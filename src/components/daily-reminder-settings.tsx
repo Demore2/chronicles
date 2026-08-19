@@ -1,68 +1,50 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Modal, Pressable, StyleSheet, Switch, View } from 'react-native';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
 import { SettingsItem } from '@/components/settings-section';
 import { ThemedText } from '@/components/themed-text';
 import { haptics } from '@/constants/haptics';
-import { HERINNERING_MINUUT_STAP, notificaties } from '@/constants/notificaties';
+import { HERINNERING_MINUUT_STAP } from '@/constants/notificaties';
 import { Radii, Spacing, withAlpha } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useNotificatieStore } from '@/store/notificatie-store';
 
 /**
- * De dagelijkse herinnering in Instellingen: een schakelaar en, zodra die aan staat, het tijdstip.
+ * De dagelijkse herinnering in Instellingen: één regel die zegt dát hij aan staat, en eronder het
+ * tijdstip.
+ *
+ * **De schakelaar is weg.** De herinnering hoort bij het lezen zelf en staat vast aan (zie
+ * `ALTIJD_AAN_SLEUTELS` in `notificatie-store.ts`); wat overblijft is het tijdstip, en dat is nog
+ * wél een keuze. Daarmee verdween ook de plek waar de toestemming gevraagd werd — die vraag stelt
+ * de reader na het eerste hoofdstuk (`biedHerinneringAan`), en ontbreekt ze, dan zet
+ * `notification-preferences.tsx` er een regel voor bovenaan de sectie.
  *
  * Twee losse exports in plaats van één component, omdat `SettingsSectie` zijn scheidingslijnen
  * tussen zijn *directe* kinderen tekent (`Children.toArray`). Eén component dat twee regels
- * teruggeeft telt daar als één kind, en dan valt de lijn ertussen weg. Het tijdstip is bovendien
- * voorwaardelijk, en de sectie kan een `null`-kind wél netjes wegfilteren.
+ * teruggeeft telt daar als één kind, en dan valt de lijn ertussen weg.
  *
  * **Bewust geen `@react-native-community/datetimepicker`.** Die is native, dus hij vraagt na het
  * pullen om een nieuwe dev client, en hij bestaat niet op web — precies de plek waar dit project
  * zijn schermen bekijkt. De kiezer hieronder is gewone React Native, werkt overal hetzelfde, en
  * volgt het palet in plaats van dat van het systeem.
  */
-export function HerinneringSchakelaar() {
-  const theme = useTheme();
+export function HerinneringRegel() {
   const { t } = useVertaling();
-  const herinneringAan = useNotificatieStore((state) => state.herinneringAan);
-  const setHerinnering = useNotificatieStore((state) => state.setHerinnering);
-  const markeerToestemmingGevraagd = useNotificatieStore((state) => state.markeerToestemmingGevraagd);
-
-  async function zetHerinnering(aan: boolean) {
-    if (!aan) {
-      setHerinnering(false);
-      return;
-    }
-    // Aanzetten kan alleen als het systeem het toestaat. Zegt de gebruiker (of een eerdere
-    // weigering) nee, dan blijft de schakelaar uit staan in plaats van iets te beloven wat de app
-    // niet kan waarmaken. Het plannen zelf doet `useDagelijkseHerinnering`.
-    const toegestaan = await notificaties.vraagToestemming();
-    markeerToestemmingGevraagd();
-    setHerinnering(toegestaan);
-  }
 
   return (
     <SettingsItem
       icoon="notifications-outline"
       label={t((s) => s.profiel.herinnering)}
       uitleg={t((s) => s.profiel.herinneringUitleg)}
-      rechts={
-        <Switch
-          value={herinneringAan}
-          onValueChange={zetHerinnering}
-          trackColor={{ false: theme.backgroundSelected, true: theme.accent }}
-          thumbColor={theme.background}
-        />
-      }
+      waarde={t((s) => s.instellingen.altijdAan)}
     />
   );
 }
 
-/** De tijdregel eronder. Toon hem alleen als de herinnering aan staat. */
+/** De tijdregel eronder. Staat er altijd: de herinnering kan niet meer uit. */
 export function HerinneringTijd() {
   const { t } = useVertaling();
   const uur = useNotificatieStore((state) => state.herinneringUur);
