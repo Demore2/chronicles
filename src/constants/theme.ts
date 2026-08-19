@@ -16,6 +16,15 @@ export const Colors = {
     gevaar: '#A8322A',
     waarschuwing: '#9A6B14',
     succes: '#3F7A4B',
+    // Vier accenten voor de tellers op Voortgang. Ze staan hier en niet in de component, om
+    // dezelfde reden als hierboven: een hardgecodeerde hex in een scherm heeft geen donkere
+    // tegenhanger, en dan leest een gekleurde kaart in donkere modus als een lichtvlek. De tinten
+    // zijn bewust uit hetzelfde warme palet gekozen als de tijdperkkleuren, niet uit een
+    // standaard materialpalet.
+    statStreak: '#C2703C',
+    statHoofdstuk: '#3B6E7D',
+    statVerhaal: '#A8842E',
+    statPersonage: '#5C7A5E',
   },
   dark: {
     text: '#F3ECDC',
@@ -28,6 +37,10 @@ export const Colors = {
     gevaar: '#E08A80',
     waarschuwing: '#D9AE5F',
     succes: '#7FB98B',
+    statStreak: '#D9905E',
+    statHoofdstuk: '#6FA8B8',
+    statVerhaal: '#D9AE5F',
+    statPersonage: '#7FB98B',
   },
 } as const;
 

@@ -27,6 +27,18 @@ export type Prestatie = {
   /** Vanaf welke stand hij behaald is. */
   drempel: number;
   icoon: IoniconNaam;
+  /**
+   * Wat hij waard is in punten.
+   *
+   * Punten zijn een *score*, geen munteenheid: er is niets voor te kopen en dat is met opzet zo.
+   * Ze bestaan om veertien losse badges op te tellen tot één getal dat groeit, zodat "hoe ver ben
+   * ik" ook te beantwoorden is zonder het raster te lezen. Ging er ooit iets mee te betalen, dan
+   * moeten ze van dit toestel af en naar de server verhuizen — nu staan ze in de bundel en is een
+   * gewijzigde waarde dus één app-update, niet een migratie.
+   *
+   * Deze waarden zijn gespiegeld in `public.achievements.reward_points`. Deze hier is leidend.
+   */
+  punten: number;
 };
 
 /**
@@ -37,23 +49,23 @@ export type Prestatie = {
  * hierboven (100 hoofdstukken, 100 dagen) zijn haalbaar en blijven staan.
  */
 export const PRESTATIES = [
-  { id: 'hoofdstuk-1', categorie: 'hoofdstukken', drempel: 1, icoon: 'book-outline' },
-  { id: 'hoofdstuk-10', categorie: 'hoofdstukken', drempel: 10, icoon: 'book-outline' },
-  { id: 'hoofdstuk-25', categorie: 'hoofdstukken', drempel: 25, icoon: 'library-outline' },
-  { id: 'hoofdstuk-50', categorie: 'hoofdstukken', drempel: 50, icoon: 'library-outline' },
-  { id: 'hoofdstuk-100', categorie: 'hoofdstukken', drempel: 100, icoon: 'ribbon-outline' },
+  { id: 'hoofdstuk-1', categorie: 'hoofdstukken', drempel: 1, icoon: 'book-outline', punten: 10 },
+  { id: 'hoofdstuk-10', categorie: 'hoofdstukken', drempel: 10, icoon: 'book-outline', punten: 25 },
+  { id: 'hoofdstuk-25', categorie: 'hoofdstukken', drempel: 25, icoon: 'library-outline', punten: 50 },
+  { id: 'hoofdstuk-50', categorie: 'hoofdstukken', drempel: 50, icoon: 'library-outline', punten: 100 },
+  { id: 'hoofdstuk-100', categorie: 'hoofdstukken', drempel: 100, icoon: 'ribbon-outline', punten: 250 },
 
-  { id: 'verhaal-1', categorie: 'verhalen', drempel: 1, icoon: 'bookmark-outline' },
-  { id: 'verhaal-5', categorie: 'verhalen', drempel: 5, icoon: 'bookmarks-outline' },
-  { id: 'verhaal-10', categorie: 'verhalen', drempel: 10, icoon: 'bookmarks-outline' },
+  { id: 'verhaal-1', categorie: 'verhalen', drempel: 1, icoon: 'bookmark-outline', punten: 20 },
+  { id: 'verhaal-5', categorie: 'verhalen', drempel: 5, icoon: 'bookmarks-outline', punten: 75 },
+  { id: 'verhaal-10', categorie: 'verhalen', drempel: 10, icoon: 'bookmarks-outline', punten: 150 },
 
-  { id: 'personage-3', categorie: 'personages', drempel: 3, icoon: 'people-outline' },
-  { id: 'personage-10', categorie: 'personages', drempel: 10, icoon: 'people-circle-outline' },
+  { id: 'personage-3', categorie: 'personages', drempel: 3, icoon: 'people-outline', punten: 30 },
+  { id: 'personage-10', categorie: 'personages', drempel: 10, icoon: 'people-circle-outline', punten: 100 },
 
-  { id: 'streak-3', categorie: 'streak', drempel: 3, icoon: 'flame-outline' },
-  { id: 'streak-7', categorie: 'streak', drempel: 7, icoon: 'flame-outline' },
-  { id: 'streak-30', categorie: 'streak', drempel: 30, icoon: 'flame' },
-  { id: 'streak-100', categorie: 'streak', drempel: 100, icoon: 'trophy-outline' },
+  { id: 'streak-3', categorie: 'streak', drempel: 3, icoon: 'flame-outline', punten: 15 },
+  { id: 'streak-7', categorie: 'streak', drempel: 7, icoon: 'flame-outline', punten: 40 },
+  { id: 'streak-30', categorie: 'streak', drempel: 30, icoon: 'flame', punten: 150 },
+  { id: 'streak-100', categorie: 'streak', drempel: 100, icoon: 'trophy-outline', punten: 500 },
 ] as const satisfies readonly Prestatie[];
 
 /**
@@ -103,3 +115,19 @@ export function volgendePrestatie(
     (prestatie) => prestatie.categorie === categorie && stand[prestatie.categorie] < prestatie.drempel
   );
 }
+
+/**
+ * De punten van een verzameling behaalde mijlpalen bij elkaar.
+ *
+ * Neemt ids en niet de mijlpalen zelf, omdat de aanroepers een `Set<string>` hebben: het raster
+ * heeft de behaalde ids, `achievement-store` heeft de ontgrendelde ids van de server. Een id die
+ * niet (meer) bestaat telt voor nul in plaats van te gooien — zie `prestatieMet`.
+ */
+export function puntenVoor(ids: Iterable<string>): number {
+  let totaal = 0;
+  for (const id of ids) totaal += prestatieMet(id)?.punten ?? 0;
+  return totaal;
+}
+
+/** Alle punten die er te verdienen zijn. De noemer onder `puntenVoor`. */
+export const MAXIMALE_PUNTEN = PRESTATIES.reduce((som, prestatie) => som + prestatie.punten, 0);

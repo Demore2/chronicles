@@ -33,6 +33,15 @@ type PrestatieState = {
    * geworden en komt hij hier niet terecht.
    */
   teVieren: string | null;
+  /**
+   * De mijlpaal waarvan het venster openstaat, of `null`.
+   *
+   * Staat hier en niet als lokale state in het raster, omdat er twee ingangen naar hetzelfde
+   * venster zijn: een tegel op Voortgang en de strook die na een ontgrendeling binnenschuift (die
+   * hangt in de root layout, ver buiten het raster). Twee kopieen van het venster zouden op
+   * elkaar kunnen stapelen.
+   */
+  detailId: string | null;
 
   /** Schrijft ids bij als bekend, zonder aankondiging. */
   markeerBekend: (ids: string[]) => void;
@@ -40,6 +49,8 @@ type PrestatieState = {
   initialiseer: (ids: string[]) => void;
   zetTeVieren: (id: string) => void;
   wisTeVieren: () => void;
+  toonDetail: (id: string) => void;
+  wisDetail: () => void;
   /** Voor het wissen van lokale gegevens bij accountverwijdering. */
   reset: () => void;
 };
@@ -50,6 +61,7 @@ export const usePrestatieStore = create<PrestatieState>()(
       bekendeIds: [],
       geinitialiseerd: false,
       teVieren: null,
+      detailId: null,
 
       markeerBekend: (ids) =>
         set((state) => {
@@ -61,16 +73,21 @@ export const usePrestatieStore = create<PrestatieState>()(
       initialiseer: (ids) => set({ bekendeIds: ids, geinitialiseerd: true }),
 
       zetTeVieren: (id) => set({ teVieren: id }),
+      // De strook gaat weg zodra het venster opengaat: ze vertellen hetzelfde, en de strook zou
+      // anders over de rand van het venster heen blijven staan tot zijn tijd om is.
+      toonDetail: (id) => set({ detailId: id, teVieren: null }),
+      wisDetail: () => set({ detailId: null }),
       wisTeVieren: () => set({ teVieren: null }),
 
-      reset: () => set({ bekendeIds: [], geinitialiseerd: false, teVieren: null }),
+      reset: () => set({ bekendeIds: [], geinitialiseerd: false, teVieren: null, detailId: null }),
     }),
     {
       name: 'prestatie-storage',
       storage: createJSONStorage(() => AsyncStorage),
       /**
-       * `teVieren` blijft buiten de opslag. Een bewaarde mijlpaal zou bij de volgende koude start
-       * opnieuw over het scherm schuiven, dagen na het moment waar hij bij hoorde.
+       * `teVieren` en `detailId` blijven buiten de opslag. Een bewaarde mijlpaal zou bij de
+       * volgende koude start opnieuw over het scherm schuiven (of een venster openzetten), dagen
+       * na het moment waar hij bij hoorde.
        */
       partialize: (state) => ({
         bekendeIds: state.bekendeIds,

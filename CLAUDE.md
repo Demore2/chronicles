@@ -543,7 +543,7 @@ raken.
   de eerste geslaagde prebuild de merged manifest opnieuw op nieuwe permissies (commando in
   `docs/README.md`).
 
-### Mijlpalen (`src/constants/prestaties.ts`, `use-prestaties.ts`)
+### Mijlpalen (`src/constants/prestaties.ts`, `use-prestaties.ts`, `achievement-store.ts`)
 
 De "achievements" uit het pushplan. Veertien stuks, over vier tellers: afgeronde hoofdstukken,
 uitgelezen verhalen, ontgrendelde personages en de streak.
@@ -576,6 +576,66 @@ uitgelezen verhalen, ontgrendelde personages en de streak.
 - Eigen Android-kanaal (`prestatie`) en een eigen analytics-gebeurtenis
   (`ACHIEVEMENT_UNLOCKED`), met `tegelijk` erin: structureel meer dan 1 betekent dat de eerste
   meting ergens te vroeg gebeurt.
+
+#### De serverkant (`achievement-store.ts`, `public.achievements`)
+
+**Óf een mijlpaal behaald is blijft afgeleid; de server bewaart alleen wat je niet kunt
+terugrekenen.** Dat zijn drie dingen: wánneér hij verdiend is, hoeveel punten hij opleverde, en
+of hij gedeeld is. De catalogus zelf staat nog steeds in `prestaties.ts` — een tweede lijst van
+veertien mijlpalen in de database zou betekenen dat je een badge kunt zien die geen naam heeft, of
+een melding krijgt voor iets dat op Voortgang niet bestaat.
+
+- **Drie tabellen.** `public.achievements` is de spiegel van `PRESTATIES` (id, categorie, drempel,
+  icoon, `reward_points`, plus `naam_en` — uitsluitend voor teksten die de *server* opstelt; de
+  app leest die kolom nooit en gebruikt `prestatie.namen` uit i18n). `public.user_achievements`
+  is één rij per gebruiker per mijlpaal met `unlocked_at`/`shared`/`shared_at`.
+  `public.achievement_progress` houdt "3 van de 7" bij — voor **alle** veertien, ook de behaalde.
+  Er is geen delete-policy, dus een rij die bij het ontgrendelen op "9 van de 10" blijft staan
+  blijft dat voorgoed, en een sweep zou "nog één hoofdstuk" sturen voor iets dat al binnen is.
+  Zo leest de tabel zichzelf: behaald is precies `current_value >= target_value`.
+  **Wijkt de tabel af van `prestaties.ts`, dan is `prestaties.ts` leidend** — de app leest zijn
+  definities nooit van de server, dus een verschil valt anders nergens op.
+- **`achievement_progress` is er voor de server, niet voor de client.** De app rekent dezelfde
+  voortgang zelf uit de vier tellers uit, offline en actueler; de tabel bestaat zodat een
+  push-sweep "nog één hoofdstuk" kan vragen. Hij wordt dus wel geschreven en nooit teruggelezen.
+- **`achievement-store` is de vijfde regel in `SYNC_STORES`** en volgt het bekende contract
+  (`heeftOnverzondenWijzigingen` / `syncToSupabase` / `resetSyncStatus` + een `haalOp`). Bij het
+  samenvoegen wint de **vroegste** `unlockedAt` — een tweede toestel dat vandaag inlogt mag
+  "verdiend op 3 maart" niet naar vandaag verzetten — en is `gedeeld` een OF.
+- **Het staat náást `prestatie-store` en niet erin, met opzet.** Die bewaart welke aankondiging je
+  op *dit toestel* hebt gezien en synchroniseert daarom nooit (zie `geinitialiseerd`); deze bewaart
+  een feit over de *lezer* en synchroniseert daarom altijd. Eén store met twee tegengestelde
+  sync-regels behandelt de ene helft van zijn velden altijd verkeerd.
+- **De eerste meting registreert wél, maar kondigt niets aan.** Anders heeft wie deze versie
+  installeert met vijftig hoofdstukken achter de rug badges zonder datum. Het moment is dan "nu";
+  de samenvoeging zet het terug zodra de server een eerdere datum blijkt te kennen.
+- **Punten zijn een score, geen munteenheid.** Ze staan in `PRESTATIES.punten` (bundel, dus een
+  wijziging is één app-update) en zijn gespiegeld in `reward_points`. Er is niets voor te kopen,
+  en dat is de reden dat ze lokaal mogen staan; ging er ooit iets mee te betalen, dan moeten ze
+  eerst naar de server.
+- **De teller op Voortgang rekent met de afgeleide stand, niet met `achievement-store`.** Die
+  loopt achter zolang een verse ontgrendeling nog niet gepusht is, en een puntenteller die na het
+  afvinken van een hoofdstuk twee seconden blijft hangen leest als een fout.
+
+#### Het venster en delen (`achievement-unlock-modal.tsx`, `constants/deel.ts`)
+
+- **De aankondiging blijft de strook; het venster is een tik verderop.** `PrestatieMelding`
+  schuift nog steeds binnen als er iets behaald is, maar is nu een *ingang*: aantikken opent
+  `AchievementUnlockModal` in plaats van de strook alleen weg te halen. Zo bestaat de zwaardere
+  viering wél, zonder ooit over de `CharacterUnlockModal` in de reader heen te vallen — dezelfde
+  afweging die de strook überhaupt een strook maakte.
+- **Het venster hangt één keer in de root layout** en wordt gestuurd door
+  `prestatie-store.detailId`, omdat er twee ingangen naartoe leiden (de strook en elke tegel in
+  het raster). Twee kopieën zouden op elkaar kunnen stapelen. De tegels riepen hiervoor `meld()`
+  aan; dat kon niet blijven, want in een systeemvenster past geen deelknop.
+- **`constants/deel.ts` is een intent, net als `haptics.ts` en `dialoog.ts`**: hij gooit nooit en
+  geeft `'gedeeld' | 'gekopieerd' | 'afgebroken' | 'niet-mogelijk'` terug. Op web is `Share` uit
+  react-native niet te vertrouwen, dus daar is het `navigator.share` → klembord → niets. **Alleen
+  `gedeeld` en `gekopieerd` zetten de `shared`-vlag** — een weggeklikt deelvenster is geen delen.
+- **`user_achievements` heeft een update-policy nodig en niet alleen insert.** Zonder die policy
+  raakt de upsert van een bestaande rij nul rijen zonder foutmelding, en kan de `shared`-vlag dus
+  nooit gezet worden. Delete-policies zijn er bewust op geen van de drie: verwijderen loopt via de
+  `delete-account` edge function en de cascade.
 
 ### Images (portretten + scènes — gebundeld, LAUNCH-PLAN.md B1/B2)
 

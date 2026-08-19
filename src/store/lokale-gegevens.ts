@@ -1,4 +1,5 @@
 import { useAbonnementStore } from '@/store/abonnement-store';
+import { useAchievementStore } from '@/store/achievement-store';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { STANDAARD_EMAIL_VOORKEUREN, useEmailVoorkeurStore } from '@/store/email-voorkeur-store';
 import { useNotificatieStore } from '@/store/notificatie-store';
@@ -32,6 +33,7 @@ export function wisLokaleGebruikersgegevens(): void {
   useVoortgangStore.getState().resetSyncStatus();
   useStoryProgressStore.getState().resetSyncStatus();
   useCharacterUnlockStore.getState().resetSyncStatus();
+  useAchievementStore.getState().resetSyncStatus();
   // De notificatievoorkeuren zélf blijven staan — dat is een instelling van dit toestel, net als
   // taal en thema. Wat wél weg moet is een openstaande sync: die zou de voorkeuren van de
   // verwijderde lezer naar het volgende account op dit toestel duwen.
@@ -57,6 +59,14 @@ export function wisLokaleGebruikersgegevens(): void {
   // volgende lezer op dit toestel zijn eerste tien hoofdstukken zonder ooit een mijlpaal te zien.
   // `geinitialiseerd` gaat mee terug op `false`, zodat die lezer een schone eerste meting krijgt.
   usePrestatieStore.getState().reset();
+  // En de serverkant ervan: de ontgrendeldata en deelstatus horen bij de verwijderde lezer.
+  // Blijven die staan, dan neemt de samenvoeging bij de volgende login ze mee omhoog naar het
+  // nieuwe account — een kopie van precies de gegevens die net "voorgoed verwijderd" heetten.
+  useAchievementStore.setState({
+    ontgrendeld: [],
+    stand: null,
+    heeftOnverzondenWijzigingen: false,
+  });
   useCharacterUnlockStore.setState({ unlockedCharacters: [], heeftOnverzondenWijzigingen: false });
 
   // De avatar: een personage-avatar verwijst naar een verhaal dat je niet meer hebt ontgrendeld,

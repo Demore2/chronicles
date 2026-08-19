@@ -2,6 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 
+import { haalPrestatieOntgrendelingenOp, useAchievementStore } from '@/store/achievement-store';
 import { useAuthStore } from '@/store/auth-store';
 import { haalOntgrendelingenOp, useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { haalNotificatieVoorkeurenOp, useNotificatieStore } from '@/store/notificatie-store';
@@ -20,10 +21,10 @@ import { haalVoortgangOp, useVoortgangStore } from '@/store/voortgang-store';
  */
 
 /**
- * De drie stores die synchroniseren, met per store hoe je hem ophaalt.
+ * De stores die synchroniseren, met per store hoe je hem ophaalt.
  *
- * Als lijst en niet als drie losse aanroepen, zodat een vierde store (voorkeuren, ooit) één regel
- * is en niet vier plekken die uit elkaar kunnen lopen. De drie contracten zijn met opzet identiek:
+ * Als lijst en niet als losse aanroepen, zodat een store erbij één regel is en niet vier plekken
+ * die uit elkaar kunnen lopen — er staan er inmiddels vijf. De contracten zijn met opzet identiek:
  * `heeftOnverzondenWijzigingen` / `syncToSupabase` / `resetSyncStatus` plus een `haalOp`.
  */
 const SYNC_STORES = [
@@ -35,6 +36,10 @@ const SYNC_STORES = [
   // alleen daar. Eén afwijking t.o.v. de andere drie staat in `voegServerVoorkeurenSamen` —
   // voorkeuren worden overschreven en niet verenigd, want "uit" is een keuze en geen leegte.
   { store: useNotificatieStore, haalOp: haalNotificatieVoorkeurenOp },
+  // De vijfde: wanneer je een mijlpaal verdiende, wat hij opleverde en of je hem gedeeld hebt.
+  // Alleen dat — *of* hij behaald is blijft afgeleid uit de vier tellers hierboven en werkt dus
+  // offline. Zie de kop van `achievement-store.ts` voor waarom dit niet in `prestatie-store` kan.
+  { store: useAchievementStore, haalOp: haalPrestatieOntgrendelingenOp },
 ] as const;
 
 /** Duwt alles wat openstaat omhoog. Een store zonder wijzigingen kost niets. */

@@ -6,6 +6,7 @@ import { notificaties } from '@/constants/notificaties';
 import { behaaldePrestaties, type PrestatieStand } from '@/constants/prestaties';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { logStoryEvent } from '@/hooks/useAnalytics';
+import { useAchievementStore } from '@/store/achievement-store';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { useNotificatieStore } from '@/store/notificatie-store';
 import { usePrestatieStore } from '@/store/prestatie-store';
@@ -78,6 +79,7 @@ export function usePrestaties(): void {
     await wachtOpHydratie(useVoortgangStore);
     await wachtOpHydratie(useCharacterUnlockStore);
     await wachtOpHydratie(usePrestatieStore);
+    await wachtOpHydratie(useAchievementStore);
 
     const voortgang = useVoortgangStore.getState();
     const stand: PrestatieStand = {
@@ -95,10 +97,22 @@ export function usePrestaties(): void {
 
     const behaald = behaaldePrestaties(stand);
     const store = usePrestatieStore.getState();
+    const prestatieServer = useAchievementStore.getState();
+
+    // De stand gaat sowieso naar `achievement-store`, ook als er niets nieuws is: die voedt
+    // `achievement_progress`, en juist "3 van de 7" verandert op momenten dat er géén mijlpaal
+    // bijkomt. De store slaat een ongewijzigde stand zelf over, dus dit kost niets.
+    prestatieServer.zetStand(stand);
 
     // Eerste meting op dit toestel: alles wat er al staat telt als gezien, zonder aankondiging.
     if (!store.geinitialiseerd) {
-      store.initialiseer(behaald.map((prestatie) => prestatie.id));
+      const idsNu = behaald.map((prestatie) => prestatie.id);
+      store.initialiseer(idsNu);
+      // Wél registreren, ook al wordt er niets aangekondigd: anders heeft een lezer die deze
+      // versie installeert met vijftig hoofdstukken achter de rug badges zonder datum. Het moment
+      // is dan "nu" — een gok, maar de enige die dit toestel heeft, en de samenvoeging in
+      // `achievement-store` zet hem terug zodra de server een eerdere datum blijkt te kennen.
+      prestatieServer.registreer(idsNu);
       return;
     }
 
@@ -108,6 +122,7 @@ export function usePrestaties(): void {
     // Alles bijschrijven vóórdat er iets wordt aangekondigd. Andersom zou een melding die
     // halverwege misgaat de mijlpaal opnieuw laten opduiken bij de volgende meting.
     store.markeerBekend(nieuw.map((prestatie) => prestatie.id));
+    prestatieServer.registreer(nieuw.map((prestatie) => prestatie.id));
 
     // De zwaarste van de nieuwe: `PRESTATIES` staat op drempel gesorteerd binnen een categorie.
     const aankondigen = nieuw[nieuw.length - 1];

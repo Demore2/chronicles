@@ -34,6 +34,22 @@ const en = {
     aantalVerhalen: (gelezen: number, totaal: number) => `${gelezen}/${totaal} stories`,
     storiesOfEra: (completed: number, total: number) => `${completed} of ${total} stories`,
     noMoreStories: 'All stories explored! View all via Discover more.',
+
+    /**
+     * De vier tellerkaarten bovenaan Voortgang. Naam en eenheid staan apart omdat het cijfer er
+     * als los `display`-getal tussen staat: alleen de eenheid buigt mee met het aantal, de naam
+     * is het vaste kopje van de kaart.
+     */
+    statStreak: 'Streak',
+    statStreakEenheid: (n: number): string => (n === 1 ? 'day' : 'days'),
+    statHoofdstukken: 'Chapters',
+    statHoofdstukkenEenheid: 'done',
+    statVerhalen: 'Stories',
+    statVerhalenEenheid: 'completed',
+    statPersonages: 'Characters',
+    statPersonagesEenheid: 'unlocked',
+    /** Rechts van een tijdperkbalk: hoeveel procent van dat tijdperk uit is. */
+    eraPercentage: (procent: number): string => `${procent}%`,
   },
   profiel: {
     titel: 'Profile',
@@ -413,6 +429,30 @@ const en = {
       personages: (n: number): string => `${n} character${n === 1 ? '' : 's'} in your collection.`,
       streak: (n: number): string => `${n} day${n === 1 ? '' : 's'} in a row.`,
     },
+    /** Op de tegel en in het venster: hoe ver je bent naar een nog niet behaalde mijlpaal. */
+    /** Op de tegel en in het venster: hoe ver je bent naar een nog niet behaalde mijlpaal. */
+    voortgangKort: (huidig: number, doel: number): string => `${huidig}/${doel}`,
+    voortgangRegel: (huidig: number, doel: number): string => `Progress: ${huidig} of ${doel}`,
+    /** In het venster van een behaalde mijlpaal, boven de uitleg. */
+    behaald: 'Unlocked',
+    ok: 'OK',
+    sluiten: 'Close',
+    /** De punten die een enkele mijlpaal opleverde, in zijn venster. */
+    punten: (n: number): string => `+${n} points`,
+    /** De puntenteller boven het raster. Geen valuta — zie `punten` in constants/prestaties.ts. */
+    puntenTotaal: (behaald: number, totaal: number): string => `${behaald} / ${totaal} points`,
+    /** Wanneer de mijlpaal is verdiend. `datum` is al opgemaakt in de taal van de lezer. */
+    ontgrendeldOp: (datum: string): string => `Earned on ${datum}`,
+    deel: 'Share',
+    deelOpnieuw: 'Share again',
+    /** Titel van het deelvenster van het toestel. */
+    deelTitel: 'Chronicles milestone',
+    /** Wat er daadwerkelijk verstuurd wordt. */
+    deelBericht: (naam: string, uitleg: string): string =>
+      `I just unlocked “${naam}” in Chronicles — ${uitleg}`,
+    deelGelukt: 'Shared.',
+    deelGekopieerd: 'Copied to your clipboard.',
+    deelNietMogelijk: 'Sharing is not available here.',
   },
   collectie: {
     nietGevondenTitel: 'Storyline not found',

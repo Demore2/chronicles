@@ -36,6 +36,7 @@ export function PrestatieMelding() {
   const insets = useSafeAreaInsets();
   const teVieren = usePrestatieStore((state) => state.teVieren);
   const wisTeVieren = usePrestatieStore((state) => state.wisTeVieren);
+  const toonDetail = usePrestatieStore((state) => state.toonDetail);
 
   useEffect(() => {
     if (!teVieren) return;
@@ -62,9 +63,13 @@ export function PrestatieMelding() {
       pointerEvents="box-none"
       style={[styles.laag, { top: insets.top + Spacing.two }]}>
       <Pressable
-        onPress={wisTeVieren}
+        // Aantikken opent het venster met de datum, de punten en de deelknop; het haalt de strook
+        // meteen weg (`toonDetail` wist `teVieren`). Zo is die viering één tik na de ontgrendeling
+        // bereikbaar zonder dat er ooit een venster óver de personageviering in de reader valt —
+        // zie de kop van `achievement-unlock-modal.tsx`.
+        onPress={() => toonDetail(teVieren)}
         accessibilityRole="button"
-        accessibilityLabel={`${t((s) => s.prestatie.meldingTitel)}: ${naam}`}
+        accessibilityLabel={`${t((s) => s.prestatie.meldingTitel)}: ${naam}. ${uitleg}`}
         style={[
           styles.strook,
           { backgroundColor: theme.backgroundElement, borderColor: theme.accent },

@@ -13,6 +13,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { AppHeader } from '@/components/app-header';
 import { SplashScreen } from '@/components/splash-screen';
+import { AchievementUnlockModal } from '@/components/achievement-unlock-modal';
 import { PrestatieMelding } from '@/components/prestatie-melding';
 import { useDagelijkseHerinnering } from '@/hooks/use-dagelijkse-herinnering';
 import { usePrestaties } from '@/hooks/use-prestaties';
@@ -75,6 +76,11 @@ export default function RootLayout() {
         {/* Boven de Stack, zodat de strook op elk scherm kan verschijnen. Hij vangt zelf geen
             aanrakingen buiten zijn eigen kader (`pointerEvents="box-none"`). */}
         <PrestatieMelding />
+        {/* Het venster achter de strook en achter elke tegel in het raster op Voortgang. Het staat
+            hier en niet in het raster, omdat de strook — die hierboven hangt — er ook naartoe
+            leidt; twee kopieën zouden op elkaar kunnen stapelen. Het rendert `null` zolang er
+            niets is aangetikt. */}
+        <AchievementUnlockModal />
         <Stack screenOptions={{ header: (props) => <AppHeader {...props} /> }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ headerShown: false }} />
