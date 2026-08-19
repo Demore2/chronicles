@@ -38,6 +38,16 @@ type PushSdk = typeof import('@react-native-firebase/messaging');
 type Messaging = ReturnType<PushSdk['getMessaging']>;
 export type PushBericht = Parameters<Parameters<PushSdk['onMessage']>[1]>[0];
 
+/**
+ * Dezelfde hoofdschakelaar als in `lib/analytics.ts`, uit `.env`.
+ *
+ * Staat hij niet op `'true'`, dan laat `app.config.js` de Firebase-plugin uit de native
+ * configuratie weg en heeft het geen zin de messaging-module te laden: er is geen
+ * Firebase-app om hem aan te hangen. `push.beschikbaar` is dan onwaar, de twee servercategorieen
+ * blijven uit Instellingen, en de drie lokale meldingen werken gewoon door.
+ */
+const FIREBASE_AAN = process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true';
+
 /** `undefined` = nog niet geprobeerd, `null` = niet beschikbaar op dit platform of deze build. */
 let sdk: PushSdk | null | undefined;
 let instantie: Messaging | null = null;
@@ -46,6 +56,8 @@ let waarschuwingGetoond = false;
 type Geladen = { sdk: PushSdk; messaging: Messaging };
 
 function laad(): Geladen | null {
+  // De hoofdschakelaar staat vooraan: uit is uit, op elk platform.
+  if (!FIREBASE_AAN) return null;
   if (Platform.OS === 'web') return null;
   if (sdk === null) return null;
 

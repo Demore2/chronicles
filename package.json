@@ -1,4 +1,14 @@
 {
+  "expo": {
+    "autolinking": {
+      "_comment": "Firebase-modules uit het autolinken houden zolang EXPO_PUBLIC_FIREBASE_ENABLED false is. Moet hier staan en niet in react-native.config.js: expo-modules-autolinking leest zijn exclude-lijst uit package.json en negeert project-level dependency-overrides. app.config.js gooit een fout als de vlag aan staat terwijl deze lijst er nog is.",
+      "exclude": [
+        "@react-native-firebase/app",
+        "@react-native-firebase/analytics",
+        "@react-native-firebase/messaging"
+      ]
+    }
+  },
   "name": "history-app",
   "main": "expo-router/entry",
   "version": "1.0.0",

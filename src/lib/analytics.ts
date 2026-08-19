@@ -28,6 +28,20 @@ import type { AnalyticsEvent, UserProperty } from '@/constants/analytics';
 
 type AnalyticsSdk = typeof import('@react-native-firebase/analytics');
 
+/**
+ * De hoofdschakelaar, uit `.env`.
+ *
+ * Staat op `false` zolang `google-services.json` ontbreekt. Dan laat `app.config.js` de
+ * Firebase-plugin uit de native configuratie weg (dát is wat de build weer laat slagen) en laadt
+ * deze module de SDK niet meer. Zonder die tweede helft zou `getAnalytics()` op een
+ * niet-geïnitialiseerde Firebase-app stuiten: dat wordt hieronder netjes opgevangen, maar het is
+ * een gevangen fout per app-start voor iets dat we bewust hebben uitgezet.
+ *
+ * Merk op dat dit een build-time constante is: babel vervangt `process.env.EXPO_PUBLIC_*` door de
+ * letterlijke waarde, dus een wijziging vraagt om een herstart van de bundler.
+ */
+const FIREBASE_AAN = process.env.EXPO_PUBLIC_FIREBASE_ENABLED === 'true';
+
 /** `undefined` = nog niet geprobeerd, `null` = niet beschikbaar op dit platform of deze build. */
 let sdk: AnalyticsSdk | null | undefined;
 let instantie: Analytics | null = null;
@@ -35,7 +49,22 @@ let waarschuwingGetoond = false;
 
 type Geladen = { sdk: AnalyticsSdk; analytics: Analytics };
 
+/**
+ * Wat er in plaats van een meting gebeurt zolang Firebase uit staat.
+ *
+ * Alleen in `__DEV__`: in een productiebuild is dit ruis, en de vlag maakt de meting sowieso niet
+ * alsnog waar. Het punt is dat je tijdens het bouwen kunt zien dát er iets geteld zou worden en
+ * met welke parameters — anders lijkt een uitgezette analytics-laag precies op een kapotte.
+ */
+function stub(actie: string, details?: unknown): void {
+  if (FIREBASE_AAN || !__DEV__) return;
+  if (details === undefined) console.log(`[Analytics Stub] ${actie}`);
+  else console.log(`[Analytics Stub] ${actie}:`, details);
+}
+
 function laad(): Geladen | null {
+  // De hoofdschakelaar staat vóór de platformcontrole: uit is uit, op elk platform.
+  if (!FIREBASE_AAN) return null;
   // Op web bestaat de native module niet. React Native Firebase kan daar via de firebase-js-sdk
   // wél praten, maar dan moet er een web-configuratie in `app.json` staan en gaat er vanuit de
   // browser-preview echt verkeer naar Google. Dat willen we niet tijdens het ontwikkelen.
@@ -142,7 +171,7 @@ export const analytics = {
   /** Eén eigen gebeurtenis. De naam komt uit `ANALYTICS_EVENTS`, nooit uit een losse string. */
   log(naam: AnalyticsEvent, params?: Record<string, unknown>): void {
     const geladen = laad();
-    if (!geladen) return;
+    if (!geladen) return stub(naam, params);
     try {
       geladen.sdk.logEvent(geladen.analytics, naam, schoon(params));
     } catch (fout) {
@@ -159,7 +188,7 @@ export const analytics = {
    */
   logScherm(schermNaam: string): void {
     const geladen = laad();
-    if (!geladen) return;
+    if (!geladen) return stub('screen_view', schermNaam);
     geladen.sdk
       .logScreenView(geladen.analytics, { screen_name: schermNaam, screen_class: schermNaam })
       .catch(() => {});
@@ -176,14 +205,14 @@ export const analytics = {
    */
   logInloggen(methode: string): void {
     const geladen = laad();
-    if (!geladen) return;
+    if (!geladen) return stub('login', methode);
     geladen.sdk.logLogin(geladen.analytics, { method: methode }).catch(() => {});
   },
 
   /** Zelfde verhaal als `logInloggen`, voor registreren. */
   logRegistreren(methode: string): void {
     const geladen = laad();
-    if (!geladen) return;
+    if (!geladen) return stub('sign_up', methode);
     geladen.sdk.logSignUp(geladen.analytics, { method: methode }).catch(() => {});
   },
 
@@ -197,14 +226,14 @@ export const analytics = {
    */
   zetGebruiker(userId: string | null): void {
     const geladen = laad();
-    if (!geladen) return;
+    if (!geladen) return stub('set user id', userId);
     geladen.sdk.setUserId(geladen.analytics, userId).catch(() => {});
   },
 
   /** Eén gebruikerseigenschap. `null` wist hem. */
   zetEigenschap(naam: UserProperty, waarde: string | null): void {
     const geladen = laad();
-    if (!geladen) return;
+    if (!geladen) return stub(`user property ${naam}`, waarde);
     geladen.sdk.setUserProperty(geladen.analytics, naam, waarde).catch(() => {});
   },
 };
