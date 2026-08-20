@@ -12,7 +12,7 @@
  * verbergt het scherm de link vanzelf zolang er weer een placeholder staat, in plaats van naar
  * een 404 te wijzen.
  */
-export const PRIVACY_BELEID_URL = 'https://demore.github.io/chronicles/privacy-policy.html';
+export const PRIVACY_BELEID_URL = 'https://demore2.github.io/chronicles/privacy-policy.html';
 
 /**
  * `false` zolang `PRIVACY_BELEID_URL` nog de placeholder is. Wordt vanzelf `true` op het moment

@@ -61,7 +61,7 @@ export const supportEmailIsIngesteld = !SUPPORT_EMAIL.includes('INVULLEN');
  * `constants/juridische-teksten.ts`); dit is de publieke kopie voor wie het buiten de app wil
  * lezen — en voor Play, dat naar een bereikbare URL vraagt. Wijzigt de ene, wijzig de andere mee.
  */
-export const VOORWAARDEN_URL = 'https://demore.github.io/chronicles/terms-of-service.html';
+export const VOORWAARDEN_URL = 'https://demore2.github.io/chronicles/terms-of-service.html';
 
 /** `false` zolang `VOORWAARDEN_URL` de placeholder is. */
 export const voorwaardenZijnGepubliceerd =
