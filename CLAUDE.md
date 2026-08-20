@@ -738,6 +738,104 @@ bewaard** — zelfde scheiding als bij de mijlpalen.
   functies met dezelfde handtekening, ook al gebruiken er twee de tijdperknaam niet — dan hoeft
   de kaart niet te weten welke reden een parameter kent.
 
+### Sociaal delen (`constants/deel.ts`, `deel-opties.tsx`, `share-*`, `referral-store.ts`)
+
+Drie dingen zijn deelbaar — een mijlpaal, een fragment uit een hoofdstuk, en een uitnodiging — en
+ze lopen allemaal door dezelfde twee lagen: `constants/deel.ts` voor het *hoe*, en
+`components/deel-opties.tsx` voor de drie knoppen.
+
+- **`deel.ts` is een intent, net als `haptics.ts` en `dialoog.ts`** en gooit nooit. Naast `deel()`
+  (het deelvenster van het toestel) staan er nu `kopieer()`, `deelViaWhatsApp()`, `deelAlsLink()`
+  en `deelBerichtMetLink()`. `DeelResultaat` blijft de vier uitkomsten
+  (`gedeeld`/`gekopieerd`/`afgebroken`/`niet-mogelijk`), en **alleen `gedeeld` en `gekopieerd`
+  markeren iets** — een weggeklikt deelvenster is geen delen.
+- **WhatsApp gaat via `Linking.openURL` en bewust níét via `canOpenURL`.** Package visibility op
+  Android 11+ raakt `canOpenURL` (dat zonder een `<queries>`-blok altijd `false` geeft en de knop
+  op elk modern toestel doodlegt), niet `startActivity`. Twee trappen: `whatsapp://send?text=` →
+  `https://wa.me/?text=`. Op web valt de eerste trap weg.
+- **`expo-clipboard` is nieuw en native**: na het pullen hiervan is een JS-reload niet genoeg, de
+  dev client moet opnieuw gebouwd worden. `Clipboard` uit react-native core bestaat in 0.86 nog,
+  maar logt bij elke aanraking een deprecatiewaarschuwing en verdwijnt; `expo-clipboard` heeft
+  bovendien een echte webimplementatie, zodat de browserpreview hetzelfde doet als het toestel.
+- **`APP_DEEL_LINK` in `constants/app-info.ts` is een placeholder** (`chronicles.app.link`) en
+  wordt door `deelBerichtMetLink()` achter élk bericht geplakt — één plek, dus nergens te vergeten.
+  **Firebase Dynamic Links is hier géén vervolgstap**: Google heeft die dienst op 25 augustus 2025
+  uitgezet. Wat er wél overblijft staat bij de constante: de Play-listing met een
+  `referrer`-parameter (Install Referrer API, geen eigen infrastructuur nodig) of een App Link naar
+  een eigen domein met `assetlinks.json`.
+- **De berichtteksten staan in i18n onder `deel`**, als functies en niet als sjablonen met
+  plakhaakjes — elke taal kiest zijn eigen woordvolgorde. De app-link zit er niet in.
+
+#### De drie vensters over één mijlpaal
+
+Er liggen nu drie lagen over een behaalde mijlpaal, en ze beantwoorden elk een andere vraag:
+
+| | Wat het beantwoordt | Wanneer |
+|---|---|---|
+| `PrestatieMelding` (strook) | "er is iets gebeurd" | zodra hij binnenkomt |
+| `AchievementUnlockModal` | "wat is dit, en wanneer verdiende ik het" | een tik verderop |
+| `ShareAchievementModal` | "hoe deel ik het" | automatisch, of via de deelknop |
+
+- **`use-prestaties.ts` opent het deelvenster nu zelf** bij een nieuwe mijlpaal op de voorgrond —
+  behalve wanneer `prestatie-store.onderbrekingBezet` aan staat. Die vlag wordt door de reader
+  gezet zolang `CharacterUnlockModal` of `AdModal` in beeld is, en bestaat om precies één reden:
+  een verhaal uitlezen levert bijna altijd tegelijk een mijlpaal op (één verhaal, acht
+  hoofdstukken, één personage), en de zwaarste onderbreking is in dit project gereserveerd voor
+  het ontgrendelde personage. In dat geval valt de aankondiging terug op de strook, die niets
+  blokkeert. **Haal die vlag niet weg** — zonder haar valt een deelvenster over de
+  personageviering heen.
+- **Alle drie hangen één keer in de root layout** en worden gestuurd door `prestatie-store`
+  (`teVieren` / `detailId` / `deelId`). `toonDelen` en `toonDetail` wissen elkaar, dus er staan er
+  nooit twee tegelijk open. Geen van de drie staat in `partialize` — een bewaarde mijlpaal zou
+  dagen later opnieuw over het scherm schuiven.
+- De deelknop in `AchievementUnlockModal` roept niet meer rechtstreeks `deel()` aan maar
+  `toonDelen(id)`; het markeren van `shared` in `achievement-store` gebeurt nu in het deelvenster.
+
+#### Citaten delen (`share-quote-button.tsx`)
+
+Een klein deel-icoontje onder elke `tekst`- en elk `citaat`-blok. **Alleen die twee**: een kop, een
+weetje of een sleutelmoment leest los van zijn hoofdstuk als een fragment zonder houvast. Het is
+bewust een icoon en geen knop met tekst — vijftien blokken maal een knop met "Share this quote"
+maakt van een leesscherm een werkbalk.
+
+`BlokWeergave` heeft er twee optionele props voor gekregen (`verhaalTitel`, `verhaalId`), en de
+knop verschijnt **alleen als `verhaalTitel` er is** — zonder titel valt het bericht niet te bouwen.
+De reader is de enige aanroeper die hem meegeeft.
+
+#### Uitnodigingen (`referral-store.ts`, `types/referral.ts`, `public.referrals`)
+
+- **Dit synchroniseert naar Supabase, niet naar Firestore.** Firestore zit niet in dit project, en
+  Firebase staat sinds de MVP volledig uit achter `EXPO_PUBLIC_FIREBASE_ENABLED`. Een tweede
+  backend voor één tabel zou twee sessies en twee autorisatiemodellen betekenen. `referral-store`
+  is dus de **zevende regel in `SYNC_STORES`** en volgt hetzelfde contract als de andere zes.
+- **De code is de eerste acht tekens van het gebruiker-id, in hoofdletters, zonder streepjes**
+  (`codeVoor()`). `referral_code` is `unique`, zodat een botsing een fout is en niet twee lezers
+  die elkaars vrienden krijgen.
+- **`generateReferralCode()` is geen zuivere getter**: hij schrijft bij de eerste aanroep de rij
+  aan. Roep hem aan vanuit een effect of een handler, nooit tijdens het renderen.
+- **De andere kant bestaat nog niet: een vriend die de code invoert.** Dat kán niet client-side —
+  RLS geeft een lezer alleen zijn eigen rij, dus hij kan geen vreemde rij op `referral_code`
+  opzoeken (en zou dat ook niet moeten kunnen). Dat wordt een `security definer` RPC, in de trant
+  van `hoofdstuk_interactie`. Het scherm zegt dat ook met zoveel woorden
+  (`referral.nogNietActief`) in plaats van een teller op nul te laten staan zonder uitleg.
+- **De beloningen worden in `abonnement-store` verzilverd**, niet hier: daar woont de vraag "mag
+  deze lezer dit verhaal openen". Twee nieuwe velden daar — `bonusVerhalen` (extra *nieuwe*
+  verhalen, bewust **niet** aan een dag gebonden, afgeboekt in `registreerVerhaalGeopend` op het
+  moment dat de bonus écht een deur opent) en `proTot` (epoch-ms; een tijdelijke Pro-periode
+  verloopt door het verstrijken van tijd, dus er wordt niets opgeruimd).
+  `isProActief(state, nu)` neemt het peilmoment als parameter zodat een selector niet tijdens het
+  renderen de klok afleest; `useAbonnement()` levert het aan met een `useState` + AppState-listener,
+  precies zoals `useStreak()`.
+- **Het scherm is `src/app/profiel/invite-friends.tsx`, niet `(tabs)/profiel/invite-friends.tsx`.**
+  Zelfde reden als bij `profiel/settings` en `profiel/upload-avatar`: `(tabs)/profiel.tsx` mag niet
+  worden verwijderd en zou anders dezelfde route `/profiel` opeisen. De ingang is een regel in de
+  Account-sectie van Instellingen.
+- `public.referrals` heeft RLS met `auth.uid() = user_id` op select/insert/update en **geen
+  delete-policy** — verwijderen loopt via de `delete-account` edge function en de cascade op
+  `auth.users`. `wisLokaleGebruikersgegevens()` wist de rij ook lokaal, om dezelfde reden als bij
+  de personages: anders tilt de samenvoeging bij de volgende login de gegevens van de verwijderde
+  lezer naar het nieuwe account.
+
 ### Images (portretten + scènes — gebundeld, LAUNCH-PLAN.md B1/B2)
 
 Two separate image sets, same pattern: an explicit `require()` map in `src/constants/`, files

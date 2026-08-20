@@ -15,6 +15,7 @@ import { AppHeader } from '@/components/app-header';
 import { SplashScreen } from '@/components/splash-screen';
 import { AchievementUnlockModal } from '@/components/achievement-unlock-modal';
 import { PrestatieMelding } from '@/components/prestatie-melding';
+import { ShareAchievementModal } from '@/components/share-achievement-modal';
 import { useDagelijkseHerinnering } from '@/hooks/use-dagelijkse-herinnering';
 import { usePrestaties } from '@/hooks/use-prestaties';
 import { usePushRegistratie } from '@/hooks/use-push-registratie';
@@ -81,6 +82,11 @@ export default function RootLayout() {
             leidt; twee kopieën zouden op elkaar kunnen stapelen. Het rendert `null` zolang er
             niets is aangetikt. */}
         <AchievementUnlockModal />
+        {/* En het deelvenster erachter. Het hangt hier om exact dezelfde reden als de twee
+            hierboven: er zijn twee ingangen (de deelknop in het detailvenster, en `usePrestaties()`
+            dat het bij een verse mijlpaal zelf opent) en twee kopieën zouden op elkaar kunnen
+            stapelen. `prestatie-store` zorgt dat er nooit twee van deze drie tegelijk openstaan. */}
+        <ShareAchievementModal />
         <Stack screenOptions={{ header: (props) => <AppHeader {...props} /> }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ headerShown: false }} />
@@ -92,6 +98,10 @@ export default function RootLayout() {
               De titels zetten de schermen zelf, zodat ze vertaald meebewegen. */}
           <Stack.Screen name="profiel/settings" />
           <Stack.Screen name="profiel/upload-avatar" options={{ presentation: 'modal' }} />
+          {/* Vrienden uitnodigen. Staat hier en niet onder `(tabs)/profiel/`, om dezelfde reden
+              als de twee schermen hierboven: `(tabs)/profiel.tsx` mag niet verwijderd worden en
+              zou anders dezelfde route `/profiel` opeisen. */}
+          <Stack.Screen name="profiel/invite-friends" />
           {/* De voorwaarden en het privacybeleid, geopend vanuit Instellingen. In de app zelf en
               niet als link naar buiten: ze werken zo offline en hangen niet af van een URL die
               nog niet gepubliceerd is. Play wil dat privacybeleid daarnaast nog steeds op een

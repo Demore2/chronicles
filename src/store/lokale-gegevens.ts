@@ -6,6 +6,7 @@ import { useNotificatieStore } from '@/store/notificatie-store';
 import { usePrestatieStore } from '@/store/prestatie-store';
 import { useProfileStore } from '@/store/profile-store';
 import { useRecommendationStore } from '@/store/recommendation-store';
+import { useReferralStore } from '@/store/referral-store';
 import { useStoryProgressStore } from '@/store/story-progress-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
@@ -36,6 +37,7 @@ export function wisLokaleGebruikersgegevens(): void {
   useCharacterUnlockStore.getState().resetSyncStatus();
   useAchievementStore.getState().resetSyncStatus();
   useRecommendationStore.getState().resetSyncStatus();
+  useReferralStore.getState().resetSyncStatus();
   // De notificatievoorkeuren zélf blijven staan — dat is een instelling van dit toestel, net als
   // taal en thema. Wat wél weg moet is een openstaande sync: die zou de voorkeuren van de
   // verwijderde lezer naar het volgende account op dit toestel duwen.
@@ -85,5 +87,19 @@ export function wisLokaleGebruikersgegevens(): void {
   // `gestarteVerhalen` is een lijst verhaal-id's van vandaag — leesgedrag, dus het gaat mee. Dat
   // geeft de volgende aanmelding op dit toestel wel een verse dagteller; die uitruil is bewust,
   // want een dagteller doseert nieuwe inhoud en is geen gegeven dat we mogen bewaren.
-  useAbonnementStore.setState({ isPro: false, dagSleutel: null, gestarteVerhalen: [] });
+  useAbonnementStore.setState({
+    isPro: false,
+    proTot: null,
+    dagSleutel: null,
+    gestarteVerhalen: [],
+    // Een tegoed dat met de uitnodigingen van de verwijderde lezer is verdiend hoort niet bij het
+    // volgende account op dit toestel terecht te komen — zelfde redenering als bij de personages.
+    bonusVerhalen: 0,
+  });
+
+  // De uitnodigingsrij: de code is afgeleid van een gebruiker-id dat niet meer bestaat, en de
+  // lijst uitgenodigde vrienden is een gegeven over de verwijderde lezer. Zou hij blijven staan,
+  // dan tilt de samenvoeging bij de volgende login hem naar het nieuwe account — een kopie van
+  // precies de gegevens die net "voorgoed verwijderd" heetten.
+  useReferralStore.setState({ data: null, heeftOnverzondenWijzigingen: false });
 }

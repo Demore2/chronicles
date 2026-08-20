@@ -42,6 +42,28 @@ type PrestatieState = {
    * elkaar kunnen stapelen.
    */
   detailId: string | null;
+  /**
+   * De mijlpaal waarvan het **deelvenster** openstaat, of `null`.
+   *
+   * Apart van `detailId`, want het zijn twee vensters met twee vragen: `detailId` toont wat de
+   * mijlpaal is en wanneer je hem verdiende, dit toont hoe je hem naar buiten brengt. Ze mogen
+   * elkaar opvolgen (het detailvenster heeft een deelknop) maar niet allebei tegelijk openstaan.
+   */
+  deelId: string | null;
+  /**
+   * Staat er op dit moment een zwaardere onderbreking op het scherm?
+   *
+   * Gezet door de reader zolang `CharacterUnlockModal` of `AdModal` in beeld is. Het bestaat om
+   * één reden: een mijlpaal wordt bijna altijd bereikt op precies het moment dat je een verhaal
+   * uitleest, en dat is hetzelfde moment waarop het ontgrendelde personage zijn viering krijgt.
+   * De zwaarste onderbreking is in dit project voor dat personage — zie de kop van
+   * `character-unlock-modal.tsx` — dus zolang deze vlag aan staat valt de aankondiging van een
+   * mijlpaal terug op de strook, die niets blokkeert.
+   *
+   * Staat bewust buiten de opslag: een bewaarde `true` zou het deelvenster na een herstart voor
+   * altijd onderdrukken.
+   */
+  onderbrekingBezet: boolean;
 
   /** Schrijft ids bij als bekend, zonder aankondiging. */
   markeerBekend: (ids: string[]) => void;
@@ -51,6 +73,9 @@ type PrestatieState = {
   wisTeVieren: () => void;
   toonDetail: (id: string) => void;
   wisDetail: () => void;
+  toonDelen: (id: string) => void;
+  wisDelen: () => void;
+  zetOnderbreking: (bezet: boolean) => void;
   /** Voor het wissen van lokale gegevens bij accountverwijdering. */
   reset: () => void;
 };
@@ -62,6 +87,8 @@ export const usePrestatieStore = create<PrestatieState>()(
       geinitialiseerd: false,
       teVieren: null,
       detailId: null,
+      deelId: null,
+      onderbrekingBezet: false,
 
       markeerBekend: (ids) =>
         set((state) => {
@@ -75,19 +102,34 @@ export const usePrestatieStore = create<PrestatieState>()(
       zetTeVieren: (id) => set({ teVieren: id }),
       // De strook gaat weg zodra het venster opengaat: ze vertellen hetzelfde, en de strook zou
       // anders over de rand van het venster heen blijven staan tot zijn tijd om is.
-      toonDetail: (id) => set({ detailId: id, teVieren: null }),
+      toonDetail: (id) => set({ detailId: id, deelId: null, teVieren: null }),
       wisDetail: () => set({ detailId: null }),
+      // Twee vensters over dezelfde mijlpaal horen niet op elkaar te stapelen: het deelvenster
+      // vervangt het detailvenster, en de strook is per definitie overbodig zodra er een venster
+      // open staat dat hetzelfde vertelt.
+      toonDelen: (id) => set({ deelId: id, detailId: null, teVieren: null }),
+      wisDelen: () => set({ deelId: null }),
       wisTeVieren: () => set({ teVieren: null }),
 
-      reset: () => set({ bekendeIds: [], geinitialiseerd: false, teVieren: null, detailId: null }),
+      zetOnderbreking: (bezet) => set({ onderbrekingBezet: bezet }),
+
+      reset: () =>
+        set({
+          bekendeIds: [],
+          geinitialiseerd: false,
+          teVieren: null,
+          detailId: null,
+          deelId: null,
+        }),
     }),
     {
       name: 'prestatie-storage',
       storage: createJSONStorage(() => AsyncStorage),
       /**
-       * `teVieren` en `detailId` blijven buiten de opslag. Een bewaarde mijlpaal zou bij de
-       * volgende koude start opnieuw over het scherm schuiven (of een venster openzetten), dagen
-       * na het moment waar hij bij hoorde.
+       * `teVieren`, `detailId`, `deelId` en `onderbrekingBezet` blijven buiten de opslag. Een
+       * bewaarde mijlpaal zou bij de volgende koude start opnieuw over het scherm schuiven (of een
+       * venster openzetten), dagen na het moment waar hij bij hoorde — en een bewaarde
+       * `onderbrekingBezet: true` zou het deelvenster voorgoed onderdrukken.
        */
       partialize: (state) => ({
         bekendeIds: state.bekendeIds,

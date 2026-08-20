@@ -66,3 +66,31 @@ export const VOORWAARDEN_URL = 'https://demore2.github.io/chronicles/terms-of-se
 /** `false` zolang `VOORWAARDEN_URL` de placeholder is. */
 export const voorwaardenZijnGepubliceerd =
   !VOORWAARDEN_URL.includes('GITHUB-GEBRUIKERSNAAM') && !VOORWAARDEN_URL.includes('REPONAAM');
+
+/**
+ * De link die in elk gedeeld bericht meegaat — een mijlpaal, een citaat, een uitnodiging.
+ *
+ * **Dit is een placeholder en hij werkt nog niet.** Hij staat hier zodat de deelteksten hun
+ * definitieve vorm hebben en er straks één regel te wijzigen valt in plaats van drie
+ * berichtsjablonen.
+ *
+ * De opdracht noemt hier Firebase Dynamic Links als vervolgstap. Dat is niet de weg meer: Google
+ * heeft Dynamic Links op 25 augustus 2025 uitgezet, links inbegrepen die al in omloop waren. Wat
+ * er wél overblijft, in oplopende hoeveelheid werk:
+ *
+ * 1. **De Play-listing met een `referrer`-parameter**
+ *    (`…/details?id=<pakket>&referrer=code%3DABCD1234`). Play geeft die parameter na de
+ *    installatie door via de Install Referrer API, dus een uitnodigingscode overleeft de
+ *    installatie zonder eigen infrastructuur. Zonder extra dienst de beste keuze.
+ * 2. **Een App Link naar een eigen domein** (`https://chronicles.example/i/ABCD1234`) met een
+ *    `assetlinks.json`; opent de app als hij er is, een webpagina als hij er niet is. Vergt een
+ *    domein en een pagina, en `expo.android.intentFilters` in `app.json`.
+ *
+ * Zolang dit een placeholder is opent de link niets. Dat is zichtbaar en niet stil: de tekst
+ * eromheen noemt Chronicles bij naam, dus een ontvanger kan de app hoe dan ook vinden. Wordt hij
+ * ingevuld, dan volgt `appLinkIsIngesteld` vanzelf.
+ */
+export const APP_DEEL_LINK = 'https://chronicles.app.link';
+
+/** `false` zolang `APP_DEEL_LINK` nog de placeholder van hierboven is. */
+export const appLinkIsIngesteld = !APP_DEEL_LINK.includes('chronicles.app.link');

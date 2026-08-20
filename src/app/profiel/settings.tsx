@@ -76,6 +76,7 @@ export default function InstellingenScreen() {
   const setThemaVoorkeur = useThemaStore((state) => state.setThemaVoorkeur);
   const { isPremium } = useAbonnement();
   const setPro = useAbonnementStore((state) => state.setPro);
+  const isProVast = useAbonnementStore((state) => state.isPro);
   const verhalenVandaag = useVerhalenVandaag();
   const [uitlogBezig, setUitlogBezig] = useState(false);
   const { verwijderAccount, isBezig: verwijderBezig } = useDeleteAccount();
@@ -206,6 +207,16 @@ export default function InstellingenScreen() {
             label={t((s) => s.instellingen.wachtwoordWijzigen)}
             badge={binnenkortBadge}
             onPress={() => nogNiet(t((s) => s.instellingen.wachtwoordWijzigen))}
+          />
+          {/* Uitnodigen staat bij "Account" en niet bij "Support": het gaat over jouw code en
+              jouw beloningen, niet over hulp. Geen "Soon"-badge — de code bestaat echt en delen
+              werkt; wat er nog niet is (een vriend die de code invoert) staat als zin op het
+              scherm zelf, waar het uit te leggen valt. */}
+          <SettingsItem
+            icoon="gift-outline"
+            label={t((s) => s.instellingen.uitnodigen)}
+            uitleg={t((s) => s.instellingen.uitnodigenUitleg)}
+            onPress={() => router.push('/profiel/invite-friends')}
           />
           {/* De synchronisatiestatus stond op Profiel onder het account; hij hoort bij het
               account, niet bij de voortgangscijfers. Zonder sessie rendert hij niets. */}
@@ -354,7 +365,11 @@ export default function InstellingenScreen() {
               uitleg="Development only — replaces the Play Billing check."
               rechts={
                 <Switch
-                  value={isPremium}
+                  // `isPro` uit de store en niet `isPremium`: die tweede is sinds de
+                  // uitnodigingsbeloningen ook waar tijdens een verdiende week Pro, en dan zou de
+                  // schakelaar aan staan terwijl hij niets heeft gezet — en hem omzetten zou dan
+                  // niets lijken te doen.
+                  value={isProVast}
                   onValueChange={setPro}
                   trackColor={{ false: theme.backgroundSelected, true: theme.accent }}
                   thumbColor={theme.background}

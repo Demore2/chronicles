@@ -33,6 +33,7 @@ import { useStoryProgress } from '@/hooks/use-story-progress';
 import { logStoryEvent } from '@/hooks/useAnalytics';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { useCharacterUnlockStore } from '@/store/character-unlock-store';
+import { usePrestatieStore } from '@/store/prestatie-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
 /**
@@ -105,6 +106,23 @@ export default function ReaderScreen() {
   useEffect(() => {
     hoofdstukGestartOp.current = Date.now();
   }, [chapterId, id]);
+
+  /**
+   * Meldt aan `prestatie-store` dat er een zwaardere onderbreking op het scherm staat.
+   *
+   * Een verhaal uitlezen levert bijna altijd tegelijk een mijlpaal op — het is één verhaal, acht
+   * hoofdstukken én een personage erbij — en sinds die mijlpaal zichzelf mag aankondigen als
+   * deelvenster zou dat venster precies over de personageviering heen vallen. De zwaarste
+   * onderbreking is in dit project voor het personage (zie `character-unlock-modal.tsx`), dus
+   * zolang deze vlag aan staat valt de mijlpaal terug op de strook, die niets blokkeert.
+   *
+   * De opruiming zet hem hoe dan ook terug op `false`: verlaat de lezer het scherm terwijl er nog
+   * een venster openstond, dan zou een blijvende `true` het deelvenster voorgoed onderdrukken.
+   */
+  useEffect(() => {
+    usePrestatieStore.getState().zetOnderbreking(showUnlockModal || showAdModal);
+    return () => usePrestatieStore.getState().zetOnderbreking(false);
+  }, [showUnlockModal, showAdModal]);
 
   const allChaptersRead = progress.completedChapters.length === verhaal?.chapters.length;
   const characterUnlocked = verhaal ? characterStore.isCharacterUnlocked(verhaal.id) : false;
@@ -297,7 +315,14 @@ export default function ReaderScreen() {
               entering={FadeInDown.delay(staggerVertraging(index + 1)).duration(
                 Motion.duration.normaal
               )}>
-              <BlokWeergave blok={blok} tijdperkKleur={tijdperk?.kleur ?? theme.inactive} />
+              <BlokWeergave
+                blok={blok}
+                tijdperkKleur={tijdperk?.kleur ?? theme.inactive}
+                // Zonder titel tekent `BlokWeergave` geen deelknop; de reader is de enige
+                // aanroeper die er een heeft, en dus de enige plek waar citaten deelbaar zijn.
+                verhaalTitel={v(verhaal.titel)}
+                verhaalId={verhaal.id}
+              />
             </Animated.View>
           ))}
         </View>

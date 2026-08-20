@@ -142,7 +142,26 @@ export function usePrestaties(): void {
     if (!prestatiesAan) return;
 
     if (AppState.currentState === 'active') {
-      usePrestatieStore.getState().zetTeVieren(aankondigen.id);
+      const prestatieUI = usePrestatieStore.getState();
+
+      // **Voorgrond: het deelvenster, tenzij er iets zwaarders in beeld staat.**
+      //
+      // De viering was tot nu toe alleen de strook, en pas een tik verderop een venster. Sinds
+      // sociaal delen is het venster het aanbod zelf ("je hebt dit — vertel het"), en dat werkt
+      // alleen op het moment dat de mijlpaal binnenkomt; twee schermen verderop is de
+      // aanleiding weg.
+      //
+      // Wat blijft staan is de reden dat de strook ooit een strook werd: een mijlpaal komt bijna
+      // altijd binnen op precies het moment dat de reader het ontgrendelde personage viert, en
+      // twee vensters die om dezelfde tik vragen is er één te veel. Vandaar de vlag — staat er
+      // een `CharacterUnlockModal` of `AdModal` open, dan valt dit terug op de strook, en is het
+      // deelvenster daarvandaan één tik weg (`prestatie-melding.tsx` → `toonDetail`).
+      if (prestatieUI.onderbrekingBezet) {
+        prestatieUI.zetTeVieren(aankondigen.id);
+        return;
+      }
+
+      prestatieUI.toonDelen(aankondigen.id);
       return;
     }
 

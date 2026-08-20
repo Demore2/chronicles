@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { StyleSheet, View } from 'react-native';
 
 import { Illustratie } from '@/components/illustratie';
+import { ShareQuoteButton } from '@/components/share-quote-button';
 import { ThemedText } from '@/components/themed-text';
 import type { Blok } from '@/constants/types';
 import { Fonts, Radii, Spacing, withAlpha } from '@/constants/theme';
@@ -16,16 +17,42 @@ import { useVertaling } from '@/hooks/use-vertaling';
 export function BlokWeergave({
   blok,
   tijdperkKleur,
+  verhaalTitel,
+  verhaalId,
 }: {
   blok: Blok;
   tijdperkKleur: string;
+  /**
+   * De titel van het verhaal waar dit blok in staat, al vertaald.
+   *
+   * Optioneel, en de deelknop hangt eraan: zonder titel is er geen bericht te bouwen ("— from
+   * ..."), dus dan verschijnt hij niet. Zo hoeft een toekomstige aanroeper die alleen blokken wil
+   * tekenen (een voorbeeldweergave, een validatiescherm) niets te weten van delen.
+   */
+  verhaalTitel?: string;
+  /** Alleen voor de analytics-gebeurtenis; de deelknop werkt er ook zonder. */
+  verhaalId?: string;
 }) {
   // Geen `useTheme()` meer: elk blok kleurt nu met `tijdperkKleur` (het citaat gebruikte hiervoor
   // `theme.accent` voor zijn randje links, dat randje is vervangen door het glyph).
   const { t, v } = useVertaling();
 
   if (blok.type === 'tekst') {
-    return <ThemedText style={styles.tekst}>{v(blok.inhoud)}</ThemedText>;
+    return (
+      <View style={styles.tekstBlok}>
+        <ThemedText style={styles.tekst}>{v(blok.inhoud)}</ThemedText>
+        {/* De deelknop hangt onder de alinea en niet ernaast: naast de tekst zou hij de
+            regellengte inkorten, en een leeskolom die per blok van breedte wisselt leest slecht. */}
+        {verhaalTitel !== undefined && (
+          <ShareQuoteButton
+            citaat={v(blok.inhoud)}
+            verhaalTitel={verhaalTitel}
+            verhaalId={verhaalId}
+            accent={tijdperkKleur}
+          />
+        )}
+      </View>
+    );
   }
 
   if (blok.type === 'afbeelding') {
@@ -72,6 +99,18 @@ export function BlokWeergave({
         <ThemedText type="small" themeColor="textSecondary">
           — {v(blok.bron)}
         </ThemedText>
+        {/* Een citaat is letterlijk het bloktype waarvoor "deel deze zin" bedoeld is; de
+            bronvermelding gaat mee het venster in, zodat de uitspraak niet losraakt van wie hem
+            deed. */}
+        {verhaalTitel !== undefined && (
+          <ShareQuoteButton
+            citaat={v(blok.tekst)}
+            bron={v(blok.bron)}
+            verhaalTitel={verhaalTitel}
+            verhaalId={verhaalId}
+            accent={tijdperkKleur}
+          />
+        )}
       </View>
     );
   }
@@ -127,6 +166,9 @@ export function BlokWeergave({
 }
 
 const styles = StyleSheet.create({
+  tekstBlok: {
+    gap: Spacing.one,
+  },
   tekst: {
     lineHeight: 26,
   },

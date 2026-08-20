@@ -119,14 +119,16 @@ AVG eist dat die route ook echt iets verwijdert. Beide lopen via één knop: Ins
 
 - **Het wissen gebeurt in een edge function, niet in de app.** Dat is geen voorkeur maar
   noodzaak. Op `profiles`, `voortgang`, `story_progress`, `character_unlocks`, `poll_responses`,
-  `user_choices` en `feedback` staat RLS aan met alleen select-, insert- en update-policies; een
+  `user_choices`, `referrals` en `feedback` staat RLS aan met alleen select-, insert- en
+  update-policies; een
   `delete` waarvoor geen policy bestaat raakt **nul rijen en geeft geen foutmelding**. Een
   client-side verwijdering zou dus "verwijderd" melden terwijl alles er nog staat. En `auth.users`
   is voor een client sowieso onbereikbaar: zonder die rij weg te halen kun je meteen weer
   inloggen.
 - **Eén `deleteUser`, de rest cascadeert.** Elke foreign key naar `auth.users` staat op
-  `on delete cascade`, dus de zeven tabellen lopen mee in dezelfde transactie. Zeven losse
-  deletes zouden bij een fout halverwege een half account achterlaten.
+  `on delete cascade`, dus de gebruikerstabellen lopen mee in dezelfde transactie — inclusief
+  `referrals`, dat sinds het uitnodigingssysteem meedoet. Losse deletes zouden bij een fout
+  halverwege een half account achterlaten.
 - **De function verwijdert alleen de aanroeper.** Het gebruiker-id komt uit het geverifieerde
   token (`auth.getUser(token)`), nooit uit de request-body; er is geen parameter waarmee je
   iemand anders opgeeft. `verify_jwt` staat aan, dus een verzoek zonder token wordt al door de

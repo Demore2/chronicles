@@ -97,6 +97,31 @@ export const ANALYTICS_EVENTS = {
    * aanbeveling: voorgesteld → aangetikt → geopend.
    */
   RECOMMENDATION_GENERATED: 'recommendation_generated',
+  /**
+   * Het deelvenster onder een alinea of een citaat is geopend (`share-quote-button.tsx`).
+   *
+   * Bewust het *openen* en niet het delen zelf: `DeelOpties` weet op web niet altijd of het
+   * deelvenster van het toestel is afgerond of weggeklikt (zie `DeelResultaat`), dus een
+   * "gedeeld"-teller zou daar systematisch te hoog uitvallen. Wat deze wél beantwoordt is of
+   * lezers het knopje überhaupt vinden — de vraag die telt zolang het icoon zo klein is.
+   */
+  QUOTE_SHARE_OPENED: 'quote_share_opened',
+  /**
+   * Een uitnodiging is de deur uit (`invite-friends.tsx`), via WhatsApp, een link of het klembord.
+   *
+   * De tegenhanger — een vriend die de code invoert — bestaat nog niet en heeft straks een eigen
+   * naam nodig; deze telt alleen de bovenkant van die trechter. Geen code of gebruiker-id in de
+   * parameters: een uitnodigingscode is afgeleid van het gebruiker-id, en die hoort niet in een
+   * analytics-rapport te belanden.
+   */
+  INVITE_SHARED: 'invite_shared',
+  /**
+   * Een uitnodigingsbeloning is ingewisseld. `soort` is `'verhaal'` of `'pro-week'`.
+   *
+   * Nadrukkelijk geen `purchase`: hier gaat geen geld om, en een verdiende week Pro in het
+   * omzetrapport is dezelfde vervuiling als een `subscription_attempt` die als aankoop telt.
+   */
+  REWARD_CLAIMED: 'reward_claimed',
 } as const;
 
 export type AnalyticsEvent = (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS];

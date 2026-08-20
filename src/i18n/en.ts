@@ -149,6 +149,8 @@ const en = {
     gebruikersnaam: 'Username',
     geenGebruikersnaam: 'Not set',
     wachtwoordWijzigen: 'Change password',
+    uitnodigen: 'Invite friends',
+    uitnodigenUitleg: 'Share your code and earn rewards.',
     synchronisatie: 'Sync',
 
     appIcoon: 'App icon',
@@ -482,6 +484,88 @@ const en = {
     deelGelukt: 'Shared.',
     deelGekopieerd: 'Copied to your clipboard.',
     deelNietMogelijk: 'Sharing is not available here.',
+  },
+  /**
+   * Sociaal delen — mijlpalen, citaten en uitnodigingen.
+   *
+   * De berichten zijn functies en geen sjablonen met plakhaakjes, om dezelfde reden als overal in
+   * dit bestand: elke taal kiest zijn eigen woordvolgorde, en een zin die in het Engels op de naam
+   * eindigt begint in het Duits misschien met het werkwoord. Het expliciete `: string` is nodig
+   * omdat `en` `as const` is — zonder annotatie wordt het retourtype de letterlijke Engelse tekst
+   * en past geen enkele vertaling er meer in.
+   *
+   * De app-link staat er hier **niet** in. Die wordt in `deelBerichtMetLink()` achteraan geplakt,
+   * zodat er precies één plek is waar hij aan een bericht komt en hij dus nergens vergeten kan
+   * worden — zie `constants/app-info.ts`.
+   */
+  deel: {
+    /** De drie knoppen van `deel-opties.tsx`. */
+    whatsapp: 'Share on WhatsApp',
+    alsLink: 'Share as link',
+    kopieerTekst: 'Copy text',
+    sluiten: 'Close',
+    /** De regel onder de knoppen. "Gekopieerd" is geen mislukt "gedeeld" — zie `DeelResultaat`. */
+    gelukt: 'Shared.',
+    gekopieerd: 'Copied to your clipboard.',
+    nietMogelijk: 'Sharing is not available here.',
+
+    /** Het deelvenster van een mijlpaal (`share-achievement-modal.tsx`). */
+    prestatieKop: 'Milestone unlocked',
+    prestatieBericht: (naam: string): string =>
+      `${naam} 🏆 Unlocked in Chronicles! History, one chapter at a time.`,
+
+    /** De deelknop onder een alinea of citaat (`share-quote-button.tsx`). */
+    citaatKnop: 'Share this passage',
+    citaatKop: 'Share this passage',
+    citaatTitel: 'A passage from Chronicles',
+    citaatBericht: (citaat: string, verhaal: string): string =>
+      `“${citaat}” — from ${verhaal} 📖 via Chronicles`,
+  },
+  /**
+   * Het uitnodigingsscherm (`profiel/invite-friends.tsx`).
+   *
+   * `nogNietActief` is geen tijdelijke tekst maar de kern van dit scherm zoals het vandaag werkt:
+   * de code is echt en het delen werkt, maar er is nog geen weg voor de uitgenodigde vriend om
+   * hem in te wisselen (dat vergt een `security definer` RPC, zie `referral-store.ts`). Een scherm
+   * dat beloningen belooft die niemand kan verdienen is precies waar dit project elders "Soon"
+   * voor gebruikt; hier staat het als zin, omdat de code zelf al wél te delen is.
+   */
+  referral: {
+    titel: 'Invite friends',
+    kop: 'Give a friend a head start',
+    uitleg: 'Share your code. Every friend who joins with it earns you a reward.',
+    jouwCode: 'Your invite code',
+    codeKopieren: 'Copy code',
+    codeGekopieerd: 'Code copied.',
+    deelUitnodiging: 'Share invite',
+    deelTitel: 'Join me on Chronicles',
+    bericht: (code: string): string =>
+      `Join me on Chronicles! Read history, one chapter at a time. Use code: ${code} for 1 free story.`,
+    /** De twee tellers. Getal en label staan apart: het cijfer staat er als los `display`-getal. */
+    vriendenUitgenodigd: 'Friends invited',
+    beloningenVerdiend: 'Rewards earned',
+    beloningenKop: 'Your rewards',
+    beschikbaar: (n: number): string =>
+      n === 1 ? '1 reward ready to claim' : `${n} rewards ready to claim`,
+    geenBeloningen: 'No rewards to claim yet.',
+    beloningVerhaal: '1 extra story',
+    beloningVerhaalUitleg: 'Open one more new story beyond today’s limit.',
+    beloningProWeek: 'A week of Pro',
+    beloningProWeekUitleg: (dagen: number): string =>
+      `${dagen} days without the daily limit or interruptions.`,
+    claim: 'Claim',
+    geclaimdTitel: 'Reward claimed',
+    geclaimdVerhaal: 'You can open one more new story today.',
+    geclaimdProWeek: (dagen: number): string => `Pro is yours for the next ${dagen} days.`,
+    ok: 'OK',
+    /** Zolang de sessie nog laadt of ontbreekt is er geen code om te tonen. */
+    geenCode: 'Sign in to get your invite code.',
+    hoeWerktKop: 'How it works',
+    stap1: 'Share your code with a friend.',
+    stap2: 'They enter it when they sign up.',
+    stap3: 'You both get a reward.',
+    nogNietActief:
+      'Entering a code is not live yet, so inviting cannot earn rewards today. Your code is real and already yours — it keeps working once redeeming arrives.',
   },
   collectie: {
     nietGevondenTitel: 'Storyline not found',

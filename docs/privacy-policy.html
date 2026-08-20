@@ -144,6 +144,10 @@
     are off until you switch them on. Once we do start sending, every message carries an
     unsubscribe link at the bottom, and that link is the way to stop them for good;</li>
     <li>how many stories you have opened today, for the free daily limit;</li>
+    <li>your invite code and who joined with it. The code is derived from your account
+    identifier; alongside it we store the account identifiers of friends who signed up with it and
+    how many rewards that earned you. Nothing about your contacts is read or uploaded &mdash; an
+    invitation is a message you send yourself, from your own messaging app;</li>
     <li>a copy of your reading progress, so the app also works without a connection.</li>
   </ul>
 
@@ -152,7 +156,7 @@
   behalf, because the app could not work without them:</p>
   <ul>
     <li><strong>Supabase</strong> &mdash; the database and sign-in service holding your account,
-    your reading progress, your poll and choice answers, and your feedback.</li>
+    your reading progress, your poll and choice answers, your invite code and your feedback.</li>
     <li><strong>Google (Firebase Analytics)</strong> &mdash; the usage statistics described above,
     including the pseudonymous installation identifier and the approximate location derived from
     your IP address.</li>
@@ -171,8 +175,8 @@
     account removes what has already been measured against it.</li>
     <li><strong>Delete your account</strong> &mdash; <em>Settings &rarr; Delete account</em>,
     after one confirmation. This is immediate and permanent: your account, your reading progress,
-    your unlocked characters, your poll and choice answers and any feedback you sent are removed
-    from our database in a single step, and the same data is cleared from the device you are
+    your unlocked characters, your poll and choice answers, your invite code and any feedback you
+    sent are removed from our database in a single step, and the same data is cleared from the device you are
     holding. There is no backup to restore from and no way to undo it. You do not need to write to
     us and we do not keep a copy.</li>
     <li><strong>Ask for a copy of your data</strong> &mdash; <em>Settings &rarr; Request my

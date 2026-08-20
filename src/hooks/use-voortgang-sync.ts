@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/auth-store';
 import { haalOntgrendelingenOp, useCharacterUnlockStore } from '@/store/character-unlock-store';
 import { haalNotificatieVoorkeurenOp, useNotificatieStore } from '@/store/notificatie-store';
 import { haalAanbevelingenOp, useRecommendationStore } from '@/store/recommendation-store';
+import { haalReferralOp, useReferralStore } from '@/store/referral-store';
 import { haalHoofdstukVoortgangOp, useStoryProgressStore } from '@/store/story-progress-store';
 import { haalVoortgangOp, useVoortgangStore } from '@/store/voortgang-store';
 
@@ -46,6 +47,11 @@ const SYNC_STORES = [
   // moment en de aanleiding — en het is de weg waarlangs de push-sweep hetzelfde verhaal noemt
   // als het scherm. Zie de kop van `recommendation-store.ts`.
   { store: useRecommendationStore, haalOp: haalAanbevelingenOp },
+  // De zevende: de uitnodigingscode, wie ermee binnenkwam en wat dat opleverde. Hij hoort
+  // onmiskenbaar bij het account en niet bij het toestel — een code die per telefoon verschilt
+  // is geen code. De opdracht noemde hier Firebase Firestore; waarom dat hier niet kan en niet
+  // hoort staat in de kop van `referral-store.ts`.
+  { store: useReferralStore, haalOp: haalReferralOp },
 ] as const;
 
 /** Duwt alles wat openstaat omhoog. Een store zonder wijzigingen kost niets. */

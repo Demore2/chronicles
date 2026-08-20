@@ -1,12 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, ZoomIn } from 'react-native-reanimated';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
 import { ThemedText } from '@/components/themed-text';
-import { deel } from '@/constants/deel';
-import { haptics } from '@/constants/haptics';
 import {
   prestatieMet,
   type PrestatieCategorie,
@@ -47,10 +44,10 @@ export function AchievementUnlockModal() {
   // er niets te tonen. Een leeg venster is erger dan geen venster.
   if (!prestatie) return null;
 
-  // De `key` laat React het venster per mijlpaal opnieuw opbouwen. Daarmee verdwijnt de
-  // terugkoppeling onder de deelknop vanzelf bij de volgende mijlpaal — dat stond hier eerst als
-  // een `useEffect` die state zette, wat precies het soort cascade is waar `set-state-in-effect`
-  // voor waarschuwt.
+  // De `key` laat React het venster per mijlpaal opnieuw opbouwen, zodat er geen state van de
+  // vorige mijlpaal blijft hangen. Hier stond hiervoor een `useEffect` die state zette om de
+  // deel-terugkoppeling te wissen — precies het soort cascade waar `set-state-in-effect` voor
+  // waarschuwt. Die terugkoppeling woont sinds het deelvenster in `deel-opties.tsx`.
   return <Venster key={prestatie.id} prestatie={prestatie} onClose={wisDetail} />;
 }
 
@@ -78,11 +75,8 @@ function Venster({ prestatie, onClose }: { prestatie: PrestatieItem; onClose: ()
   const ontgrendeling = useAchievementStore((state) =>
     state.ontgrendeld.find((rij) => rij.prestatieId === prestatie.id)
   );
-  const markeerGedeeld = useAchievementStore((state) => state.markeerGedeeld);
+  const toonDelen = usePrestatieStore((state) => state.toonDelen);
   const stand = useAchievementStore((state) => state.stand);
-
-  /** Wat er onder de knoppen staat nadat er gedeeld is. `null` = nog niets gedaan. */
-  const [deelMelding, setDeelMelding] = useState<string | null>(null);
 
   const naam = t((s) => s.prestatie.namen)[prestatie.id];
   const uitleg = t((s) => s.prestatie.uitleg)[prestatie.categorie](prestatie.drempel);
@@ -101,32 +95,6 @@ function Venster({ prestatie, onClose }: { prestatie: PrestatieItem; onClose: ()
             day: 'numeric',
           })
         );
-
-  async function deelNu() {
-    haptics.tik();
-
-    const resultaat = await deel(
-      t((s) => s.prestatie.deelTitel),
-      t((s) => s.prestatie.deelBericht)(naam, uitleg)
-    );
-
-    if (resultaat === 'gedeeld' || resultaat === 'gekopieerd') {
-      // Alleen markeren als er echt iets is vertrokken. Wegklikken is geen delen.
-      markeerGedeeld(prestatie.id);
-      haptics.succes();
-    }
-
-    // Weggeklikt is geen uitkomst om over te berichten: de lezer wéét dat hij dat net deed.
-    if (resultaat === 'afgebroken') return;
-
-    setDeelMelding(
-      resultaat === 'gedeeld'
-        ? t((s) => s.prestatie.deelGelukt)
-        : resultaat === 'gekopieerd'
-          ? t((s) => s.prestatie.deelGekopieerd)
-          : t((s) => s.prestatie.deelNietMogelijk)
-    );
-  }
 
   return (
     <Modal
@@ -209,20 +177,16 @@ function Venster({ prestatie, onClose }: { prestatie: PrestatieItem; onClose: ()
               </ThemedText>
             )}
 
-            {deelMelding !== null && (
-              <ThemedText type="caption" themeColor="textSecondary" style={styles.gecentreerd}>
-                {deelMelding}
-              </ThemedText>
-            )}
-
             <View style={styles.knoppen}>
               {/* Delen kan alleen wat je hebt. Een deelknop onder een vergrendelde mijlpaal zou
                   aanbieden op te scheppen over iets wat nog niet gebeurd is. */}
               {behaald && (
                 <AnimatedPressable
-                  // `deelNu` geeft zelf een tik en bij succes een zwaarder signaal.
-                  haptisch={false}
-                  onPress={() => void deelNu()}
+                  // Opent het deelvenster (`share-achievement-modal.tsx`) in plaats van meteen
+                  // het deelvenster van het toestel: daar staan de drie wegen naar buiten
+                  // (WhatsApp, link, klembord) en het voorbeeld van wat er verstuurd wordt.
+                  // `toonDelen` sluit dit venster zelf, zodat er nooit twee op elkaar staan.
+                  onPress={() => toonDelen(prestatie.id)}
                   accessibilityRole="button"
                   accessibilityLabel={t((s) => s.prestatie.deel)}
                   style={[styles.knop, { backgroundColor: kleur }]}>
