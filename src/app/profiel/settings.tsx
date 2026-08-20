@@ -401,9 +401,11 @@ export default function InstellingenScreen() {
           {/* Allebei een scherm in de app in plaats van een link naar buiten. Ze stonden hier als
               "Soon"-regel zolang `VOORWAARDEN_URL` en `PRIVACY_BELEID_URL` placeholders waren;
               een tekst die in de bundel zit heeft die voorwaarde niet, werkt offline en kan niet
-              naar een 404 wijzen. Play wil het privacybeleid daarnaast nog steeds op een publiek
-              bereikbare URL — dat is `docs/privacy-policy.html`, en die eis staat los van dit
-              scherm (LAUNCH-PLAN.md A5). */}
+              naar een 404 wijzen. **Dat blijft zo nu de pagina's wél gepubliceerd zijn**
+              (`docs/`, via GitHub Pages): de link naar buiten staat op het scherm zélf, onder de
+              tekst, en niet hier — zo blijft de eerste tik offline werken en is de webversie een
+              keuze in plaats van een voorwaarde. Play wil het privacybeleid daarnaast nog steeds
+              op een bereikbare URL; die eis staat los van dit scherm (LAUNCH-PLAN.md A5). */}
           <SettingsItem
             icoon="document-text-outline"
             label={t((s) => s.instellingen.voorwaarden)}

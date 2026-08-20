@@ -55,10 +55,13 @@ export const SUPPORT_EMAIL = 'businessthedemoreagency@gmail.com';
 export const supportEmailIsIngesteld = !SUPPORT_EMAIL.includes('INVULLEN');
 
 /**
- * Algemene voorwaarden. Er is nog geen document — de tekst bestaat alleen als zin op het
- * registratiescherm (`auth.voorwaarden`). Zelfde placeholder-patroon als het privacybeleid.
+ * Algemene voorwaarden, gepubliceerd naast het privacybeleid (`docs/terms-of-service.html`).
+ *
+ * Het document zelf staat óók in de app (`app/profiel/terms.tsx`, tekst in
+ * `constants/juridische-teksten.ts`); dit is de publieke kopie voor wie het buiten de app wil
+ * lezen — en voor Play, dat naar een bereikbare URL vraagt. Wijzigt de ene, wijzig de andere mee.
  */
-export const VOORWAARDEN_URL = 'https://GITHUB-GEBRUIKERSNAAM.github.io/REPONAAM/terms.html';
+export const VOORWAARDEN_URL = 'https://demore.github.io/chronicles/terms-of-service.html';
 
 /** `false` zolang `VOORWAARDEN_URL` de placeholder is. */
 export const voorwaardenZijnGepubliceerd =

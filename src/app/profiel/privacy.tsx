@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 
 import { JuridischePagina } from '@/components/juridische-pagina';
+import { PRIVACY_BELEID_URL, privacyBeleidIsGepubliceerd } from '@/constants/juridisch';
 import { PRIVACY_ALINEAS, PRIVACY_TITEL } from '@/constants/juridische-teksten';
 import { useVertaling } from '@/hooks/use-vertaling';
 
@@ -25,7 +26,11 @@ export default function PrivacyScreen() {
   return (
     <>
       <Stack.Screen options={{ title: t((s) => s.profiel.privacybeleid) }} />
-      <JuridischePagina titel={PRIVACY_TITEL} alineas={PRIVACY_ALINEAS} />
+      <JuridischePagina
+        titel={PRIVACY_TITEL}
+        alineas={PRIVACY_ALINEAS}
+        webUrl={privacyBeleidIsGepubliceerd ? PRIVACY_BELEID_URL : undefined}
+      />
     </>
   );
 }

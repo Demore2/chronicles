@@ -175,6 +175,7 @@ const nl: DeepPartial<Vertalingen> = {
     contact: 'Contact opnemen',
     contactOnderwerp: 'Chronicles support',
     voorwaarden: 'Algemene voorwaarden',
+    bekijkOnline: 'Bekijk deze pagina online',
 
     versie: 'Versie',
 

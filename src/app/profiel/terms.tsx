@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 
 import { JuridischePagina } from '@/components/juridische-pagina';
+import { VOORWAARDEN_URL, voorwaardenZijnGepubliceerd } from '@/constants/app-info';
 import { VOORWAARDEN_ALINEAS, VOORWAARDEN_TITEL } from '@/constants/juridische-teksten';
 import { useVertaling } from '@/hooks/use-vertaling';
 
@@ -21,7 +22,11 @@ export default function VoorwaardenScreen() {
   return (
     <>
       <Stack.Screen options={{ title: t((s) => s.instellingen.voorwaarden) }} />
-      <JuridischePagina titel={VOORWAARDEN_TITEL} alineas={VOORWAARDEN_ALINEAS} />
+      <JuridischePagina
+        titel={VOORWAARDEN_TITEL}
+        alineas={VOORWAARDEN_ALINEAS}
+        webUrl={voorwaardenZijnGepubliceerd ? VOORWAARDEN_URL : undefined}
+      />
     </>
   );
 }

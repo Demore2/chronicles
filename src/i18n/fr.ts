@@ -179,6 +179,7 @@ const fr: DeepPartial<Vertalingen> = {
     contact: "Contacter l'assistance",
     contactOnderwerp: 'Assistance Chronicles',
     voorwaarden: "Conditions d'utilisation",
+    bekijkOnline: 'Voir cette page en ligne',
 
     versie: 'Version',
 

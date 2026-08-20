@@ -266,6 +266,13 @@ const en = {
     contactOnderwerp: 'Chronicles support',
     voorwaarden: 'Terms of Service',
 
+    /**
+     * De regel onder de tekst op `/profiel/terms` en `/profiel/privacy`. De tekst staat in de
+     * bundel en werkt offline; dit is de weg naar de gepubliceerde kopie, voor wie hem buiten
+     * de app wil lezen of doorsturen.
+     */
+    bekijkOnline: 'View this page online',
+
     versie: 'Version',
 
     accountVerwijderen: 'Delete account',

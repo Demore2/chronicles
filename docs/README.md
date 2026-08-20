@@ -1,38 +1,58 @@
 # docs/ — publieke pagina's
 
-Deze map bevat één ding: **`privacy-policy.html`**, het privacybeleid dat Google Play voor élke
-app verplicht stelt (LAUNCH-PLAN.md A5). Die zin luidde hier ooit "ook voor een app zonder
-accounts, zonder tracking en zonder advertenties" — dat was waar toen de pagina geschreven werd en
-is het sinds R8.AUTH en Firebase Analytics niet meer. **De pagina zelf is nog niet bijgewerkt**;
-zie "Wat de privacypagina nog mist" hieronder.
+Deze map bevat de drie pagina's die Chronicles **publiceert**, los van de app:
 
-De pagina is bewust één zelfstandig HTML-bestand: geen build, geen externe CSS, geen fonts van een
-CDN. Ze volgt het beige palet van de app en heeft een `prefers-color-scheme: dark`-variant.
+| Bestand | Wat het is |
+|---|---|
+| `index.html` | Landingspagina. Bestaat vooral zodat de site-root geen 404 is en de twee documenten hieronder één vindbare ingang hebben. |
+| `privacy-policy.html` | Het privacybeleid dat Google Play voor élke app verplicht stelt (LAUNCH-PLAN.md A5). |
+| `terms-of-service.html` | De algemene voorwaarden. |
+
+Alle drie zijn bewust één zelfstandig HTML-bestand: geen build, geen externe CSS, geen fonts van
+een CDN. Ze volgen het beige palet van de app en hebben een `prefers-color-scheme: dark`-variant.
+
+**Deze pagina's zijn niet dezelfde tekst als de schermen in de app.** `app/profiel/privacy.tsx` en
+`app/profiel/terms.tsx` tonen de kortere versie uit `src/constants/juridische-teksten.ts`, die in
+de bundel zit en offline werkt; deze map is de uitgebreidere gepubliceerde versie, waar Play en de
+lezer buiten de app naartoe gaan. **Wijzigt er iets aan wat de app verzamelt of belooft, wijzig dan
+allebei.** De schermen linken naar deze pagina's (de regel "View this page online" onder de tekst),
+niet andersom.
 
 ## Publiceren via GitHub Pages
 
-Deze repo heeft nog **geen remote**. Eenmalig:
+De doel-URL is **`https://demore.github.io/chronicles/`**. Zo staat hij ingevuld in
+`src/constants/juridisch.ts` (`PRIVACY_BELEID_URL`) en `src/constants/app-info.ts`
+(`VOORWAARDEN_URL`), en zo hoort hij in de Play Console.
 
-1. Maak een repository aan op GitHub (bijvoorbeeld `chronicles-app`) en push `master`:
+Deze repo heeft nog **geen remote**. Eenmalig, en dit is handwerk — er is geen `gh` op deze
+machine:
+
+1. Maak op GitHub het account (of de organisatie) **`demore`** aan, als dat er nog niet is, en
+   daaronder een **publieke** repository met de naam **`chronicles`**. De naam bepaalt het pad in
+   de URL, dus die twee moeten letterlijk kloppen.
+2. Koppel en push:
    ```bash
-   git remote add origin https://github.com/<gebruikersnaam>/<repo>.git
+   git remote add origin https://github.com/demore/chronicles.git
    git push -u origin master
    ```
-2. GitHub → **Settings → Pages** → *Source*: `Deploy from a branch`, *Branch*: `master`,
+3. GitHub → **Settings → Pages** → *Source*: `Deploy from a branch`, *Branch*: `master`,
    *Folder*: **`/docs`** → Save.
-3. Na een minuut staat de pagina op:
+4. Na ongeveer een minuut staan de pagina's op:
    ```
-   https://<gebruikersnaam>.github.io/<repo>/privacy-policy.html
+   https://demore.github.io/chronicles/
+   https://demore.github.io/chronicles/privacy-policy.html
+   https://demore.github.io/chronicles/terms-of-service.html
    ```
-4. Zet die URL op **twee** plekken:
-   - `src/constants/juridisch.ts` → `PRIVACY_BELEID_URL`. Zodra de placeholder weg is, wordt
-     `privacyBeleidIsGepubliceerd` vanzelf `true` en verschijnt de link op Profiel — er is verder
-     niets aan te zetten.
-   - Play Console → **Store settings → Privacy policy**.
+   **Controleer alle drie in een browser voordat je verder gaat.** Een Pages-site die nog aan het
+   bouwen is geeft een 404 die op een foute URL lijkt.
+5. Zet de privacy-URL ook in de Play Console → **Store settings → Privacy policy**. In de app
+   hoeft niets meer aangezet te worden: `privacyBeleidIsGepubliceerd` en
+   `voorwaardenZijnGepubliceerd` zijn afgeleid van de URL's en zijn dus al `true`.
 
-Werkt de repo liever privé? Dan werkt GitHub Pages niet op een gratis account; gebruik dan een
-andere statische host (Netlify Drop, Cloudflare Pages, eigen domein) en zet die URL op dezelfde
-twee plekken.
+**De repository moet publiek zijn.** GitHub Pages werkt op een gratis account niet vanuit een
+private repo. Wil je de code toch privé houden, zet deze map dan op een andere statische host
+(Netlify Drop, Cloudflare Pages, eigen domein) en pas de twee constanten hierboven aan — ze zijn
+de enige plek waar de URL staat.
 
 ## Bij het invullen van het Data Safety-formulier
 
@@ -154,17 +174,36 @@ route die aankomt en een antwoord binnen 30 dagen — beide staan zo ook in `pri
 ### De privacypagina
 
 `privacy-policy.html` is **herschreven** en beschrijft nu wat de app echt doet: het account, de
-voortgangssync, de antwoorden op peilingen en keuzepunten, de feedback, en Firebase Analytics met
-de opt-outschakelaar en de verwerking door Google. Ze opende eerst met "Chronicles collects
-nothing"; die zin was waar toen ze geschreven werd en al onjuist sinds R8.AUTH.
+voortgangssync, de antwoorden op peilingen en keuzepunten, de feedback, en Firebase Analytics en
+de verwerking door Google. Ze opende eerst met "Chronicles collects nothing"; die zin was waar
+toen ze geschreven werd en al onjuist sinds R8.AUTH.
 
-Twee dingen blijven open:
+Sindsdien is ze op drie punten bijgewerkt, allemaal omdat de app veranderde en de pagina niet:
 
-1. **De pagina is nog niet gepubliceerd.** `PRIVACY_BELEID_URL` in `src/constants/juridisch.ts` is
-   nog de placeholder, dus Instellingen verbergt de link (zie boven, "Publiceren via GitHub
-   Pages"). De constante verandert niet mee met de inhoud — daar staat alleen de URL.
-2. **De verwerkingsregio van Supabase staat er niet in.** Wil je een expliciete
-   EU-doorgifteclausule, vul die dan in vóór publicatie; ik heb geen regio verzonnen.
+- **De meting heeft geen schakelaar meer** — de pagina bood er eerst een aan, en zegt nu dat het
+  bezwaar per e-mail loopt. Dat is dezelfde regel als in `docs/README.md` en in Data Safety
+  (Analytics staat daar op **Required**).
+- **De dagelijkse herinnering hééft wél een schakelaar**, de streakwaarschuwing en de
+  mijlpaalmelding niet. De pagina zei eerst dat geen van de drie er een had.
+- **De meldingsvoorkeuren staan op de server**, niet alleen op het toestel — `notificatie-store`
+  synchroniseert sinds het pushwerk naar `public.notification_preferences`, dus ze horen in de
+  lijst "wat er tegen je account bewaard wordt" en niet in "alleen op je toestel".
+
+Eén ding blijft open: **de verwerkingsregio van Supabase staat er niet in.** Wil je een expliciete
+EU-doorgifteclausule, vul die dan in vóór publicatie; ik heb geen regio verzonnen.
+
+### De voorwaardenpagina
+
+`terms-of-service.html` is nieuw en is de gepubliceerde tegenhanger van `app/profiel/terms.tsx`.
+Ze zegt hetzelfde als de zeven alinea's in `src/constants/juridische-teksten.ts`, uitgeschreven,
+plus wat een gepubliceerde versie wél moet noemen en een scherm van zeven regels niet kwijt kan:
+de accountplicht en de leeftijdsgrens, dat er in deze versie **niets te kopen valt**, wat er met
+peilingantwoorden en feedback gebeurt, hoe je ermee stopt, en het toepasselijk recht (Nederland).
+
+Twee dingen die de tekst bewust **niet** doet: geen aansprakelijkheidsuitsluiting die verder gaat
+dan de wet toestaat (consumentenrechten en letselschade staan er expliciet buiten), en geen belofte
+over ononderbroken beschikbaarheid. Verandert het aanbod — werkende Billing, echte advertenties —
+dan is dit één van de plekken die mee moet, samen met de app-tekst en de privacypagina.
 
 Geen enkele permissie is een Data Safety-onderwerp (dat formulier gaat over *verzamelde gegevens*,
 niet over permissies), maar ze staan wél in de listing en de privacypagina moet ze kloppend
