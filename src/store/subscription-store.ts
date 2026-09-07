@@ -51,8 +51,13 @@ export interface SubscriptionState {
 
   // Actions
   loadSubscription: (userId: string) => Promise<void>;
-  /** Start een proefperiode van `days` dagen vanaf nu. */
-  setTrial: (days: number) => Promise<void>;
+  /**
+   * Start een proefperiode van `days` dagen vanaf nu.
+   *
+   * Geeft terug **óf het gelukt is**, en niet `void`: de fout belandt hier in `error` en gooit dus
+   * niet, waardoor een `try/catch` bij de aanroeper elke mislukking als succes zou lezen.
+   */
+  setTrial: (days: number) => Promise<boolean>;
   // UITGESCHAKELD TOT GOOGLE PLAY BILLING — zie de uitgecommentarieerde implementatie hieronder.
   // De client kon zichzelf hiermee premium maken; premium zetten gebeurt tot die tijd met de hand
   // in Supabase (zie docs/TEST_ACCOUNTS.md).
@@ -177,13 +182,24 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
 
   setTrial: async (days: number) => {
     const { userId } = get();
-    if (!userId) return;
+    // Geen sessie, geen proefperiode — en dat moet de aanroeper wéten. Een `return` zonder
+    // antwoord las in de paywall als "gelukt", waarna er een felicitatie verscheen voor iets wat
+    // nooit is weggeschreven.
+    if (!userId) {
+      set({ error: 'geen_sessie' });
+      return false;
+    }
 
     try {
       const trialEndsAt = new Date();
       trialEndsAt.setDate(trialEndsAt.getDate() + days);
 
-      const { error } = await supabase
+      // `.select()` erachter, want een `update` die géén rij raakt is in PostgREST **geen fout**:
+      // je krijgt een lege lijst en `error === null`. Zonder deze telling zet de app zichzelf
+      // lokaal op premium terwijl de serverrij op 'free' blijft staan — dezelfde stille-nul-rijen
+      // val als bij een `delete` zonder policy. Een lezer die zich ná de backfill registreerde en
+      // wiens rij nog niet bestaat, loopt hier precies in.
+      const { data, error } = await supabase
         .from('user_subscriptions')
         .update({
           tier: 'premium',
@@ -191,9 +207,11 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
           auto_renew: true,
           updated_at: new Date().toISOString(),
         })
-        .eq('user_id', userId);
+        .eq('user_id', userId)
+        .select('user_id');
 
       if (error) throw error;
+      if (!data || data.length === 0) throw new Error('geen_abonnementsrij');
 
       set({
         tier: 'premium',
@@ -201,8 +219,10 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
         autoRenew: true,
         error: null,
       });
+      return true;
     } catch (fout: unknown) {
       set({ error: foutTekst(fout) });
+      return false;
     }
   },
 

@@ -50,7 +50,13 @@ type ProPaywallProps = {
 export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   const theme = useTheme();
   const { t } = useVertaling();
-  const { setTrial, loading: subscriptionLoading } = useSubscriptionStore();
+  // Twee losse selectors en niet `useSubscriptionStore()` zonder argument: die vorm abonneert op de
+  // héle store, dus elke `set()` erin — `loading` bij het opstarten, `error`, een verse `tier` na
+  // het activeren — hertekent deze component. Hij staat op vier plekken permanent gemonteerd
+  // (Instellingen, de Pro-banner op Profiel, `AdModal`, `StoryLimitModal`), dus dat zijn vier
+  // overbodige renders per storewijziging, ook met het venster dicht.
+  const setTrial = useSubscriptionStore((state) => state.setTrial);
+  const subscriptionLoading = useSubscriptionStore((state) => state.loading);
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
   const [isStartingTrial, setIsStartingTrial] = useState(false);
 
@@ -83,35 +89,33 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
 
   async function startFreeTrial() {
     setIsStartingTrial(true);
-    try {
-      // Log the subscription attempt
-      logStoryEvent(ANALYTICS_EVENTS.SUBSCRIPTION_ATTEMPT, {
-        tier: 'pro',
-        source: bron,
-        status: 'trial_started',
-        plan: selectedPlan,
-      });
 
-      // Start 7-day free trial
-      await setTrial(7);
+    // Fire-and-forget, vóór de schrijfactie: `logStoryEvent` gaat naar `analytics.log`, die nooit
+    // gooit en niets teruggeeft. Er valt hier dus niets te awaiten en niets te vangen — een poging
+    // is een poging, ook als de proefperiode daarna strandt.
+    logStoryEvent(ANALYTICS_EVENTS.SUBSCRIPTION_ATTEMPT, {
+      tier: 'pro',
+      source: bron,
+      status: 'trial_started',
+      plan: selectedPlan,
+    });
 
-      // Close the modal and show success
-      sluit();
-      meld(
-        t((s) => s.pro.trialStartedTitel),
-        t((s) => s.pro.trialStartedTekst),
-        t((s) => s.instellingen.ok),
-      );
-    } catch (error) {
-      console.error('Error starting trial:', error);
-      meld(
-        t((s) => s.pro.trialFailedTitel),
-        t((s) => s.pro.trialFailedTekst),
-        t((s) => s.instellingen.ok),
-      );
-    } finally {
-      setIsStartingTrial(false);
-    }
+    // `setTrial` gooit niet — hij vangt zijn eigen fout en zet `error` in de store. Een `try/catch`
+    // eromheen ving daarom nóóit iets, en elke mislukte activering eindigde in de felicitatie.
+    // De uitkomst is nu een boolean en dát is wat de keuze maakt.
+    const gelukt = await setTrial(7);
+
+    // Beide `setState`s staan in dezelfde microtaak, dus React 19 batcht ze tot één render in
+    // plaats van twee. Sluiten gebeurt alleen bij succes: na een mislukking blijft het venster
+    // staan, zodat "opnieuw" één tik is in plaats van een zoektocht terug naar de ingang.
+    setIsStartingTrial(false);
+    if (gelukt) sluit();
+
+    meld(
+      gelukt ? t((s) => s.pro.trialStartedTitel) : t((s) => s.pro.trialFailedTitel),
+      gelukt ? t((s) => s.pro.trialStartedTekst) : t((s) => s.pro.trialFailedTekst),
+      t((s) => s.instellingen.ok),
+    );
   }
 
   return (
