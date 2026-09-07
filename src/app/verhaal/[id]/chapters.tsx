@@ -22,11 +22,13 @@ import { Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
 import { berekenLeestijdMinuten } from '@/content/leestijd';
 import { getVerhaal } from '@/content/verhalen';
+import { haalVerhalenVandaagOp, logVerhaalGeopend } from '@/lib/leeslimiet';
 import { useTheme } from '@/hooks/use-theme';
 import { useStoryProgress } from '@/hooks/use-story-progress';
 import { logStoryEvent } from '@/hooks/useAnalytics';
 import { useVertaling } from '@/hooks/use-vertaling';
-import { useAbonnementStore } from '@/store/abonnement-store';
+import { useAbonnementStore, verhalenVanVandaag } from '@/store/abonnement-store';
+import { wachtOpSessie } from '@/store/auth-store';
 import { useStoryProgressStore } from '@/store/story-progress-store';
 import { wachtOpHydratie } from '@/store/sync-hulp';
 
@@ -80,7 +82,7 @@ export default function ChaptersScreen() {
     Promise.all([
       wachtOpHydratie(useStoryProgressStore),
       wachtOpHydratie(useAbonnementStore),
-    ]).then(() => {
+    ]).then(async () => {
       if (afgebroken) return;
 
       // Een verhaal dat je al helemaal uit hebt kost geen plek: de limiet doseert nieuwe inhoud,
@@ -100,9 +102,38 @@ export default function ChaptersScreen() {
         return;
       }
 
+      // Wat de server voor vandaag kent erbij leggen, vóór de poort. De teller staat in
+      // AsyncStorage en hoort dus bij dit toestel, terwijl de limiet bij het account hoort —
+      // zonder deze ronde krijgt een tweede telefoon zijn eigen dagvoorraad.
+      //
+      // De opvraging heeft een eigen tijdslimiet en `null` betekent "de server weet het even
+      // niet". Dan telt de lokale stand, want een leeslimiet die dichtklapt zodra het netwerk
+      // wegvalt is erger dan een limiet die een keer te ruim uitpakt.
+      // `wachtOpSessie()` en niet `getState().user?.id`: bij een koude start of een deeplink
+      // rechtstreeks in een verhaal herstelt `AuthPoort` de sessie nog terwijl dit effect al
+      // loopt. Dan leest een directe uitlezing `null`, wordt er niets naar `user_daily_reads`
+      // geschreven en blijft de serverronde uit — precies de koude start die daardoor een gratis
+      // extra verhaal zou opleveren.
+      const userId = await wachtOpSessie();
+      if (afgebroken) return;
+      if (userId) {
+        const server = await haalVerhalenVandaagOp(userId);
+        if (afgebroken) return;
+        if (server) {
+          useAbonnementStore
+            .getState()
+            .voegServerVerhalenSamen(server.dagSleutel, server.verhaalIds);
+        }
+      }
+
       const abonnement = useAbonnementStore.getState();
       if (abonnement.magVerhaalOpenen(verhaalId)) {
+        const wasAlGeteld = verhalenVanVandaag(abonnement).includes(verhaalId);
         abonnement.registreerVerhaalGeopend(verhaalId);
+        // Alleen de eerste keer vandaag een rij schrijven. `registreerVerhaalGeopend` is idempotent
+        // binnen de dag, maar de tabel is een append-only logboek zonder unique constraint: elke
+        // terugkeer uit de reader (`router.back()`) zou anders een rij bijschrijven.
+        if (userId && !wasAlGeteld) logVerhaalGeopend(userId, verhaalId);
         setLimietBereikt(false);
         logStoryEvent(ANALYTICS_EVENTS.STORY_READ, { ...meting, is_reread: false });
         return;

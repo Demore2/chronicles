@@ -14,7 +14,7 @@ const nl: DeepPartial<Vertalingen> = {
     verderLezenLegeTitel: 'Nog niets begonnen',
     verderLezenLegeBeschrijving: 'Verhalen die je opent verschijnen hier.',
     verhaallijnen: 'Verhaallijnen',
-    nieuwToegevoegd: 'Nieuw toegevoegd',
+    nieuwToegevoegd: 'Nieuwe hot topics',
   },
   aanbeveling: {
     kop: 'Voor jou',
@@ -119,6 +119,8 @@ const nl: DeepPartial<Vertalingen> = {
     abonnement: 'Je abonnement',
     abonnementGratis: 'Gratis',
     abonnementPro: 'Pro',
+    abonnementUpgrade: 'Upgraden naar Pro',
+    abonnementProVoordelen: 'Geen onderbrekingen · Onbeperkt lezen',
     dagelijkseLimiet: 'Vandaag gelezen',
     verhalenVandaag: (gebruikt: number, limiet: number): string =>
       `${gebruikt}/${limiet} verhalen vandaag`,
@@ -217,11 +219,22 @@ const nl: DeepPartial<Vertalingen> = {
     voordeelGeenAds: 'Nooit advertenties',
 
     prijsMaand: '€ 4,99 / maand',
-    prijsJaar: '€ 39,99 / jaar — 33% voordeliger',
+    prijsJaar: '€ 49,99 / jaar',
     abonneer: 'Abonneren',
     misschienLater: 'Misschien later',
+
+    // Trial messaging (FASE 3)
+    trialOffer: '7 dagen gratis',
+    trialOfferDescription: 'Probeer Chronicles Pro 7 dagen gratis. Zeg op wanneer je wilt, geen creditcard nodig.',
+    startTrial: 'Start gratis proefperiode',
+    startingTrial: 'Proefperiode starten…',
+    trialStartedTitel: 'Proefperiode gestart!',
+    trialStartedTekst: 'Je 7-daagse gratis proefperiode van Chronicles Pro is gestart. Geniet van onbeperkt lezen en geen advertenties. Auto-verlenging na 7 dagen tenzij je dit opzegt.',
+    trialFailedTitel: 'Kon proefperiode niet starten',
+    trialFailedTekst: 'Er ging iets mis. Controleer je verbinding en probeer opnieuw.',
+
     voorbehoud:
-      'Richtprijzen. Abonnementen komen in een latere versie — er wordt vandaag niets afgeschreven.',
+      'Abonnementen worden beheerd door Google Play. Zie ons privacybeleid voor details.',
     nogNietTitel: 'Nog niet beschikbaar',
     nogNietTekst:
       'Abonnementen komen in een latere versie van Chronicles. Er is niets afgeschreven.',

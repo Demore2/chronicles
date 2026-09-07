@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AnimatedPressable } from '@/components/animated-pressable';
@@ -12,6 +12,7 @@ import { verhalen } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { logStoryEvent } from '@/hooks/useAnalytics';
+import { useSubscriptionStore } from '@/store/subscription-store';
 
 /**
  * Vanwaar het venster geopend is.
@@ -49,6 +50,9 @@ type ProPaywallProps = {
 export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   const theme = useTheme();
   const { t } = useVertaling();
+  const { setTrial, loading: subscriptionLoading } = useSubscriptionStore();
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
+  const [isStartingTrial, setIsStartingTrial] = useState(false);
 
   const voordelen: { icoon: IoniconNaam; tekst: string }[] = [
     { icoon: 'book-outline', tekst: t((s) => s.pro.voordeelVerhalen)(verhalen.length) },
@@ -62,26 +66,45 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   // `true` springt — niet het monteren. Zonder deze voorwaarde zou elk scherm dat de paywall
   // klaarzet er meteen een weergave voor tellen.
   useEffect(() => {
-    if (visible) logStoryEvent(ANALYTICS_EVENTS.PAYWALL_VIEWED, { tier: 'pro', source: bron });
+    if (visible) {
+      logStoryEvent(ANALYTICS_EVENTS.PAYWALL_VIEWED, { tier: 'pro', source: bron });
+      // Reset plan selection each time modal opens
+      setSelectedPlan('yearly');
+      setIsStartingTrial(false);
+    }
   }, [visible, bron]);
 
-  function nogNiet() {
-    // Wat hier gemeten wordt is de *intentie*, niet een aankoop — zie de toelichting bij
-    // `SUBSCRIPTION_ATTEMPT`. Er gaat met opzet geen bedrag of valuta in mee: een omzetparameter
-    // bij een gebeurtenis die niets oplevert vervuilt het omzetrapport blijvend. `status` en
-    // `reason` staan er wél in, zodat straks te zien is welke rijen uit de stub-periode komen en
-    // die apart te filteren zijn zodra Billing er is.
-    logStoryEvent(ANALYTICS_EVENTS.SUBSCRIPTION_ATTEMPT, {
-      tier: 'pro',
-      source: bron,
-      status: 'blocked_no_billing',
-      reason: 'play_billing_not_integrated',
-    });
-    meld(
-      t((s) => s.pro.nogNietTitel),
-      t((s) => s.pro.nogNietTekst),
-      t((s) => s.instellingen.ok),
-    );
+  async function startFreeTrial() {
+    setIsStartingTrial(true);
+    try {
+      // Log the subscription attempt
+      logStoryEvent(ANALYTICS_EVENTS.SUBSCRIPTION_ATTEMPT, {
+        tier: 'pro',
+        source: bron,
+        status: 'trial_started',
+        plan: selectedPlan,
+      });
+
+      // Start 7-day free trial
+      await setTrial(7);
+
+      // Close the modal and show success
+      onClose();
+      meld(
+        t((s) => s.pro.trialStartedTitel),
+        t((s) => s.pro.trialStartedTekst),
+        t((s) => s.instellingen.ok),
+      );
+    } catch (error) {
+      console.error('Error starting trial:', error);
+      meld(
+        t((s) => s.pro.trialFailedTitel),
+        t((s) => s.pro.trialFailedTekst),
+        t((s) => s.instellingen.ok),
+      );
+    } finally {
+      setIsStartingTrial(false);
+    }
   }
 
   return (
@@ -124,21 +147,89 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
               ))}
             </View>
 
-            <View style={[styles.prijsVak, { backgroundColor: theme.backgroundElement }]}>
-              <ThemedText type="subtitle" themeColor="accent">
-                {t((s) => s.pro.prijsMaand)}
-              </ThemedText>
-              <ThemedText type="small" themeColor="textSecondary">
-                {t((s) => s.pro.prijsJaar)}
-              </ThemedText>
+            {/* Plan selection */}
+            <View style={styles.planSelectie}>
+              <Pressable
+                onPress={() => setSelectedPlan('monthly')}
+                style={[
+                  styles.planButton,
+                  {
+                    backgroundColor:
+                      selectedPlan === 'monthly' ? theme.accent : theme.backgroundElement,
+                    borderWidth: selectedPlan === 'monthly' ? 0 : 1,
+                    borderColor: theme.textSecondary,
+                  },
+                ]}>
+                <ThemedText
+                  type="bodyBold"
+                  style={{
+                    color: selectedPlan === 'monthly' ? theme.background : theme.text,
+                    textAlign: 'center',
+                  }}>
+                  €4.99 / month
+                </ThemedText>
+                <ThemedText
+                  type="caption"
+                  style={{
+                    color: selectedPlan === 'monthly' ? theme.background : theme.textSecondary,
+                    textAlign: 'center',
+                  }}>
+                  Renews monthly
+                </ThemedText>
+              </Pressable>
+
+              <Pressable
+                onPress={() => setSelectedPlan('yearly')}
+                style={[
+                  styles.planButton,
+                  {
+                    backgroundColor:
+                      selectedPlan === 'yearly' ? theme.accent : theme.backgroundElement,
+                    borderWidth: selectedPlan === 'yearly' ? 0 : 1,
+                    borderColor: theme.textSecondary,
+                  },
+                ]}>
+                <ThemedText
+                  type="bodyBold"
+                  style={{
+                    color: selectedPlan === 'yearly' ? theme.background : theme.text,
+                    textAlign: 'center',
+                  }}>
+                  €49.99 / year
+                </ThemedText>
+                <ThemedText
+                  type="caption"
+                  style={{
+                    color: selectedPlan === 'yearly' ? theme.background : theme.textSecondary,
+                    textAlign: 'center',
+                  }}>
+                  Save 17%
+                </ThemedText>
+              </Pressable>
+            </View>
+
+            {/* Trial info box */}
+            <View style={[styles.trialBox, { backgroundColor: withAlpha(theme.accent, 0.1) }]}>
+              <Ionicons name="gift-outline" size={20} color={theme.accent} />
+              <View style={{ flex: 1 }}>
+                <ThemedText type="bodyBold" themeColor="accent">
+                  {t((s) => s.pro.trialOffer)}
+                </ThemedText>
+                <ThemedText type="caption" themeColor="textSecondary">
+                  {t((s) => s.pro.trialOfferDescription)}
+                </ThemedText>
+              </View>
             </View>
 
             <AnimatedPressable
-              onPress={nogNiet}
+              onPress={startFreeTrial}
+              disabled={isStartingTrial || subscriptionLoading}
               accessibilityRole="button"
               style={[styles.hoofdKnop, { backgroundColor: theme.accent }]}>
               <ThemedText type="bodyBold" style={{ color: theme.background }}>
-                {t((s) => s.pro.abonneer)}
+                {isStartingTrial
+                  ? t((s) => s.pro.startingTrial)
+                  : t((s) => s.pro.startTrial)}
               </ThemedText>
             </AnimatedPressable>
 
@@ -226,5 +317,26 @@ const styles = StyleSheet.create({
   },
   laterKnop: {
     paddingVertical: Spacing.one,
+  },
+  planSelectie: {
+    width: '100%',
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  planButton: {
+    flex: 1,
+    padding: Spacing.three,
+    borderRadius: Radii.button,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.half,
+  },
+  trialBox: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.two,
+    padding: Spacing.three,
+    borderRadius: Radii.button,
   },
 });

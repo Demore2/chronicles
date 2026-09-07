@@ -1121,10 +1121,33 @@ eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
   `PRO_BANNER_ENABLED`: een limiet die alleen met een aankoop opgeheven kan worden terwijl er niets
   te kopen valt, is een muur zonder deur. Zet ze op `false` vóór de productiebuild, of lever ze
   samen met een werkende aankoop.
-- **`useAbonnement()` leest sinds deze fase `abonnement-store`** in plaats van hardcoded `false`
-  terug te geven. `isPro` wordt alleen gezet door de **`__DEV__`-schakelaar onderaan Instellingen**
-  ("Simulate Pro"), want er is geen Play Billing. Eén bron voor banner, advertenties, limiet en de
-  regel "Your plan".
+- **`useAbonnement()` telt sinds Fase 2A twee dingen bij elkaar op**: het serverabonnement uit
+  `subscription-store` (`isAbonnementActief`) **óf** het lokale tegoed uit `abonnement-store`
+  (`isProActief`, de week Pro uit een uitnodiging). Wie één van beide heeft, heeft Pro. Beide
+  helften verlopen door tijd, dus het peilmoment komt als parameter binnen — vorm van
+  `useStreak()`. Eén bron voor banner, advertenties, de onderbreking in de reader en de regel
+  "Your plan". **De `__DEV__`-schakelaar "Simulate Pro" is eruit**: die zette alleen
+  `abonnement-store.isPro` en dus een Pro-ervaring die op een tweede toestel niet bestond. Pro
+  bekijken doe je nu door in te loggen met het premium testaccount uit `docs/TEST_ACCOUNTS.md`.
+  `setPro` staat er nog en is ongebruikt.
+- **De dagelijkse limiet kijkt hier sinds de rate limiting óók naar**, via **`heeftProNu()`** in
+  `abonnement-store`: dezelfde optelsom als `useAbonnement()`, maar als losse functie voor een
+  beslissing op één moment in plaats van als hook voor de weergave. Hier stond dat dit niet kón
+  omdat `magVerhaalOpenen` een methode *van* die store is — dat was een ontwerpafspraak en geen
+  technische onmogelijkheid; `abonnement-store` importeert nu `isAbonnementActief` uit
+  `subscription-store`, en die afhankelijkheid loopt maar één kant op. **Twee antwoorden op "heeft
+  deze lezer Pro" is precies de bug die hier stond: wijzig ze samen.**
+- **De limiet telt per account, niet per toestel.** `gestarteVerhalen` staat in AsyncStorage, dus
+  twee telefoons gaven elk hun eigen dagvoorraad. `src/lib/leeslimiet.ts` schrijft daarom bij elk
+  eerste openen een rij in `public.user_daily_reads` en leest vóór de poort terug wat de server
+  voor vandaag kent; `voegServerVerhalenSamen` legt dat bij de lokale lijst. **Een vereniging, geen
+  vervanging** — zelfde regel als `voegServerVoortgangSamen`, want de insert is fire-and-forget en
+  een vervanging zou een zojuist geopend verhaal weer uit de telling wissen.
+- **De serverronde faalt open, met een eigen tijdslimiet (2,5s).** `haalVerhalenVandaagOp` geeft
+  `null` bij offline, een 401 of traagheid — iets anders dan een lege lijst — en dan beslist de
+  lokale stand. Een leeslimiet die dichtklapt zodra het netwerk wegvalt is erger dan een limiet die
+  een keer te ruim uitpakt, en dit staat vóór de poort: wachten op een hangende verbinding is een
+  scherm dat niet opengaat.
 - **De limiet telt verhaal-id's, geen aantallen.** `gestarteVerhalen` + `dagSleutel` (lokale
   datumsleutel, via `vandaagSleutel()` uit `voortgang-store` — dezelfde functie als de streak, niet
   een tweede eigen datumberekening). Een teller die per bezoek ophoogt telt hetzelfde verhaal na
@@ -1143,6 +1166,51 @@ eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
   ontgrendelen van het personage (nooit ertussen) en is een **placeholder die dat ook zegt**; de
   reader beslist zelf of hij komt (`toontOnderbreking`), want een `AdModal` die `null` rendert zou
   het scherm laten wachten op een `onClose` die nooit komt.
+#### `subscription-store.ts` — de serverkant (Billing Fase 1)
+
+**Er zijn nu twee stores die over het abonnement gaan, en dat is met opzet tijdelijk.**
+`abonnement-store` is device-lokaal (de dagteller `gestarteVerhalen`, `bonusVerhalen`, en het
+tegoed `proTot`); **`subscription-store` is de spiegel van `public.user_subscriptions`** — tier,
+proefperiode, einddatum, auto-renew.
+
+- **De serverrij wint, en dat is sinds Fase 2A ook zo geregeld.** `useAbonnement()` leest beide en
+  geeft Pro zodra één van de twee loopt; het zijn twee verschillende dingen (een abonnement op het
+  *account* naast een tegoed op dít *toestel*), dus ze worden opgeteld en niet tegen elkaar
+  afgewogen. Enige uitzondering is `magVerhaalOpenen` — zie de waarschuwing hierboven.
+- **`isPremium()` is `tier === 'premium'` én een datum die nog loopt.** Een rij die op premium
+  blijft staan met verlopen data geeft `false`: een abonnement verloopt door tijd, niet door een
+  veldwissel. Zelfde redenering als `proTot` en `useStreak()`.
+- **De store wordt niet ge`persist`-eerd, maar cachet de serverrij wél handmatig** onder
+  `subscription_<user_id>`. Die cache is er niet om de state te herstellen maar om na een mislukte
+  ronde (offline) terug te vallen op de laatst bekende stand — een betalende lezer in de trein
+  hoort zijn Pro niet kwijt te raken. `wisAbonnementCache()` ruimt hem op bij accountverwijdering.
+- **`loadSubscription` gebruikt `maybeSingle()` en maakt een ontbrekende rij zelf aan.** De
+  backfill dekte alleen de gebruikers die er tóén waren; wie zich daarna registreert heeft geen
+  rij, en `single()` maakt van dat normale geval een fout. Zelfde aanpak als `maakGebruikersrijen`
+  voor `profiles`/`voortgang`. Er is bewust géén trigger op `auth.users` — dit project provisioneert
+  gebruikersrijen client-side.
+- 🚩 **`setPremium()` is uitgecommentarieerd tot Billing er is** — in de interface én in de store.
+  Het was een placeholder met een gat erin: de client schreef rechtstreeks naar zijn eigen rij en
+  de update-policy staat dat toe, dus een lezer kon zichzelf premium maken. Hij had geen enkele
+  aanroeper, dus uitzetten kostte niets. Bij Billing keert hij terug als aanroep van een edge
+  function die de bon bij Google verifieert, en **gaat de update-policy op `user_subscriptions`
+  eraf**. **`setTrial()` heeft hetzelfde gat en staat nog wél aan** (ook zonder aanroeper) — die
+  moet bij dezelfde stap mee. Premium zetten gebeurt tot die tijd met de hand in Supabase; de twee
+  testaccounts en het SQL'tje staan in `docs/TEST_ACCOUNTS.md` (gitignored — `docs/` wordt via
+  GitHub Pages publiek geserveerd).
+- `public.user_daily_reads` (append-only: select + insert, geen update/delete) **wordt sinds de
+  rate limiting geschreven én gelezen**, door `src/lib/leeslimiet.ts`. Er is bewust **geen unique
+  constraint** op `(user_id, story_id, dag)`: het is een logboek, dus dubbele rijen zijn geen fout
+  en de leeskant telt unieke `story_id`'s in plaats van rijen. De schrijfkant slaat een verhaal
+  over dat vandaag al geteld was, anders schrijft elke terugkeer uit de reader (`router.back()`)
+  een rij bij. De index `idx_user_daily_reads_user_read_at` dekt precies de vensteropvraging.
+- **De dag is de lokale dag van het toestel** (`vandaagSleutel()`, dezelfde als de streak), en de
+  grenzen gaan als echte momenten naar Postgres. De valkuil die `dagGrenzen()` vermijdt is
+  `setUTCHours(0,0,0,0)`: dat is middernacht in Greenwich. In Amsterdam (UTC+2) valt een verhaal
+  dat om 00:30 lokaal opengaat dán buiten het venster — elke nacht een gratis extra verhaal — en
+  wordt de eerste lezing van morgen aan vandaag toegerekend. Het einde komt uit de kalender
+  (`dag + 1`) en niet uit "+ 24 uur", want de nacht van de klokverzetting duurt 23 of 25 uur.
+
 - **E-mailvoorkeuren** (`email-preferences.tsx` + `email-voorkeur-store.ts`) zijn vier lokale
   schakelaars; er wordt nog geen mail verstuurd en de voetnoot onder de sectie zegt dat. De eerste
   drie (maandbrief, nieuwe verhalen, tips) staan sinds deze fase **standaard aan**, aanbiedingen
@@ -1401,8 +1469,8 @@ counts), full i18n (en/nl/fr/de) with a language picker, theme picker, email pre
 
 ### ⏳ IN PROGRESS / NOT STARTED
 
-- **Google Play Billing — NOT STARTED.** A stub. `useAbonnement()` reads `abonnement-store`, whose
-  `isPro` only moves via the `__DEV__` "Simulate Pro" switch.
+- **Google Play Billing — NOT STARTED.** A stub. `useAbonnement()` reads the server row plus the
+  local credit; premium is set by hand in Supabase, and `setPremium()` is disabled.
 - **AdMob — NOT STARTED.** `ADS_ENABLED` is `false` and `<AdBanner />` renders `null`; the
   interstitial is a placeholder that says so.
 - **Collections — NOT STARTED.** `collecties.ts` exports `[]`.
@@ -1428,11 +1496,13 @@ Known gaps:
   push work — the reminder, its time and the two push categories now live in
   `public.notification_preferences` and follow the account to a second device. Still device-local:
   language, theme, the **avatar** (`profile-store`), the **email preferences**
-  (`email-voorkeur-store`) and the **daily story counter** (`abonnement-store`) — the `profiles`
-  row has `language`/`theme` columns that nothing writes yet, and no avatar or email column at all
-  (a photo avatar would also need Storage for the bytes, not just a column). The story counter
-  being local means two devices each get their own daily allowance; that is a Billing-era problem,
-  not a today problem.
+  (`email-voorkeur-store`) — the `profiles` row has `language`/`theme` columns that nothing writes
+  yet, and no avatar or email column at all (a photo avatar would also need Storage for the bytes,
+  not just a column). ~~The daily story counter~~ (`abonnement-store`) is no longer only local:
+  it still lives in AsyncStorage, but the rate limiting mirrors each first open into
+  `public.user_daily_reads` and merges the server's list back in before the gate, so two devices
+  now share one daily allowance. It is deliberately **not** an eighth `SYNC_STORES` entry — the
+  traffic runs one way and what comes back is only a correction to the count.
 - ~~Account deletion is a mailto~~ — **it deletes now**, via the `delete-account` edge function
   (see "Account deletion & data requests"). What is still handwork is the **data copy**:
   Instellingen → "Request my data" opens a prefilled mail to `SUPPORT_EMAIL`
@@ -1463,8 +1533,10 @@ Known gaps:
   placeholder, so Settings hides the link), and it does not name Supabase's processing region —
   fill that in if you want an explicit EU-transfer clause. Nothing in the code fails when the page
   is wrong, so this only gets caught by reading it.
-- **Google Play Billing is a stub** — nothing can actually be bought; `useAbonnement()` now reads
-  `abonnement-store`, whose `isPro` only moves via the `__DEV__` "Simulate Pro" switch. `ADS_ENABLED`
+- **Google Play Billing is a stub** — nothing can actually be bought. `useAbonnement()` now reads
+  the server row (`subscription-store`) as well as the local credit; premium is set **by hand in
+  Supabase** (`docs/TEST_ACCOUNTS.md`), the `__DEV__` "Simulate Pro" switch is gone and
+  `setPremium()` is commented out. `ADS_ENABLED`
   in `ad-banner.tsx` is still `false`, but **three other flags are on**: `PRO_BANNER_ENABLED`
   (`pro-access-banner.tsx`), and `VERHAAL_LIMIET_ENABLED` + `AD_ONDERBREKING_ENABLED`
   (`constants/monetisatie.ts`). Together they show an offer that cannot be completed *and* gate

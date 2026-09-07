@@ -31,7 +31,10 @@ type AdModalProps = {
  * 1. **Eén keer per uitgelezen verhaal**, niet per hoofdstuk. Acht onderbrekingen per verhaal is
  *    geen gratis model maar een strafblad.
  * 2. **De aftelling loopt alleen als het venster open staat**, en begint opnieuw bij elke opening.
- *    De timer wordt in de cleanup opgeruimd, anders tikt hij door op een gesloten scherm.
+ *    De timer wordt in de cleanup opgeruimd, anders tikt hij door op een gesloten scherm. Hij duurt
+ *    `AD_AFTELLING_SECONDEN` (dertig — de lengte van een rewarded video), en dat is precies waarom
+ *    punt 1 hierboven zwaar weegt: dertig seconden na acht hoofdstukken is een advertentie, acht
+ *    keer dertig seconden is een tolpoort.
  * 3. **Er is geen weg terug via de hardwareknop** (`onRequestClose` sluit gewoon): een
  *    onderbreking die je niet weg krijgt is een vastloper, en dit scherm staat tussen de lezer en
  *    zijn net vrijgespeelde personage.

@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AnalyticsVoorkeuren } from '@/components/analytics-preferences';
 import { HerinneringRegel, HerinneringTijd } from '@/components/daily-reminder-settings';
@@ -32,7 +32,7 @@ import { useVertaling } from '@/hooks/use-vertaling';
 import { logout } from '@/hooks/useAuth';
 import { useDeleteAccount } from '@/hooks/useDeleteAccount';
 import { taalCodes, taalNamen } from '@/i18n/taal-namen';
-import { useAbonnementStore, useVerhalenVandaag } from '@/store/abonnement-store';
+import { useVerhalenVandaag } from '@/store/abonnement-store';
 import { useAuthStore } from '@/store/auth-store';
 import { useThemaStore, type ThemaVoorkeur } from '@/store/thema-store';
 
@@ -75,8 +75,6 @@ export default function InstellingenScreen() {
   const themaVoorkeur = useThemaStore((state) => state.themaVoorkeur);
   const setThemaVoorkeur = useThemaStore((state) => state.setThemaVoorkeur);
   const { isPremium } = useAbonnement();
-  const setPro = useAbonnementStore((state) => state.setPro);
-  const isProVast = useAbonnementStore((state) => state.isPro);
   const verhalenVandaag = useVerhalenVandaag();
   const [uitlogBezig, setUitlogBezig] = useState(false);
   const { verwijderAccount, isBezig: verwijderBezig } = useDeleteAccount();
@@ -318,10 +316,11 @@ export default function InstellingenScreen() {
             keuze over gegevens, geen gevaarlijke handeling. */}
         <AnalyticsVoorkeuren />
 
-        {/* Zolang het Pro-aanbod aan staat opent deze regel het aanbodvenster in plaats van de
-            binnenkort-melding: het is dezelfde vraag ("wat heb ik, en wat kan ik krijgen?"), en
-            twee plekken die daar verschillend op antwoorden is er één te veel. Gaat de vlag uit,
-            dan valt de regel vanzelf terug op "Soon" — er is geen tweede plek om te wijzigen. */}
+        {/* De plan-regel is **informatie** en geen knop: hij zegt wat je hebt, en die stand komt
+            sinds deze fase van de server (`subscription-store`) en niet meer van een schakelaar.
+            Het *upgraden* is een aparte regel eronder, en alleen voor wie gratis is — één vraag,
+            één antwoord, en geen chevron op een regel waar niets te bedienen valt (huisregel van
+            `SettingsItem`). Staat het Pro-aanbod uit, dan blijft alleen de plan-regel over. */}
         <SettingsSectie titel={t((s) => s.instellingen.sectieAbonnement)}>
           <SettingsItem
             icoon="card-outline"
@@ -331,13 +330,26 @@ export default function InstellingenScreen() {
                 ? t((s) => s.instellingen.abonnementPro)
                 : t((s) => s.instellingen.abonnementGratis)
             }
-            badge={PRO_BANNER_ENABLED ? undefined : binnenkortBadge}
-            onPress={
-              PRO_BANNER_ENABLED
-                ? () => setPaywallOpen(true)
-                : () => nogNiet(t((s) => s.instellingen.abonnement))
-            }
+            // Wat Pro oplevert staat onder de regel zelf en niet als losse tegel: het is een
+            // toelichting op "Pro", geen tweede mededeling.
+            uitleg={isPremium ? t((s) => s.instellingen.abonnementProVoordelen) : undefined}
           />
+          {/* Alleen zichtbaar voor wie nog gratis is — een Pro-lezer een upgradeknop voorhouden is
+              de bekendste manier om een betalende lezer te laten twijfelen of hij wel betaald
+              heeft. Zonder de vlag draagt de regel "Soon" en zegt hij dat ook, in plaats van een
+              aanbod te openen dat niet af te ronden is. */}
+          {!isPremium ? (
+            <SettingsItem
+              icoon="sparkles-outline"
+              label={t((s) => s.instellingen.abonnementUpgrade)}
+              badge={PRO_BANNER_ENABLED ? undefined : binnenkortBadge}
+              onPress={
+                PRO_BANNER_ENABLED
+                  ? () => setPaywallOpen(true)
+                  : () => nogNiet(t((s) => s.instellingen.abonnement))
+              }
+            />
+          ) : null}
           {/* Wat de limiet vandaag nog toestaat. Informatie, geen knop: hij telt zichzelf vol en
               er valt hier niets aan te bedienen. Voor Pro staat er "Unlimited" in plaats van een
               teller die nooit iets doet. */}
@@ -355,28 +367,13 @@ export default function InstellingenScreen() {
               }
             />
           ) : null}
-          {/* Alleen in ontwikkeling: Google Play Billing bestaat nog niet, dus zonder deze
-              schakelaar is de Pro-kant van de app niet te bekijken. `__DEV__` is in een
-              productiebundel `false`, dus dit kan niet meeliften naar Play. */}
-          {__DEV__ ? (
-            <SettingsItem
-              icoon="construct-outline"
-              label="Simulate Pro (dev)"
-              uitleg="Development only — replaces the Play Billing check."
-              rechts={
-                <Switch
-                  // `isPro` uit de store en niet `isPremium`: die tweede is sinds de
-                  // uitnodigingsbeloningen ook waar tijdens een verdiende week Pro, en dan zou de
-                  // schakelaar aan staan terwijl hij niets heeft gezet — en hem omzetten zou dan
-                  // niets lijken te doen.
-                  value={isProVast}
-                  onValueChange={setPro}
-                  trackColor={{ false: theme.backgroundSelected, true: theme.accent }}
-                  thumbColor={theme.background}
-                />
-              }
-            />
-          ) : null}
+          {/* Hier stond de `__DEV__`-schakelaar "Simulate Pro". Die is eruit: Pro komt nu uit de
+              `user_subscriptions`-rij, dus de Pro-kant van de app is te bekijken door met een
+              premium testaccount in te loggen (zie `docs/TEST_ACCOUNTS.md`) in plaats van door
+              een lokaal vlaggetje om te zetten. Dat is bovendien eerlijker: de schakelaar zette
+              alleen `abonnement-store.isPro` en raakte de serverstand nooit, dus hij toonde een
+              Pro-ervaring die op een tweede toestel niet bestond. `setPro` blijft in de store
+              staan — hij is nu alleen ongebruikt. */}
         </SettingsSectie>
 
         <SettingsSectie titel={t((s) => s.instellingen.sectieSupport)}>

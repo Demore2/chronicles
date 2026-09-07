@@ -25,6 +25,7 @@ import { useVoortgangSync } from '@/hooks/use-voortgang-sync';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/auth-store';
+import { useSubscriptionStore } from '@/store/subscription-store';
 
 /** De routes die je zonder sessie mag zien. Alles daarbuiten stuurt de poort naar /login. */
 const AUTH_ROUTES = ['login', 'signup'];
@@ -39,7 +40,21 @@ export default function RootLayout() {
 
   // De enige `useAuth()` van de app: hij zet de sessie-listener op en houdt de auth-store gelijk
   // met Supabase. De schermen gebruiken de losse `login`/`signup`/`logout` functies.
-  const { isLoading } = useAuth();
+  const { isLoading, user } = useAuth();
+
+  // De abonnementsrij uit Supabase, opgehaald zodra er een sessie is (Fase 1). Bij uitloggen
+  // terug naar de beginstand: bleef de vorige stand staan, dan zou de volgende lezer op dit
+  // toestel diens abonnement zien tot de eerste ronde binnen is.
+  const loadSubscription = useSubscriptionStore((s) => s.loadSubscription);
+  const resetSubscription = useSubscriptionStore((s) => s.reset);
+
+  useEffect(() => {
+    if (user?.id) {
+      void loadSubscription(user.id);
+    } else {
+      resetSubscription();
+    }
+  }, [user?.id, loadSubscription, resetSubscription]);
 
   // Even zo: de enige plek die voortgang met Supabase synchroniseert (deel 3). Hij haalt op bij
   // een nieuwe sessie en probeert het opnieuw zodra het netwerk of de app terugkomt.

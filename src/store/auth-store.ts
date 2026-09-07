@@ -41,3 +41,43 @@ export const useAuthStore = create<AuthState>()((set) => ({
   setError: (error) => set({ error, isLoading: false }),
   setLoading: (isLoading) => set({ isLoading }),
 }));
+
+/**
+ * Wacht tot vaststaat óf er een sessie is, en geeft dan het gebruiker-id (of `null`).
+ *
+ * `isLoading` begint op `true` en gaat pas uit als `setUser` of `clearUser` is aangeroepen, dus
+ * dat is precies het onderscheid dat hier nodig is: "we weten het nog niet" tegenover "er is
+ * niemand". `useAuthStore.getState().user?.id` zonder deze wachtstap geeft vlak na een koude start
+ * `null` terug, en dat leest als uitgelogd.
+ *
+ * **Waarom dit bestaat:** de poort in `verhaal/[id]/chapters.tsx` draait in een effect bij het
+ * monteren. Komt de lezer via een deeplink of een koude start rechtstreeks in een verhaal terecht,
+ * dan herstelt `AuthPoort` de sessie nog terwijl dat effect al loopt — het verhaal werd dan wel
+ * lokaal geteld maar nooit naar `public.user_daily_reads` geschreven, en de serverronde die de
+ * telling over twee toestellen sluit werd overgeslagen. Zo krijgt een koude start stilzwijgend een
+ * gratis extra verhaal. Dit is met een browsertoets vastgesteld: de limietmelding verscheen wel,
+ * maar de tabel bleef leeg.
+ *
+ * De tijdslimiet is er zodat een blijvende `isLoading` de poort niet laat hangen; hij faalt naar
+ * `null`, en dan telt de lokale stand — dezelfde afweging als in `leeslimiet.ts`.
+ */
+export function wachtOpSessie(timeoutMs = 5000): Promise<string | null> {
+  const huidig = useAuthStore.getState();
+  if (!huidig.isLoading) return Promise.resolve(huidig.user?.id ?? null);
+
+  return new Promise((resolve) => {
+    let klaar = false;
+    const rond = (id: string | null) => {
+      if (klaar) return;
+      klaar = true;
+      clearTimeout(teller);
+      unsubscribe();
+      resolve(id);
+    };
+
+    const teller = setTimeout(() => rond(null), timeoutMs);
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      if (!state.isLoading) rond(state.user?.id ?? null);
+    });
+  });
+}

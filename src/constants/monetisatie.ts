@@ -12,8 +12,10 @@
  * tegenaan loopt wijst de app af, en terecht.
  *
  * Zet ze dus op `false` vóór de productiebuild, óf lever ze samen met een werkende aankoop. Ze
- * staan nu aan zodat het model te bekijken en te testen is (zie de dev-schakelaar "Simulate Pro"
- * onderaan Instellingen, die alleen in `__DEV__` bestaat).
+ * staan nu aan zodat het model te bekijken en te testen is: inloggen met het premium testaccount
+ * uit `docs/TEST_ACCOUNTS.md` laat de Pro-kant zien. (Hier stond een verwijzing naar de
+ * `__DEV__`-schakelaar "Simulate Pro" onderaan Instellingen; die is eruit sinds Pro uit de
+ * `user_subscriptions`-rij komt.)
  */
 
 /**
@@ -39,5 +41,16 @@ export const VERHAAL_LIMIET_ENABLED = true;
  */
 export const AD_ONDERBREKING_ENABLED = true;
 
-/** Hoeveel seconden de onderbreking blijft staan voordat hij weggeklikt kan worden. */
-export const AD_AFTELLING_SECONDEN = 3;
+/**
+ * Hoeveel seconden de onderbreking blijft staan voordat hij weggeklikt kan worden.
+ *
+ * Dertig, want dat is de lengte van het advertentieformaat waar deze plek voor bedoeld is — een
+ * rewarded video. Stond op 3; dat was prettig om mee te ontwikkelen, maar het verborg hoe zwaar
+ * deze onderbreking straks werkelijk is, en dat is nou net wat je wilt zien vóórdat AdMob erachter
+ * hangt.
+ *
+ * Dat het er dertig zijn en geen acht keer dertig is de andere helft van de afweging: de
+ * onderbreking komt **één keer per uitgelezen verhaal** en niet tussen elk hoofdstuk. Zie de kop
+ * van `ad-modal.tsx`.
+ */
+export const AD_AFTELLING_SECONDEN = 30;

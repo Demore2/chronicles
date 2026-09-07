@@ -69,3 +69,6 @@ example
 /Git/
 # EAS build cache
 .agents
+# testaccountgegevens: platte wachtwoorden, en docs/ wordt via GitHub Pages
+# publiek geserveerd vanuit een publieke repo — dit bestand mag nooit gecommit worden
+docs/TEST_ACCOUNTS.md

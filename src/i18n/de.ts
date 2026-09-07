@@ -14,7 +14,7 @@ const de: DeepPartial<Vertalingen> = {
     verderLezenLegeTitel: 'Noch nichts begonnen',
     verderLezenLegeBeschrijving: 'Geschichten, die du öffnest, erscheinen hier.',
     verhaallijnen: 'Erzählstränge',
-    nieuwToegevoegd: 'Neu hinzugefügt',
+    nieuwToegevoegd: 'Neue heiße Themen',
   },
   aanbeveling: {
     kop: 'Für dich',
@@ -123,6 +123,8 @@ const de: DeepPartial<Vertalingen> = {
     abonnement: 'Dein Tarif',
     abonnementGratis: 'Kostenlos',
     abonnementPro: 'Pro',
+    abonnementUpgrade: 'Auf Pro upgraden',
+    abonnementProVoordelen: 'Keine Unterbrechungen · Unbegrenzt lesen',
     dagelijkseLimiet: 'Heute gelesen',
     verhalenVandaag: (gebruikt: number, limiet: number): string =>
       `${gebruikt}/${limiet} Geschichten heute`,
@@ -221,11 +223,22 @@ const de: DeepPartial<Vertalingen> = {
     voordeelGeenAds: 'Keine Werbung',
 
     prijsMaand: '4,99 € / Monat',
-    prijsJaar: '39,99 € / Jahr — 33 % günstiger',
+    prijsJaar: '49,99 € / Jahr',
     abonneer: 'Abonnieren',
     misschienLater: 'Vielleicht später',
+
+    // Trial messaging (FASE 3)
+    trialOffer: '7 Tage kostenlos',
+    trialOfferDescription: 'Probieren Sie Chronicles Pro 7 Tage kostenlos. Kündigen Sie jederzeit, keine Kreditkarte erforderlich.',
+    startTrial: 'Kostenlos testen',
+    startingTrial: 'Test wird gestartet…',
+    trialStartedTitel: 'Testphase gestartet!',
+    trialStartedTekst: 'Ihre 7-tägige kostenlose Testphase von Chronicles Pro hat begonnen. Genießen Sie unbegrenzte Lesestunden und keine Anzeigen. Automatische Verlängerung nach 7 Tagen, wenn nicht abgebrochen.',
+    trialFailedTitel: 'Testphase konnte nicht gestartet werden',
+    trialFailedTekst: 'Es ist ein Fehler aufgetreten. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+
     voorbehoud:
-      'Richtpreise. Abonnements kommen in einer späteren Version — heute wird nichts abgebucht.',
+      'Abonnements werden von Google Play verwaltet. Weitere Details finden Sie in unserer Datenschutzrichtlinie.',
     nogNietTitel: 'Noch nicht verfügbar',
     nogNietTekst:
       'Abonnements kommen mit einer späteren Version von Chronicles. Es wurde nichts abgebucht.',

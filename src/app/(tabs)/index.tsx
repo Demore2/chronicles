@@ -110,6 +110,23 @@ export default function OntdekScreen() {
           <RecommendedStoryCard />
 
           <View style={styles.sectie}>
+            <SectieKop titel={t((s) => s.ontdek.nieuwToegevoegd)} />
+            <HorizontaleRij
+              data={nieuwToegevoegd}
+              keyExtractor={(verhaal) => verhaal.id}
+              itemBreedte={CardDimensions.portraitWidth}
+              contentContainerStyle={styles.rij}
+              renderItem={({ item }) => (
+                <VerhaalKaart
+                  verhaal={item}
+                  gelezen={gelezenIds.has(item.id)}
+                  onPress={() => openVerhaal(item.id)}
+                />
+              )}
+            />
+          </View>
+
+          <View style={styles.sectie}>
             <SectieKop titel={t((s) => s.ontdek.verderLezen)} />
             {verderLezen.length === 0 ? (
               <LegeStaat
@@ -200,23 +217,6 @@ export default function OntdekScreen() {
               />
             );
           })}
-
-          <View style={styles.sectie}>
-            <SectieKop titel={t((s) => s.ontdek.nieuwToegevoegd)} />
-            <HorizontaleRij
-              data={nieuwToegevoegd}
-              keyExtractor={(verhaal) => verhaal.id}
-              itemBreedte={CardDimensions.portraitWidth}
-              contentContainerStyle={styles.rij}
-              renderItem={({ item }) => (
-                <VerhaalKaart
-                  verhaal={item}
-                  gelezen={gelezenIds.has(item.id)}
-                  onPress={() => openVerhaal(item.id)}
-                />
-              )}
-            />
-          </View>
         </ScrollView>
       </SafeAreaView>
     </ThemedView>

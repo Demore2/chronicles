@@ -8,6 +8,7 @@ import { useProfileStore } from '@/store/profile-store';
 import { useRecommendationStore } from '@/store/recommendation-store';
 import { useReferralStore } from '@/store/referral-store';
 import { useStoryProgressStore } from '@/store/story-progress-store';
+import { wisAbonnementCache } from '@/store/subscription-store';
 import { useVoortgangStore } from '@/store/voortgang-store';
 
 /**
@@ -102,4 +103,8 @@ export function wisLokaleGebruikersgegevens(): void {
   // dan tilt de samenvoeging bij de volgende login hem naar het nieuwe account — een kopie van
   // precies de gegevens die net "voorgoed verwijderd" heetten.
   useReferralStore.setState({ data: null, heeftOnverzondenWijzigingen: false });
+
+  // De abonnementsstatus uit Supabase plus de gecachte kopie ervan. De serverrij is met de cascade
+  // op auth.users al weg; dit is de kopie die op dit toestel achterbleef.
+  wisAbonnementCache();
 }

@@ -18,7 +18,7 @@ const en = {
     verderLezenLegeBeschrijving: 'Stories you open will appear here.',
     verhaallijnen: 'Storylines',
     ontdekMeer: 'Discover more',
-    nieuwToegevoegd: 'Newly added',
+    nieuwToegevoegd: 'New hot topics',
   },
   /**
    * De "Recommended for you"-kaart op Home (`recommended-story-card.tsx`).
@@ -165,6 +165,13 @@ const en = {
     abonnement: 'Your plan',
     abonnementGratis: 'Free',
     abonnementPro: 'Pro',
+    /** De losse regel waarmee een gratis lezer het aanbod opent. Zie `abonnementProVoordelen`. */
+    abonnementUpgrade: 'Upgrade to Pro',
+    /**
+     * Wat Pro oplevert, onder de plan-regel van een Pro-lezer. Bewust de twee dingen die de app
+     * vandaag écht doet — geen belofte over inhoud die er niet is.
+     */
+    abonnementProVoordelen: 'No interruptions · Unlimited reading',
     dagelijkseLimiet: 'Today’s reading',
     /** Rechts van "Your plan" voor een gratis lezer: hoeveel van de dag nog over is. */
     verhalenVandaag: (gebruikt: number, limiet: number): string =>
@@ -343,15 +350,26 @@ const en = {
     voordeelGeenAds: 'No ads, ever',
 
     prijsMaand: '€4.99 / month',
-    prijsJaar: '€39.99 / year — save 33%',
+    prijsJaar: '€49.99 / year',
     abonneer: 'Subscribe',
     misschienLater: 'Maybe later',
+
+    // Trial messaging (FASE 3)
+    trialOffer: '7-day free trial',
+    trialOfferDescription: 'Try Chronicles Pro free for 7 days. Cancel anytime, no credit card needed.',
+    startTrial: 'Start free trial',
+    startingTrial: 'Starting trial…',
+    trialStartedTitel: 'Trial started!',
+    trialStartedTekst: 'Your 7-day free trial of Chronicles Pro has started. Enjoy unlimited reading and no ads. Auto-renews after 7 days unless cancelled.',
+    trialFailedTitel: 'Could not start trial',
+    trialFailedTekst: 'Something went wrong. Please check your connection and try again.',
+
     /**
      * Eerlijk over wat er vandaag gebeurt: niets. Een "7 dagen gratis proberen"-regel zonder
      * Billing erachter belooft een proefperiode die niet bestaat en die niemand kan opzeggen.
      */
     voorbehoud:
-      'Indicative pricing. Subscriptions arrive in a later version — nothing is charged today.',
+      'Subscriptions are managed by Google Play. See our privacy policy for details.',
     nogNietTitel: 'Not available yet',
     nogNietTekst:
       'Subscriptions arrive with a later version of Chronicles. Nothing has been charged.',

@@ -14,7 +14,7 @@ const fr: DeepPartial<Vertalingen> = {
     verderLezenLegeTitel: 'Rien de commencé pour l’instant',
     verderLezenLegeBeschrijving: 'Les histoires que vous ouvrez apparaîtront ici.',
     verhaallijnen: 'Récits',
-    nieuwToegevoegd: 'Nouveautés',
+    nieuwToegevoegd: 'Nouveaux sujets brûlants',
   },
   aanbeveling: {
     kop: 'Pour vous',
@@ -123,6 +123,8 @@ const fr: DeepPartial<Vertalingen> = {
     abonnement: 'Votre formule',
     abonnementGratis: 'Gratuite',
     abonnementPro: 'Pro',
+    abonnementUpgrade: 'Passer à Pro',
+    abonnementProVoordelen: 'Sans interruption · Lecture illimitée',
     dagelijkseLimiet: "Lecture du jour",
     verhalenVandaag: (gebruikt: number, limiet: number): string =>
       `${gebruikt}/${limiet} récits aujourd'hui`,
@@ -218,17 +220,28 @@ const fr: DeepPartial<Vertalingen> = {
     voordeelPersonages: 'Tous les portraits de personnages dans votre collection',
     voordeelVroeg: 'Les nouveaux récits en avant-première',
     voordeelOffline: 'Lecture hors ligne, où que vous soyez',
-    voordeelGeenAds: 'Aucune publicité',
+    voordeelGeenAds: ‘Aucune publicité’,
 
-    prijsMaand: '4,99 € / mois',
-    prijsJaar: '39,99 € / an — 33 % d’économie',
-    abonneer: "S'abonner",
-    misschienLater: 'Plus tard',
+    prijsMaand: ‘4,99 € / mois’,
+    prijsJaar: ‘49,99 € / an’,
+    abonneer: "S’abonner",
+    misschienLater: ‘Plus tard’,
+
+    // Trial messaging (FASE 3)
+    trialOffer: ‘Essai gratuit 7 jours’,
+    trialOfferDescription: ‘Essayez Chronicles Pro pendant 7 jours gratuitement. Annulez quand vous voulez, sans carte bancaire requise.’,
+    startTrial: "Démarrer l’essai gratuit",
+    startingTrial: "Démarrage de l’essai…",
+    trialStartedTitel: ‘Essai lancé !’,
+    trialStartedTekst: "Votre essai gratuit de 7 jours de Chronicles Pro a commencé. Profitez d’une lecture illimitée et sans publicités. Renouvellement automatique après 7 jours sauf annulation.",
+    trialFailedTitel: ‘Impossible de démarrer l’essai’,
+    trialFailedTekst: ‘Une erreur est survenue. Vérifiez votre connexion et réessayez.’,
+
     voorbehoud:
-      "Prix indicatifs. Les abonnements arriveront dans une version ultérieure — rien n'est facturé aujourd'hui.",
-    nogNietTitel: 'Pas encore disponible',
+      ‘Les abonnements sont gérés par Google Play. Consultez notre politique de confidentialité pour plus de détails.’,
+    nogNietTitel: ‘Pas encore disponible’,
     nogNietTekst:
-      "Les abonnements arriveront dans une version ultérieure de Chronicles. Rien n'a été facturé.",
+      "Les abonnements arriveront dans une version ultérieure de Chronicles. Rien n’a été facturé.",
   },
   limiet: {
     titel: "Voilà pour aujourd'hui",
