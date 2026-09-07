@@ -68,11 +68,18 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   useEffect(() => {
     if (visible) {
       logStoryEvent(ANALYTICS_EVENTS.PAYWALL_VIEWED, { tier: 'pro', source: bron });
-      // Reset plan selection each time modal opens
-      setSelectedPlan('yearly');
-      setIsStartingTrial(false);
     }
   }, [visible, bron]);
+
+  // Sluiten zet de plankeuze terug op de standaard, zodat het venster bij een volgende opening
+  // niet met de vorige keuze begint. Dat gebeurt hier en niet in het effect hierboven: een
+  // `setState` in een effect op `visible` is een extra render-ronde voor iets wat de aanleiding
+  // (de tik waarmee je sluit) zelf al weet. `isStartingTrial` hoeft niet mee — `startFreeTrial`
+  // zet die in zijn `finally` al terug.
+  function sluit() {
+    setSelectedPlan('yearly');
+    onClose();
+  }
 
   async function startFreeTrial() {
     setIsStartingTrial(true);
@@ -89,7 +96,7 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
       await setTrial(7);
 
       // Close the modal and show success
-      onClose();
+      sluit();
       meld(
         t((s) => s.pro.trialStartedTitel),
         t((s) => s.pro.trialStartedTekst),
@@ -108,13 +115,13 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   }
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={sluit}>
       <View style={[styles.overlay, { backgroundColor: withAlpha('#000000', 0.6) }]}>
-        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+        <Pressable style={StyleSheet.absoluteFill} onPress={sluit} />
 
         <View style={[styles.venster, { backgroundColor: theme.background }]}>
           <Pressable
-            onPress={onClose}
+            onPress={sluit}
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel={t((s) => s.pro.sluiten)}
@@ -233,7 +240,7 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
               </ThemedText>
             </AnimatedPressable>
 
-            <Pressable onPress={onClose} accessibilityRole="button" style={styles.laterKnop}>
+            <Pressable onPress={sluit} accessibilityRole="button" style={styles.laterKnop}>
               <ThemedText type="link" themeColor="textSecondary">
                 {t((s) => s.pro.misschienLater)}
               </ThemedText>
