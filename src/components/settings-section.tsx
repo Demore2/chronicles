@@ -168,7 +168,10 @@ const styles = StyleSheet.create({
     // Mag krimpen als het label lang is, maar niet tot niets: een half e-mailadres zegt meer
     // dan een afgekapt label.
     flexShrink: 1,
-    maxWidth: '50%',
+    // 62% en niet 50%: het langste dat hier staat is het supportadres, en op een smal toestel
+    // kapte dat halverwege af tot iets dat op een tikfout leek. De labels ernaast zijn kort
+    // ("Contact support", "Your plan"), dus die houden met `flex: 1` ruim genoeg over.
+    maxWidth: '62%',
     textAlign: 'right',
   },
   badge: {

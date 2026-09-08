@@ -41,7 +41,7 @@ export const PLAY_STORE_URL = `https://play.google.com/store/apps/details?id=${A
  * verwijderverzoek komt hier binnen en moet met de hand worden afgehandeld zolang er geen edge
  * function is die het zelf doet.
  */
-export const SUPPORT_EMAIL = 'businessthedemoreagency@gmail.com';
+export const SUPPORT_EMAIL = 'businessdemore@gmail.com';
 
 /**
  * `false` zolang `SUPPORT_EMAIL` de placeholder is; zie daar.

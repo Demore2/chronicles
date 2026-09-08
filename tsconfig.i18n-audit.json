@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "module": "commonjs", "target": "es2020", "moduleResolution": "node", "ignoreDeprecations": "6.0",
+    "esModuleInterop": true, "skipLibCheck": true,
+    "outDir": "G:/dev-temp/claude/G--History-App/d13ecbe7-4ec6-444a-92e1-3448d3d0e798/scratchpad/i18n/out"
+  },
+  "files": ["i18n-audit-temp.ts"]
+}

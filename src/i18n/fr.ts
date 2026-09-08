@@ -14,7 +14,12 @@ const fr: DeepPartial<Vertalingen> = {
     verderLezenLegeTitel: 'Rien de commencé pour l’instant',
     verderLezenLegeBeschrijving: 'Les histoires que vous ouvrez apparaîtront ici.',
     verhaallijnen: 'Récits',
+    ontdekMeer: 'Découvrir plus',
     nieuwToegevoegd: 'Nouveaux sujets brûlants',
+    toonAlles: 'Tout afficher',
+  },
+  splash: {
+    ondertitel: 'Découvrez les histoires qui ont façonné notre monde',
   },
   aanbeveling: {
     kop: 'Pour vous',
@@ -40,6 +45,7 @@ const fr: DeepPartial<Vertalingen> = {
     aantalVerhalen: (gelezen: number, totaal: number) => `${gelezen}/${totaal} histoires`,
     byEra: 'Par époque',
     storiesOfEra: (completed: number, total: number) => `${completed} histoires sur ${total}`,
+    noMoreStories: 'Toutes les histoires ont été explorées ! Voyez-les toutes via Découvrir plus.',
     statStreak: 'Série',
     statStreakEenheid: (n: number): string => (n === 1 ? 'jour' : 'jours'),
     statHoofdstukken: 'Chapitres',
@@ -52,6 +58,7 @@ const fr: DeepPartial<Vertalingen> = {
   },
   profiel: {
     titel: 'Profil',
+    characterCollection: 'Collection de personnages',
     chaptersRead: (n: number) => (n === 1 ? 'chapitre terminé' : 'chapitres terminés'),
     charactersUnlocked: (n: number) => (n === 1 ? 'personnage débloqué' : 'personnages débloqués'),
     storiesCompleted: (n: number) => (n === 1 ? 'histoire terminée' : 'histoires terminées'),
@@ -216,6 +223,12 @@ const fr: DeepPartial<Vertalingen> = {
     paywallOndertitel: "Plus d'histoire, moins d'interruptions.",
     sluiten: 'Fermer',
 
+    // Voir l’explication de `pro` dans en.ts : seules les trois premières sont affichées.
+    voordeelOnbeperkt: "Lisez autant de récits que vous le souhaitez",
+    voordeelGeenOnderbreking: "Aucune interruption entre les récits",
+    voordeelSupport: "Soutenez le développement de Chronicles",
+
+    // Volontairement inutilisées.
     voordeelVerhalen: 'Des récits à travers six époques',
     voordeelPersonages: 'Tous les portraits de personnages dans votre collection',
     voordeelVroeg: 'Les nouveaux récits en avant-première',
@@ -224,16 +237,21 @@ const fr: DeepPartial<Vertalingen> = {
 
     prijsMaand: "4,99 € / mois",
     prijsJaar: "49,99 € / an",
+    prijsMaandNoot: "Formule mensuelle",
+    prijsJaarNoot: "17 % d’économie",
     abonneer: "S’abonner",
     misschienLater: "Plus tard",
 
     // Trial messaging (FASE 3)
     trialOffer: "Essai gratuit 7 jours",
-    trialOfferDescription: "Essayez Chronicles Pro pendant 7 jours gratuitement. Annulez quand vous voulez, sans carte bancaire requise.",
+    trialOfferDescription:
+      "Sept jours d’accès complet dès l’arrivée de Pro. Le paiement n’est pas encore disponible.",
     startTrial: "Démarrer l’essai gratuit",
     startingTrial: "Démarrage de l’essai…",
+    startTrialComingSoon: "Bientôt disponible",
     trialStartedTitel: "Essai lancé !",
-    trialStartedTekst: "Votre essai gratuit de 7 jours de Chronicles Pro a commencé. Profitez d’une lecture illimitée et sans publicités. Renouvellement automatique après 7 jours sauf annulation.",
+    trialStartedTekst:
+      "Vos sept jours de Chronicles Pro ont commencé. Rien n’a été facturé et rien ne se renouvelle automatiquement.",
     trialFailedTitel: "Impossible de démarrer l’essai",
     trialFailedTekst: "Une erreur est survenue. Vérifiez votre connexion et réessayez.",
 
@@ -468,6 +486,15 @@ const fr: DeepPartial<Vertalingen> = {
     inloggen: 'Se connecter',
     registreren: 'Créer un compte',
     wachtwoordVergeten: 'Mot de passe oublié ?',
+    wachtwoordVergetenTitel: 'La réinitialisation du mot de passe n’est pas encore disponible',
+    /**
+     * De knop deed niets — zie `handleWachtwoordVergeten` in `app/login.tsx`. Dit is de
+     * eerlijke versie: geen herstelmail, wel een adres dat gelezen wordt.
+     */
+    wachtwoordVergetenTekst: (email: string): string =>
+      `Nous ne pouvons pas encore envoyer de lien de réinitialisation. Écrivez à ${email} depuis l’adresse utilisée à l’inscription et nous vous aiderons à vous reconnecter.`,
+    /** Zonder ingevuld supportadres valt de mailroute weg en blijft de mededeling over. */
+    wachtwoordVergetenTekstZonderSupport: 'Nous ne pouvons pas encore envoyer de lien de réinitialisation. Contactez-nous et nous vous aiderons à vous reconnecter.',
     geenAccount: 'Pas encore de compte ?',
     welAccount: 'Vous avez déjà un compte ?',
     naarSignup: 'S’inscrire',

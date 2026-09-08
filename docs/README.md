@@ -67,6 +67,22 @@ Console aankruist:
 > zijn de nieuwe antwoorden; `privacy-policy.html` is intussen bijgeschreven en zegt hetzelfde —
 > zie "De privacypagina".
 
+> **En sinds de Firebase-schakelaar geldt de tabel hieronder niet voor de MVP-build.**
+> `EXPO_PUBLIC_FIREBASE_ENABLED` staat in `.env` op `false` en `google-services.json` bestaat
+> niet, dus de app bevat geen analytics-SDK, verstuurt geen enkele meting en vraagt geen
+> FCM-token aan. Zolang dat zo is:
+>
+> - **App interactions**, **Approximate location** en de Analytics-helft van **Device or other
+>   IDs** worden **niet** verzameld en **niet** gedeeld — vul die rijen in als "No".
+> - **User IDs** blijft "Yes", maar wordt **niet gedeeld**: het Supabase-user-id verlaat
+>   Supabase niet.
+> - Er is dus **niets** dat met Google gedeeld wordt. De enige verwerker is Supabase.
+>
+> `privacy-policy.html` en `src/constants/juridische-teksten.ts` zeggen dat sinds deze wijziging
+> ook. De oorspronkelijke Firebase-teksten staan in beide bestanden bewaard achter een
+> commentaar, samen met de tabel hieronder: gaat de vlag op `true`, dan gelden ze weer alle drie
+> tegelijk. **Wijzig ze samen, in één keer.**
+
 | Vraag | Antwoord |
 |---|---|
 | Does your app collect or share any of the required user data types? | **Yes** |
@@ -224,10 +240,11 @@ noemen. Dit is de **release**-set, nagemeten aan de merged manifest:
 
 **`expo-notifications` sleept Firebase Cloud Messaging mee**, ook al plannen we alleen lokale
 notificaties. De app vraagt nooit een pushtoken op, dus er gaat via die weg niets naar Google.
-Hier stond ook "en er is geen `google-services.json`": **dat klopt niet meer** — sinds Firebase
-Analytics staat dat bestand in de repo-root en is de app wel degelijk aan een Firebase-project
-gekoppeld. De permissie zelf verandert er niet door, maar de privacypagina legt nu iets uit dat
-achterhaald is.
+**Er is nog steeds geen `google-services.json`.** Hier stond dat dat bestand sinds
+Firebase Analytics in de repo-root zou liggen; dat is nooit gebeurd, en de app is dus aan
+geen enkel Firebase-project gekoppeld. Firebase staat achter
+`EXPO_PUBLIC_FIREBASE_ENABLED=false` uit en wordt niet meegebouwd — zie "Firebase-schakelaar"
+in CLAUDE.md.
 
 **Twintig launcher-badge-permissies zijn er wél uitgehaald.** `expo-notifications` brengt
 ShortcutBadger mee, dat voor elke fabrikant een eigen `...permission.READ_SETTINGS` /

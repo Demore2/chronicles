@@ -62,6 +62,19 @@ export const VOORWAARDEN_ALINEAS: JuridischeAlinea[] = [
 
 export const PRIVACY_TITEL = 'Privacy Policy — Chronicles';
 
+/**
+ * Wat hier staat moet kloppen met wat de app in *deze* build doet, niet met wat er ooit is
+ * ingebouwd. Dat is precies waar de vorige versie de mist in ging: die noemde Google Firebase
+ * als verwerker van gebruiksstatistieken, terwijl Firebase achter `EXPO_PUBLIC_FIREBASE_ENABLED`
+ * uit staat en `google-services.json` niet bestaat — er wordt dus geen enkele meting verstuurd.
+ * Een beleid dat méér verzameling opgeeft dan er plaatsvindt is net zo goed onjuist als een dat
+ * er minder opgeeft, en Play legt deze tekst naast het Data Safety-formulier.
+ *
+ * De verwerker die er wél is, is Supabase: account, voortgang, peiling- en keuze-antwoorden,
+ * uitnodigingen en feedback staan daar. Zet je Firebase later aan, zet dan de alinea over
+ * gebruiksstatistieken terug — `docs/privacy-policy.html` heeft die tekst nog, achter een
+ * HTML-commentaar, zodat hij niet opnieuw geschreven hoeft te worden.
+ */
 export const PRIVACY_ALINEAS: JuridischeAlinea[] = [
   {
     tekst: `Chronicles ("we", "us") is operated by Quinten, contact: ${SUPPORT_EMAIL}.`,
@@ -69,11 +82,21 @@ export const PRIVACY_ALINEAS: JuridischeAlinea[] = [
   {
     label: 'What we collect',
     tekst:
-      'usage statistics (screens viewed, chapters completed, taps), device type, and country, via Google Firebase. We do not collect or store the text you read or write, or any personal story content.',
+      'your account (email address and username), your reading progress, the characters you have unlocked, your answers to polls and choice points, and any feedback you send us from inside the app. We do not collect the text you read, and quiz answers are never stored.',
   },
   {
     label: 'Account',
     tekst: 'your account is used to sync progress and preferences across devices.',
+  },
+  {
+    label: 'Usage statistics',
+    tekst:
+      'this version of Chronicles sends no usage statistics and contains no analytics or advertising SDK.',
+  },
+  {
+    label: 'On this device only',
+    tekst:
+      'your language, your theme, your profile picture, your email preferences and your daily reading count stay on this phone and are never uploaded.',
   },
   {
     label: 'Email',
@@ -87,7 +110,8 @@ export const PRIVACY_ALINEAS: JuridischeAlinea[] = [
   },
   {
     label: 'Third parties',
-    tekst: 'usage data is processed by Google Firebase (Google LLC).',
+    tekst:
+      'your data is stored and processed on our behalf by Supabase (Supabase, Inc.). We do not sell your data and we do not share it for advertising.',
   },
   {
     label: 'Changes',

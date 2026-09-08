@@ -14,7 +14,12 @@ const de: DeepPartial<Vertalingen> = {
     verderLezenLegeTitel: 'Noch nichts begonnen',
     verderLezenLegeBeschrijving: 'Geschichten, die du öffnest, erscheinen hier.',
     verhaallijnen: 'Erzählstränge',
+    ontdekMeer: 'Mehr entdecken',
     nieuwToegevoegd: 'Neue heiße Themen',
+    toonAlles: 'Alle anzeigen',
+  },
+  splash: {
+    ondertitel: 'Entdecke die Geschichten, die unsere Welt geprägt haben',
   },
   aanbeveling: {
     kop: 'Für dich',
@@ -39,6 +44,7 @@ const de: DeepPartial<Vertalingen> = {
     aantalVerhalen: (gelezen: number, totaal: number) => `${gelezen}/${totaal} Geschichten`,
     byEra: 'Nach Epoche',
     storiesOfEra: (completed: number, total: number) => `${completed} von ${total} Geschichten`,
+    noMoreStories: 'Alle Geschichten entdeckt! Sieh sie dir alle über Mehr entdecken an.',
     statStreak: 'Serie',
     statStreakEenheid: (n: number): string => (n === 1 ? 'Tag' : 'Tage'),
     statHoofdstukken: 'Kapitel',
@@ -51,6 +57,7 @@ const de: DeepPartial<Vertalingen> = {
   },
   profiel: {
     titel: 'Profil',
+    characterCollection: 'Figurensammlung',
     chaptersRead: (n: number) => (n === 1 ? 'Kapitel gelesen' : 'Kapitel gelesen'),
     charactersUnlocked: (n: number) => (n === 1 ? 'Figur freigeschaltet' : 'Figuren freigeschaltet'),
     storiesCompleted: (n: number) => (n === 1 ? 'Geschichte beendet' : 'Geschichten beendet'),
@@ -216,6 +223,13 @@ const de: DeepPartial<Vertalingen> = {
     paywallOndertitel: 'Mehr Geschichte, weniger Unterbrechungen.',
     sluiten: 'Schließen',
 
+    // Siehe die Erläuterung bei `pro` in en.ts: nur die ersten drei werden angezeigt.
+    // Duzform wie im Rest dieser Datei — die FASE-3-Zeilen siezten als Einzige.
+    voordeelOnbeperkt: 'Lies so viele Geschichten, wie du möchtest',
+    voordeelGeenOnderbreking: 'Keine Unterbrechung zwischen den Geschichten',
+    voordeelSupport: 'Unterstütze die Entwicklung von Chronicles',
+
+    // Bewusst nicht in Verwendung.
     voordeelVerhalen: 'Geschichten aus sechs Epochen',
     voordeelPersonages: 'Jedes Charakterporträt in deiner Sammlung',
     voordeelVroeg: 'Neue Geschichten zuerst, sobald sie erscheinen',
@@ -224,18 +238,23 @@ const de: DeepPartial<Vertalingen> = {
 
     prijsMaand: '4,99 € / Monat',
     prijsJaar: '49,99 € / Jahr',
+    prijsMaandNoot: 'Monatsabo',
+    prijsJaarNoot: '17 % günstiger',
     abonneer: 'Abonnieren',
     misschienLater: 'Vielleicht später',
 
     // Trial messaging (FASE 3)
     trialOffer: '7 Tage kostenlos',
-    trialOfferDescription: 'Probieren Sie Chronicles Pro 7 Tage kostenlos. Kündigen Sie jederzeit, keine Kreditkarte erforderlich.',
+    trialOfferDescription:
+      'Sieben Tage voller Zugriff, sobald Pro da ist. Bezahlen ist noch nicht möglich.',
     startTrial: 'Kostenlos testen',
     startingTrial: 'Test wird gestartet…',
+    startTrialComingSoon: 'Bald verfügbar',
     trialStartedTitel: 'Testphase gestartet!',
-    trialStartedTekst: 'Ihre 7-tägige kostenlose Testphase von Chronicles Pro hat begonnen. Genießen Sie unbegrenzte Lesestunden und keine Anzeigen. Automatische Verlängerung nach 7 Tagen, wenn nicht abgebrochen.',
+    trialStartedTekst:
+      'Deine sieben Tage Chronicles Pro haben begonnen. Es wurde nichts abgebucht und nichts verlängert sich von selbst.',
     trialFailedTitel: 'Testphase konnte nicht gestartet werden',
-    trialFailedTekst: 'Es ist ein Fehler aufgetreten. Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+    trialFailedTekst: 'Es ist ein Fehler aufgetreten. Überprüfe deine Verbindung und versuche es erneut.',
 
     voorbehoud:
       'Abonnements werden von Google Play verwaltet. Weitere Details finden Sie in unserer Datenschutzrichtlinie.',
@@ -468,6 +487,15 @@ const de: DeepPartial<Vertalingen> = {
     inloggen: 'Anmelden',
     registreren: 'Konto erstellen',
     wachtwoordVergeten: 'Passwort vergessen?',
+    wachtwoordVergetenTitel: 'Passwort zurücksetzen ist noch nicht möglich',
+    /**
+     * De knop deed niets — zie `handleWachtwoordVergeten` in `app/login.tsx`. Dit is de
+     * eerlijke versie: geen herstelmail, wel een adres dat gelezen wordt.
+     */
+    wachtwoordVergetenTekst: (email: string): string =>
+      `Wir können noch keinen Link zum Zurücksetzen verschicken. Schreib an ${email} von der Adresse, mit der du dich angemeldet hast, dann helfen wir dir wieder hinein.`,
+    /** Zonder ingevuld supportadres valt de mailroute weg en blijft de mededeling over. */
+    wachtwoordVergetenTekstZonderSupport: 'Wir können noch keinen Link zum Zurücksetzen verschicken. Melde dich bei uns, dann helfen wir dir wieder hinein.',
     geenAccount: 'Noch kein Konto?',
     welAccount: 'Schon ein Konto?',
     naarSignup: 'Registrieren',

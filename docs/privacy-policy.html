@@ -108,6 +108,19 @@
   together with the app version and the platform. Feedback goes nowhere else.</p>
 
   <h3>Usage statistics</h3>
+  <p><strong>This version of Chronicles sends no usage statistics.</strong> It contains no
+  analytics SDK and no advertising SDK, and it measures nothing about how you use the app. The
+  only data that leaves your phone is the data described above &mdash; your account, your
+  progress, your poll and choice answers, and any feedback you choose to send.</p>
+  <p>Chronicles asks for no location permission, reads no GPS, and holds no advertising
+  identifier.</p>
+
+  <!-- Bewaard, niet geschrapt. Zodra EXPO_PUBLIC_FIREBASE_ENABLED op true staat en
+       google-services.json bestaat, wordt er wél gemeten en hoort onderstaande tekst terug op
+       de plek van de twee alinea's hierboven — samen met de twee Google-regels in "Who else
+       sees it" en de bezwaarroute onder "Your rights". Verander dan ook
+       src/constants/juridische-teksten.ts en de Data Safety-antwoorden in docs/README.md mee.
+  <h3>Usage statistics</h3>
   <p>Chronicles measures how the app is used, through <strong>Google Firebase Analytics</strong>.
   That covers:</p>
   <ul>
@@ -132,6 +145,8 @@
   limit what Google receives at the operating-system level, under
   <em>Android Settings &rarr; Google &rarr; Ads</em>.</p>
 
+  -->
+
   <h2>Data stored only on your device</h2>
   <p>The following never leaves your phone, and disappears when you clear the app&rsquo;s data or
   uninstall the app:</p>
@@ -152,17 +167,12 @@
   </ul>
 
   <h2>Who else sees it</h2>
-  <p>We do not sell data and we do not share it for advertising. Two companies process data on our
-  behalf, because the app could not work without them:</p>
+  <p>We do not sell data and we do not share it for advertising. One company processes data on
+  our behalf, because the app could not work without it:</p>
   <ul>
-    <li><strong>Supabase</strong> &mdash; the database and sign-in service holding your account,
-    your reading progress, your poll and choice answers, your invite code and your feedback.</li>
-    <li><strong>Google (Firebase Analytics)</strong> &mdash; the usage statistics described above,
-    including the pseudonymous installation identifier and the approximate location derived from
-    your IP address.</li>
-    <li><strong>Google (Firebase Cloud Messaging)</strong> &mdash; delivery of the two kinds of
-    notification we send from our servers, and only if you have switched them on. It receives the
-    registration token for your installation and the text of the message.</li>
+    <li><strong>Supabase</strong> (Supabase, Inc.) &mdash; the database and sign-in service
+    holding your account, your reading progress, your poll and choice answers, your invite code
+    and your feedback.</li>
   </ul>
   <p>Everything travels over an encrypted connection (HTTPS).</p>
 
@@ -170,9 +180,9 @@
   <p>If you are in the European Economic Area or the United Kingdom you have the right to access,
   correct, export or erase your personal data, and to object to processing. In practice:</p>
   <ul>
-    <li><strong>Object to the usage statistics</strong> &mdash; there is no switch for them in the
-    app, so this goes by e-mail to the address below. We answer within 30 days. Deleting your
-    account removes what has already been measured against it.</li>
+    <li><strong>Object to processing</strong> &mdash; write to the address below and we answer
+    within 30 days. This version measures no usage statistics, so there is nothing of that kind
+    to object to; deleting your account removes everything else.</li>
     <li><strong>Delete your account</strong> &mdash; <em>Settings &rarr; Delete account</em>,
     after one confirmation. This is immediate and permanent: your account, your reading progress,
     your unlocked characters, your poll and choice answers, your invite code and any feedback you
@@ -212,6 +222,13 @@
   without losing the others &mdash; or all of them at once. Nothing we do can override that.</p>
 
   <h3>Sent by us</h3>
+  <p><strong>This version sends no notifications from our servers.</strong> The push service is
+  not active in this release, so no registration token for your installation is created, stored
+  or used, and the two server-sent categories do not appear in Settings.</p>
+
+  <!-- Bewaard, niet geschrapt — zie de opmerking bij "Usage statistics". Deze tekst hoort terug
+       zodra Firebase Cloud Messaging aan staat en user_devices daadwerkelijk rijen krijgt.
+  <h3>Sent by us</h3>
   <p>Two kinds are sent from our servers through Google&rsquo;s Firebase Cloud Messaging: a
   reminder to come back if several days pass without reading, and an occasional suggestion for a
   story you have not opened yet. <strong>Both are off unless you turn them on.</strong></p>
@@ -223,6 +240,8 @@
   <p>Turning both of these off unregisters your device again, and the token stops being used. We
   never put personal details in the text of a notification: it names a story, never your name, your
   email address or anything you have written.</p>
+
+  -->
 
   <h2>Permissions</h2>
   <p>None of the permissions Chronicles requests give access to your files, your contacts or your
@@ -237,13 +256,11 @@
     enabled survive a restart of your phone and arrive on time. Without them the reminder would
     silently stop after every reboot.</li>
     <li><code>INTERNET</code> and <code>ACCESS_NETWORK_STATE</code> &mdash; used to sign you in,
-    synchronise your progress, load the polls and send the usage statistics described above.</li>
+    synchronise your progress and load the polls and choice points.</li>
   </ul>
-  <p>The app also declares <code>com.google.android.c2dm.permission.RECEIVE</code>, the permission
-  an app needs in order to receive push messages, because the Google libraries behind the reminder
-  and the usage statistics declare it. <strong>Chronicles sends no push messages and is not
-  registered to receive any</strong>: no push token is ever requested, and the reminder is
-  scheduled by your own device&rsquo;s alarm clock.</p>
+  <p>The app declares no permission for advertising or for identifying you across other apps, and
+  no permission relating to push messaging: the reminder is scheduled by your own
+  device&rsquo;s alarm clock, and no push token is ever requested.</p>
 
   <h2>Offline use</h2>
   <p>All story text and all images are bundled inside the app, so you can read without a
@@ -270,7 +287,7 @@
   <h2>Contact</h2>
   <p>Questions about this policy, a request for a copy of your data, or an objection to the usage
   statistics? E-mail
-  <a href="mailto:businessthedemoreagency@gmail.com">businessthedemoreagency@gmail.com</a>.
+  <a href="mailto:businessdemore@gmail.com">businessdemore@gmail.com</a>.
   Deleting your account does not need an e-mail &mdash; the app does it for you under
   <em>Settings &rarr; Delete account</em>.</p>
   <p><strong>Managing e-mail.</strong> There are two ways, and either is enough: the switches under

@@ -247,7 +247,7 @@ dead links — the intended design, but worth knowing before a release build:
 | Privacy policy | `privacyBeleidIsGepubliceerd` | `false` (placeholder URL) |
 | Change password | — | permanent "Soon", no flow exists |
 
-`supportEmailIsIngesteld` is **`true`** (`businessthedemoreagency@gmail.com`), so Contact support
+`supportEmailIsIngesteld` is **`true`** (`businessdemore@gmail.com`), so Contact support
 and Request my data are live mailtos.
 
 ### Files

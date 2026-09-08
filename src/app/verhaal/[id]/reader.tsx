@@ -23,7 +23,7 @@ import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { haptics } from '@/constants/haptics';
 import { AD_ONDERBREKING_ENABLED } from '@/constants/monetisatie';
 import { Motion, staggerVertraging } from '@/constants/motion';
-import { Radii, Spacing } from '@/constants/theme';
+import { MAX_LEESBREEDTE, Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
 import { getVerhaal } from '@/content/verhalen';
 import { useAbonnement } from '@/hooks/use-abonnement';
@@ -442,6 +442,11 @@ const styles = StyleSheet.create({
     padding: Spacing.four,
     gap: Spacing.two,
     paddingBottom: Spacing.six,
+    // Zie MAX_LEESBREEDTE: op een breed scherm blijft de kolom leesbaar en houdt de
+    // 16:9-scèneafbeelding een hoogte die niet de hele viewport opeet.
+    width: '100%',
+    maxWidth: MAX_LEESBREEDTE,
+    alignSelf: 'center',
   },
   scrollHeader: {
     gap: Spacing.one,

@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  useWindowDimensions,
   View,
 } from 'react-native';
 
@@ -59,6 +60,17 @@ type FeedbackModalProps = {
 export function FeedbackModal({ visible, onClose }: FeedbackModalProps) {
   const theme = useTheme();
   const { t } = useVertaling();
+  const { height: vensterHoogte } = useWindowDimensions();
+
+  /**
+   * Het invoerveld mag meegroeien, maar niet ongelimiteerd: zonder bovengrens duwt een lang bericht
+   * de teller en de verzendknop van het scherm af, en omdat dit venster geen ScrollView is kun je
+   * er dan niet meer bij — je kunt je eigen feedback niet meer versturen. 2000 tekens zijn
+   * toegestaan, dus die toestand is geen randgeval maar het te verwachten gebruik. Boven deze
+   * hoogte scrollt het veld intern. De grens schaalt mee met het scherm, zodat er ook op een lage
+   * viewport (liggend, of met het toetsenbord open) ruimte overblijft voor de knop.
+   */
+  const maxInvoerHoogte = Math.max(96, Math.min(200, Math.round(vensterHoogte * 0.25)));
   const user = useAuthStore((state) => state.user);
 
   const [soort, setSoort] = useState<FeedbackSoort>('bug');
@@ -191,7 +203,11 @@ export function FeedbackModal({ visible, onClose }: FeedbackModalProps) {
             <TextInput
               style={[
                 styles.invoer,
-                { backgroundColor: theme.backgroundElement, color: theme.text },
+                {
+                  backgroundColor: theme.backgroundElement,
+                  color: theme.text,
+                  maxHeight: maxInvoerHoogte,
+                },
               ]}
               placeholder={
                 soort === 'bug'

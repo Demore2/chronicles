@@ -51,16 +51,12 @@ export interface SubscriptionState {
 
   // Actions
   loadSubscription: (userId: string) => Promise<void>;
-  /**
-   * Start een proefperiode van `days` dagen vanaf nu.
-   *
-   * Geeft terug **óf het gelukt is**, en niet `void`: de fout belandt hier in `error` en gooit dus
-   * niet, waardoor een `try/catch` bij de aanroeper elke mislukking als succes zou lezen.
-   */
-  setTrial: (days: number) => Promise<boolean>;
-  // UITGESCHAKELD TOT GOOGLE PLAY BILLING — zie de uitgecommentarieerde implementatie hieronder.
-  // De client kon zichzelf hiermee premium maken; premium zetten gebeurt tot die tijd met de hand
-  // in Supabase (zie docs/TEST_ACCOUNTS.md).
+  // UITGESCHAKELD TOT GOOGLE PLAY BILLING — allebei, en om dezelfde reden: de client schreef
+  // `tier: 'premium'` naar zijn eigen rij zonder dat er een bon werd geverifieerd. `setPremium`
+  // stond al uit; `setTrial` kreeg in FASE 3 een aanroeper in `pro-paywall.tsx` en was daarmee
+  // één tik ver van gratis Pro. Die aanroeper is weg, dus dit sluit de deur er weer achter.
+  // Premium zetten gebeurt tot die tijd met de hand in Supabase (zie docs/TEST_ACCOUNTS.md).
+  // setTrial: (days: number) => Promise<boolean>;
   // setPremium: (planType: 'yearly' | 'monthly') => Promise<void>;
   cancelSubscription: () => Promise<void>;
   reset: () => void;
@@ -180,69 +176,73 @@ export const useSubscriptionStore = create<SubscriptionState>((set, get) => ({
     }
   },
 
-  setTrial: async (days: number) => {
-    const { userId } = get();
-    // Geen sessie, geen proefperiode — en dat moet de aanroeper wéten. Een `return` zonder
-    // antwoord las in de paywall als "gelukt", waarna er een felicitatie verscheen voor iets wat
-    // nooit is weggeschreven.
-    if (!userId) {
-      set({ error: 'geen_sessie' });
-      return false;
-    }
-
-    try {
-      const trialEndsAt = new Date();
-      trialEndsAt.setDate(trialEndsAt.getDate() + days);
-
-      // `.select()` erachter, want een `update` die géén rij raakt is in PostgREST **geen fout**:
-      // je krijgt een lege lijst en `error === null`. Zonder deze telling zet de app zichzelf
-      // lokaal op premium terwijl de serverrij op 'free' blijft staan — dezelfde stille-nul-rijen
-      // val als bij een `delete` zonder policy. Een lezer die zich ná de backfill registreerde en
-      // wiens rij nog niet bestaat, loopt hier precies in.
-      const { data, error } = await supabase
-        .from('user_subscriptions')
-        .update({
-          tier: 'premium',
-          trial_ends_at: trialEndsAt.toISOString(),
-          auto_renew: true,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('user_id', userId)
-        .select('user_id');
-
-      if (error) throw error;
-      if (!data || data.length === 0) throw new Error('geen_abonnementsrij');
-
-      set({
-        tier: 'premium',
-        trialEndsAt: trialEndsAt.toISOString(),
-        autoRenew: true,
-        error: null,
-      });
-      return true;
-    } catch (fout: unknown) {
-      set({ error: foutTekst(fout) });
-      return false;
-    }
-  },
-
   /**
-   * UITGESCHAKELD TOT DE GOOGLE PLAY BILLING-INTEGRATIE.
+   * UITGESCHAKELD TOT DE GOOGLE PLAY BILLING-INTEGRATIE — `setTrial` en `setPremium` samen.
    *
-   * Zet premium voor een jaar of een maand. **Dit was een placeholder met een gat erin**: er werd
-   * geen aankoop geverifieerd, de client schreef rechtstreeks naar zijn eigen rij en de
-   * update-policy op `user_subscriptions` staat dat toe — een lezer met zijn eigen token kon
-   * zichzelf dus premium maken. Hij had geen enkele aanroeper, dus uitzetten kost niets en sluit
-   * de deur alvast.
+   * Ze zetten premium (een proefperiode van `days` dagen, respectievelijk een jaar of een maand).
+   * **Allebei waren het placeholders met hetzelfde gat erin**: er werd geen aankoop geverifieerd,
+   * de client schreef rechtstreeks naar zijn eigen rij, en de update-policy op
+   * `user_subscriptions` (`auth.uid() = user_id`, zonder kolombeperking) staat dat toe — een
+   * lezer met zijn eigen token kon zichzelf dus premium maken.
    *
-   * Bij Billing keert hij terug als aanroep van een edge function die de bon bij Google
-   * controleert, en gaat de update-policy op de tabel eraf. Tot die tijd wordt premium met de hand
-   * in Supabase gezet — zie `docs/TEST_ACCOUNTS.md`.
+   * `setPremium` stond al uit omdat hij geen aanroeper had. `setTrial` had er sinds FASE 3 wél
+   * één — de knop "Start free trial" in `pro-paywall.tsx` — en die tik schreef `tier = 'premium'`
+   * met `auto_renew = true` naar de server. Dat is nagemeten en bevestigd op een testaccount.
+   * De knop is nu uitgeschakeld en deze methode gaat mee uit, zodat de volgende aanroeper hem
+   * niet zomaar terugvindt.
    *
-   * Let op: `setTrial` hierboven heeft hetzelfde gat (de client schrijft `tier: 'premium'` naar
-   * zijn eigen rij) en staat nog aan. Ook die schrijfactie moet naar de server verhuizen zodra de
-   * update-policy verdwijnt.
+   * ⚠️ **Dit dicht de app-kant, niet het lek.** De update-policy staat er nog, dus wie de
+   * publishable key uit de bundel haalt kan dezelfde `update` met elke REST-client uitvoeren.
+   * Bij Billing keren beide terug als aanroep van een edge function die de bon bij Google
+   * controleert, en **gaat de update-policy op de tabel eraf** — die twee horen bij elkaar. Tot
+   * die tijd wordt premium met de hand in Supabase gezet, zie `docs/TEST_ACCOUNTS.md`.
    */
+  // setTrial: async (days: number) => {
+  //   const { userId } = get();
+  //   // Geen sessie, geen proefperiode — en dat moet de aanroeper wéten. Een `return` zonder
+  //   // antwoord las in de paywall als "gelukt", waarna er een felicitatie verscheen voor iets wat
+  //   // nooit is weggeschreven.
+  //   if (!userId) {
+  //     set({ error: 'geen_sessie' });
+  //     return false;
+  //   }
+  //
+  //   try {
+  //     const trialEndsAt = new Date();
+  //     trialEndsAt.setDate(trialEndsAt.getDate() + days);
+  //
+  //     // `.select()` erachter, want een `update` die géén rij raakt is in PostgREST **geen fout**:
+  //     // je krijgt een lege lijst en `error === null`. Zonder deze telling zet de app zichzelf
+  //     // lokaal op premium terwijl de serverrij op 'free' blijft staan — dezelfde stille-nul-rijen
+  //     // val als bij een `delete` zonder policy. Een lezer die zich ná de backfill registreerde en
+  //     // wiens rij nog niet bestaat, loopt hier precies in.
+  //     const { data, error } = await supabase
+  //       .from('user_subscriptions')
+  //       .update({
+  //         tier: 'premium',
+  //         trial_ends_at: trialEndsAt.toISOString(),
+  //         auto_renew: true,
+  //         updated_at: new Date().toISOString(),
+  //       })
+  //       .eq('user_id', userId)
+  //       .select('user_id');
+  //
+  //     if (error) throw error;
+  //     if (!data || data.length === 0) throw new Error('geen_abonnementsrij');
+  //
+  //     set({
+  //       tier: 'premium',
+  //       trialEndsAt: trialEndsAt.toISOString(),
+  //       autoRenew: true,
+  //       error: null,
+  //     });
+  //     return true;
+  //   } catch (fout: unknown) {
+  //     set({ error: foutTekst(fout) });
+  //     return false;
+  //   }
+  // },
+
   // setPremium: async (planType: 'yearly' | 'monthly') => {
   //   const { userId } = get();
   //   if (!userId) return;

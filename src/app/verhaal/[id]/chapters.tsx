@@ -18,7 +18,7 @@ import { ThemedView } from '@/components/themed-view';
 import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { DAGELIJKSE_VERHAAL_LIMIET } from '@/constants/monetisatie';
 import { Motion } from '@/constants/motion';
-import { Radii, Spacing } from '@/constants/theme';
+import { MAX_LEESBREEDTE, Radii, Spacing } from '@/constants/theme';
 import { getTijdperk } from '@/constants/tijdperken';
 import { berekenLeestijdMinuten } from '@/content/leestijd';
 import { getVerhaal } from '@/content/verhalen';
@@ -184,17 +184,29 @@ export default function ChaptersScreen() {
   }
 
   /**
+   * Terug naar Home. Bewust géén `router.push('/')`: dit scherm wordt zelf met `push` geopend, dus
+   * pushen legt een tweede Home *bovenop* het hoofdstukoverzicht in plaats van ernaartoe terug te
+   * gaan. De stapel groeit dan Home → hoofdstukken → Home → hoofdstukken → … en elk scherm dat
+   * eronder blijft staan houdt zijn scèneafbeeldingen in het geheugen. Tien keer heen en weer
+   * kostte zo ruim een gigabyte. Poppen hoort hier; `replace` is het vangnet voor een deeplink
+   * rechtstreeks naar dit scherm, waar er niets is om naar terug te gaan.
+   */
+  function handleHome() {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace('/');
+  }
+
+  /**
    * "Tot morgen" sluit niet alleen het venster maar verlaat ook het verhaal — anders kijk je naar
    * een hoofdstukoverzicht dat je niet mag openen, en dat leest als een kapotte app in plaats van
    * als een limiet.
    */
   function handleLimietSluiten() {
     setLimietBereikt(false);
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-    router.replace('/');
+    handleHome();
   }
 
   return (
@@ -203,7 +215,7 @@ export default function ChaptersScreen() {
 
       <View style={styles.headerBar}>
         <AnimatedPressable
-          onPress={() => router.push('/')}
+          onPress={handleHome}
           style={[styles.homeButton, { backgroundColor: theme.backgroundElement }]}>
           <ThemedText type="smallBold">{t((s) => s.tabs.ontdek)}</ThemedText>
         </AnimatedPressable>
@@ -280,6 +292,11 @@ const styles = StyleSheet.create({
     padding: Spacing.four,
     gap: Spacing.three,
     paddingBottom: Spacing.six,
+    // Zie MAX_LEESBREEDTE: houdt het tegelraster op een breed scherm bij elkaar in plaats van twee
+    // tegels van zeshonderd punten breed uit elkaar te trekken.
+    width: '100%',
+    maxWidth: MAX_LEESBREEDTE,
+    alignSelf: 'center',
   },
   progressSection: {
     gap: Spacing.two,

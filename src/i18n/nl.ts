@@ -14,7 +14,12 @@ const nl: DeepPartial<Vertalingen> = {
     verderLezenLegeTitel: 'Nog niets begonnen',
     verderLezenLegeBeschrijving: 'Verhalen die je opent verschijnen hier.',
     verhaallijnen: 'Verhaallijnen',
+    ontdekMeer: 'Ontdek meer',
     nieuwToegevoegd: 'Nieuwe hot topics',
+    toonAlles: 'Toon alles',
+  },
+  splash: {
+    ondertitel: 'Ontdek de verhalen die onze wereld hebben gevormd',
   },
   aanbeveling: {
     kop: 'Voor jou',
@@ -38,6 +43,7 @@ const nl: DeepPartial<Vertalingen> = {
     aantalVerhalen: (gelezen: number, totaal: number) => `${gelezen}/${totaal} verhalen`,
     byEra: 'Per tijdperk',
     storiesOfEra: (completed: number, total: number) => `${completed} van ${total} verhalen`,
+    noMoreStories: 'Alle verhalen ontdekt! Bekijk ze allemaal via Ontdek meer.',
     statStreak: 'Streak',
     statStreakEenheid: (n: number): string => (n === 1 ? 'dag' : 'dagen'),
     statHoofdstukken: 'Hoofdstukken',
@@ -50,6 +56,7 @@ const nl: DeepPartial<Vertalingen> = {
   },
   profiel: {
     titel: 'Profiel',
+    characterCollection: 'Personagecollectie',
     chaptersRead: (n: number) => (n === 1 ? 'hoofdstuk af' : 'hoofdstukken af'),
     charactersUnlocked: (n: number) => (n === 1 ? 'personage ontgrendeld' : 'personages ontgrendeld'),
     storiesCompleted: (n: number) => (n === 1 ? 'verhaal voltooid' : 'verhalen voltooid'),
@@ -212,6 +219,13 @@ const nl: DeepPartial<Vertalingen> = {
     paywallOndertitel: 'Meer geschiedenis, minder onderbrekingen.',
     sluiten: 'Sluiten',
 
+    // Zie de toelichting bij `pro` in en.ts: alleen de eerste drie worden getoond, en alleen die
+    // beschrijven een verschil dat de build vandaag afdwingt.
+    voordeelOnbeperkt: 'Lees zoveel verhalen als je wilt',
+    voordeelGeenOnderbreking: 'Geen onderbreking tussen verhalen',
+    voordeelSupport: 'Steun de ontwikkeling van Chronicles',
+
+    // Met opzet niet in gebruik.
     voordeelVerhalen: 'Verhalen uit zes tijdperken',
     voordeelPersonages: 'Elk personageportret in je collectie',
     voordeelVroeg: 'Nieuwe verhalen als eerste, zodra ze er zijn',
@@ -220,16 +234,21 @@ const nl: DeepPartial<Vertalingen> = {
 
     prijsMaand: '€ 4,99 / maand',
     prijsJaar: '€ 49,99 / jaar',
+    prijsMaandNoot: 'Maandabonnement',
+    prijsJaarNoot: '17% goedkoper',
     abonneer: 'Abonneren',
     misschienLater: 'Misschien later',
 
     // Trial messaging (FASE 3)
     trialOffer: '7 dagen gratis',
-    trialOfferDescription: 'Probeer Chronicles Pro 7 dagen gratis. Zeg op wanneer je wilt, geen creditcard nodig.',
+    trialOfferDescription:
+      'Zeven dagen volledige toegang zodra Pro er is. Betalen kan nog niet.',
     startTrial: 'Start gratis proefperiode',
     startingTrial: 'Proefperiode starten…',
+    startTrialComingSoon: 'Binnenkort beschikbaar',
     trialStartedTitel: 'Proefperiode gestart!',
-    trialStartedTekst: 'Je 7-daagse gratis proefperiode van Chronicles Pro is gestart. Geniet van onbeperkt lezen en geen advertenties. Auto-verlenging na 7 dagen tenzij je dit opzegt.',
+    trialStartedTekst:
+      'Je zeven dagen Chronicles Pro zijn begonnen. Er is niets afgeschreven en er verlengt niets vanzelf.',
     trialFailedTitel: 'Kon proefperiode niet starten',
     trialFailedTekst: 'Er ging iets mis. Controleer je verbinding en probeer opnieuw.',
 
@@ -464,6 +483,15 @@ const nl: DeepPartial<Vertalingen> = {
     inloggen: 'Inloggen',
     registreren: 'Account aanmaken',
     wachtwoordVergeten: 'Wachtwoord vergeten?',
+    wachtwoordVergetenTitel: 'Wachtwoord herstellen kan nog niet',
+    /**
+     * De knop deed niets — zie `handleWachtwoordVergeten` in `app/login.tsx`. Dit is de
+     * eerlijke versie: geen herstelmail, wel een adres dat gelezen wordt.
+     */
+    wachtwoordVergetenTekst: (email: string): string =>
+      `We kunnen nog geen herstelmail sturen. Mail naar ${email} vanaf het adres waarmee je je hebt aangemeld, dan helpen we je weer binnen.`,
+    /** Zonder ingevuld supportadres valt de mailroute weg en blijft de mededeling over. */
+    wachtwoordVergetenTekstZonderSupport: 'We kunnen nog geen herstelmail sturen. Neem contact op, dan helpen we je weer binnen.',
     geenAccount: 'Nog geen account?',
     welAccount: 'Heb je al een account?',
     naarSignup: 'Registreren',

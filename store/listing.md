@@ -88,7 +88,7 @@ Chronicles is free.
 | App or game | **App** | |
 | Category | **Books & Reference** | Education is een verdedigbaar alternatief; het is lezen, geen cursus. |
 | Tags | history, stories, reading, education | Max 5, Play stelt zelf een lijst voor. |
-| Contact e-mail | quintenraats@gmail.com | Verplicht en **publiek zichtbaar** in de listing. Wil je dat niet, maak dan een apart adres aan. |
+| Contact e-mail | businessdemore@gmail.com | Verplicht en **publiek zichtbaar** in de listing. Hetzelfde adres als `SUPPORT_EMAIL` in `src/constants/app-info.ts` en als de privacypagina — dat is met opzet: hier stond een persóónlijk adres, en dan staan er drie adressen voor één app waarvan de lezer niet weet welke gelezen wordt. Wijzig je er één, wijzig ze alle drie. |
 | Website | — | Optioneel. Als je `docs/` via GitHub Pages publiceert kun je die repo-pagina gebruiken. |
 | Phone | — | Optioneel, laat leeg. |
 | Privacy policy | ⬜ **nog te vullen** | De URL van `docs/privacy-policy.html`. Zie `docs/README.md`. **Harde blocker.** |

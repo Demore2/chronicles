@@ -9,7 +9,9 @@ import { AuthKnop } from '@/components/auth-knop';
 import { AuthVeld } from '@/components/auth-veld';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { SUPPORT_EMAIL, supportEmailIsIngesteld } from '@/constants/app-info';
 import { isGeldigEmail } from '@/constants/auth-validatie';
+import { meld } from '@/constants/dialoog';
 import { Radii, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
@@ -57,9 +59,26 @@ export default function LoginScreen() {
     router.replace('/');
   }
 
+  /**
+   * Wachtwoord vergeten bestaat nog niet, en dat zegt de knop nu ook.
+   *
+   * Hier stond een `console.log`: de knop was zichtbaar, reageerde op een tik en deed niets —
+   * de lezer denkt dan dat de mail onderweg is en wacht op iets dat nooit komt. Zelfde afweging
+   * als bij de "Soon"-regels in Instellingen: liever zeggen dat het er niet is dan doen alsof.
+   *
+   * De echte stroom is `supabase.auth.resetPasswordForEmail()` plus een scherm achter een
+   * deeplink om er een nieuw wachtwoord mee te zetten; die tweede helft is het werk, en zonder
+   * haar levert de mail een link op die nergens heen gaat. Tot die tijd wijst deze melding naar
+   * support — dat adres wordt wél gelezen.
+   */
   function handleWachtwoordVergeten() {
-    // TODO: wachtwoord-reset via supabase.auth.resetPasswordForEmail() — nog geen scherm voor.
-    console.log('TODO: wachtwoord vergeten-stroom bestaat nog niet');
+    meld(
+      t((s) => s.auth.wachtwoordVergetenTitel),
+      supportEmailIsIngesteld
+        ? t((s) => s.auth.wachtwoordVergetenTekst)(SUPPORT_EMAIL)
+        : t((s) => s.auth.wachtwoordVergetenTekstZonderSupport),
+      t((s) => s.instellingen.ok),
+    );
   }
 
   return (

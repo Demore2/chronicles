@@ -83,6 +83,21 @@ export const Radii = {
   small: 8,
 } as const;
 
+/**
+ * Maximale breedte van een leeskolom, in dp.
+ *
+ * De app is op een telefoon ontworpen en staat in `app.json` op `orientation: 'portrait'`, maar dat
+ * slot geldt sinds Android 16 (API 36) niet meer op grote schermen: bij `sw >= 600dp` negeert het
+ * systeem de oriëntatiebeperking en draait de app alsnog mee. Een tablet in liggende stand geeft
+ * dan een kolom van ruim 1200dp, en dat is op twee manieren slecht: regels van honderd tekens lezen
+ * niet, en een `16:9`-scèneafbeelding op volle breedte wordt hoger dan het scherm — je scrolt langs
+ * een paginagrote foto voordat je één zin ziet.
+ *
+ * Vandaar een bovengrens in plaats van een oriëntatietruc: die werkt ongeacht of het systeem het
+ * slot respecteert, en is precies de grens waarboven een tekstkolom te breed wordt.
+ */
+export const MAX_LEESBREEDTE = 720;
+
 export const Typography = {
   display: { fontSize: 34, lineHeight: 40, fontWeight: '700' as const },
   title: { fontSize: 24, lineHeight: 30, fontWeight: '700' as const },

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
 import HistoryBook from '@/assets/images/mascotte/history-book.svg';
 import { useTheme } from '@/hooks/use-theme';
+import { useVertaling } from '@/hooks/use-vertaling';
 import { ThemedText } from './themed-text';
 
 interface SplashScreenProps {
@@ -10,6 +11,7 @@ interface SplashScreenProps {
 
 export function SplashScreen({ onFinish }: SplashScreenProps) {
   const theme = useTheme();
+  const { t } = useVertaling();
   const [opacity] = useState(new Animated.Value(1));
 
   useEffect(() => {
@@ -50,7 +52,7 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
           HISTORY
         </ThemedText>
         <ThemedText themeColor="textSecondary" style={styles.subtitle}>
-          Discover the Stories That Shaped Our World
+          {t((s) => s.splash.ondertitel)}
         </ThemedText>
       </View>
     </Animated.View>

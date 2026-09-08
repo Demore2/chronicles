@@ -49,10 +49,16 @@ const THEMA_LABEL_SLEUTEL = {
 } as const;
 
 /**
- * De taalkiezer blijft verborgen zolang de inhoud alleen in het Engels bestaat — de UI zou dan
- * in het Frans staan boven een Engels hoofdstuk. Stond eerder met dezelfde vlag op Profiel.
+ * De taalkiezer staat aan.
+ *
+ * Hij stond verborgen met het argument dat de UI niet in het Frans hoort te staan boven een
+ * Engels hoofdstuk. Dat argument valt de verkeerde kant op: de verhaaltekst is voor iedereen
+ * Engels, dus met de kiezer uit krijgt een Franse lezer een Engelse interface én een Engels
+ * hoofdstuk — terwijl juist die interface wél in vier talen bestaat. Verbergen nam bovendien
+ * de enige manier weg om de taal te wijzigen: die werd eenmalig uit `expo-localization`
+ * geraden en zat daarna vast. Stond eerder met dezelfde vlag op Profiel.
  */
-const SHOW_LANGUAGE_PICKER = false;
+const SHOW_LANGUAGE_PICKER = true;
 
 /**
  * Instellingen (`/profiel/settings`).

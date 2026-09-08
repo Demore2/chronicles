@@ -11,7 +11,10 @@ import type { IoniconNaam } from '@/constants/types';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { logStoryEvent } from '@/hooks/useAnalytics';
-import { useSubscriptionStore } from '@/store/subscription-store';
+// `useSubscriptionStore` is hier bewust wég. Het venster las er `setTrial` en `loading` uit; de
+// eerste is het gat dat hierboven beschreven staat, de tweede diende alleen om de knop tijdens
+// het activeren te blokkeren. Nevengevolg: dit venster staat op vier plekken permanent
+// gemonteerd en hertekent nu niet meer bij elke wijziging in die store.
 
 /**
  * Vanwaar het venster geopend is.
@@ -33,38 +36,44 @@ type ProPaywallProps = {
 /**
  * Het aanbodvenster achter de Pro-banner en achter "Your plan" in Instellingen.
  *
- * **Er wordt hier niets verkocht.** Google Play Billing is nog een stub (`useAbonnement()` geeft
- * hardcoded `isPremium: false`), dus "Subscribe" opent een eerlijke melding in plaats van een
- * aankoop. Twee dingen volgen daaruit, en ze zijn allebei bewust:
+ * **Er wordt hier niets verkocht, en de knop doet dat ook niet meer alsof.** Google Play Billing
+ * bestaat nog niet, dus de hoofdknop staat uitgeschakeld en opent een melding die zegt waarom.
  *
- * 1. De prijzen dragen een voorbehoud. Een bedrag tonen mag; doen alsof er vandaag iets af te
- *    rekenen valt niet. Er staat daarom ook geen "7 dagen gratis proberen" — een proefperiode die
- *    niet bestaat is een belofte die niemand kan opzeggen.
- * 2. De voordelenlijst noemt alleen wat de app heeft of aantoonbaar krijgt en noemt bewust geen
- *    aantal — een overgetypte "100+ stories" zou én onwaar zijn én precies het soort claim
- *    waarop een Play-review afwijst.
+ * 🚩 **Hier zat een gat.** De knop riep tot deze wijziging `setTrial(7)` aan, en die schrijft
+ * rechtstreeks naar `public.user_subscriptions` — waar de update-policy `auth.uid() = user_id`
+ * geen kolommen beperkt. Eén tik gaf dus `tier = 'premium'` met `auto_renew = true`, zonder bon,
+ * zonder betaling, server-side bewaard. Dat is exact het gat waarvoor `setPremium()` al
+ * uitgecommentarieerd stond; `setTrial()` had alleen nog geen aanroeper en kreeg er in FASE 3 één.
+ * **Zet deze knop pas terug aan samen met een edge function die de Google-bon verifieert, en haal
+ * bij diezelfde stap de update-policy van de tabel af.**
+ *
+ * Drie dingen volgen daaruit, en ze zijn allemaal bewust:
+ *
+ * 1. De prijzen dragen een voorbehoud en komen uit i18n. Een bedrag tonen mag; doen alsof er
+ *    vandaag iets af te rekenen valt niet — dus geen "Renews monthly" onder een bedrag dat nooit
+ *    wordt afgeschreven.
+ * 2. De proefperiode wordt aangekondigd, niet aangeboden: "zeven dagen zodra Pro er is", zonder
+ *    "cancel anytime" of "no credit card needed" — dat zijn allebei uitspraken over een
+ *    afrekening die niet bestaat.
+ * 3. **De voordelenlijst noemt alleen wat de build vandaag afdwingt.** Dat zijn er precies twee
+ *    (de dagelijkse leeslimiet en de onderbreking, allebei uit `constants/monetisatie.ts`); de
+ *    vijf regels die er stonden waren stuk voor stuk dingen die een gratis lezer óók krijgt. Zie
+ *    de toelichting bij `pro` in `i18n/en.ts`.
  *
  * Zie `pro-access-banner.tsx` voor de vlag die het hele aanbod aan- en uitzet.
  */
 export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   const theme = useTheme();
   const { t } = useVertaling();
-  // Twee losse selectors en niet `useSubscriptionStore()` zonder argument: die vorm abonneert op de
-  // héle store, dus elke `set()` erin — `loading` bij het opstarten, `error`, een verse `tier` na
-  // het activeren — hertekent deze component. Hij staat op vier plekken permanent gemonteerd
-  // (Instellingen, de Pro-banner op Profiel, `AdModal`, `StoryLimitModal`), dus dat zijn vier
-  // overbodige renders per storewijziging, ook met het venster dicht.
-  const setTrial = useSubscriptionStore((state) => state.setTrial);
-  const subscriptionLoading = useSubscriptionStore((state) => state.loading);
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('yearly');
-  const [isStartingTrial, setIsStartingTrial] = useState(false);
 
+  // Twee echte verschillen plus één eerlijke reden. De eerste twee komen letterlijk uit
+  // `monetisatie.ts` en staan met dezelfde woorden in `StoryLimitModal` — wie de limietmelding
+  // zag, moet hier hetzelfde teruglezen in plaats van vijf andere beloften.
   const voordelen: { icoon: IoniconNaam; tekst: string }[] = [
-    { icoon: 'book-outline', tekst: t((s) => s.pro.voordeelVerhalen) },
-    { icoon: 'people-outline', tekst: t((s) => s.pro.voordeelPersonages) },
-    { icoon: 'sparkles-outline', tekst: t((s) => s.pro.voordeelVroeg) },
-    { icoon: 'cloud-offline-outline', tekst: t((s) => s.pro.voordeelOffline) },
-    { icoon: 'eye-off-outline', tekst: t((s) => s.pro.voordeelGeenAds) },
+    { icoon: 'infinite-outline', tekst: t((s) => s.pro.voordeelOnbeperkt) },
+    { icoon: 'eye-off-outline', tekst: t((s) => s.pro.voordeelGeenOnderbreking) },
+    { icoon: 'heart-outline', tekst: t((s) => s.pro.voordeelSupport) },
   ];
 
   // Het venster is een `Modal` die altijd gemonteerd staat, dus "getoond" is `visible` dat op
@@ -79,40 +88,42 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   // Sluiten zet de plankeuze terug op de standaard, zodat het venster bij een volgende opening
   // niet met de vorige keuze begint. Dat gebeurt hier en niet in het effect hierboven: een
   // `setState` in een effect op `visible` is een extra render-ronde voor iets wat de aanleiding
-  // (de tik waarmee je sluit) zelf al weet. `isStartingTrial` hoeft niet mee — `startFreeTrial`
-  // zet die in zijn `finally` al terug.
+  // (de tik waarmee je sluit) zelf al weet.
   function sluit() {
     setSelectedPlan('yearly');
     onClose();
   }
 
-  async function startFreeTrial() {
-    setIsStartingTrial(true);
-
-    // Fire-and-forget, vóór de schrijfactie: `logStoryEvent` gaat naar `analytics.log`, die nooit
-    // gooit en niets teruggeeft. Er valt hier dus niets te awaiten en niets te vangen — een poging
-    // is een poging, ook als de proefperiode daarna strandt.
+  /**
+   * Wat de hoofdknop doet zolang er geen Billing is: uitleggen dat er niets te kopen valt.
+   *
+   * De knop staat `disabled`, dus dit loopt alleen via de toetsenbord- en
+   * schermlezerroute — vandaar dat het geen no-op is. Hier stond `setTrial(7)`; zie de 🚩 in de
+   * componentbeschrijving hierboven voor waarom dat weg moest en wat er moet gebeuren voordat het
+   * terugkomt.
+   *
+   * De gebeurtenis wordt nog steeds gelogd, met **`status: 'blocked_no_billing'`** en niet met
+   * `'trial_started'`. Dat is de bestaande afspraak uit `constants/analytics.ts`: rijen uit de
+   * stubperiode moeten later te filteren zijn, en een "gestart" dat nooit een aankoop kon worden
+   * vervuilt de trechter blijvend. Er gaat om dezelfde reden geen bedrag of valuta in mee.
+   */
+  function toonBillingNietBeschikbaar() {
+    // Fire-and-forget: `logStoryEvent` gaat naar `analytics.log`, die nooit gooit en niets
+    // teruggeeft. Er valt hier dus niets te awaiten en niets te vangen.
     logStoryEvent(ANALYTICS_EVENTS.SUBSCRIPTION_ATTEMPT, {
       tier: 'pro',
       source: bron,
-      status: 'trial_started',
+      status: 'blocked_no_billing',
       plan: selectedPlan,
     });
 
-    // `setTrial` gooit niet — hij vangt zijn eigen fout en zet `error` in de store. Een `try/catch`
-    // eromheen ving daarom nóóit iets, en elke mislukte activering eindigde in de felicitatie.
-    // De uitkomst is nu een boolean en dát is wat de keuze maakt.
-    const gelukt = await setTrial(7);
-
-    // Beide `setState`s staan in dezelfde microtaak, dus React 19 batcht ze tot één render in
-    // plaats van twee. Sluiten gebeurt alleen bij succes: na een mislukking blijft het venster
-    // staan, zodat "opnieuw" één tik is in plaats van een zoektocht terug naar de ingang.
-    setIsStartingTrial(false);
-    if (gelukt) sluit();
-
+    // `nogNietTitel` / `nogNietTekst` bestonden al in alle vier de talen en raakten in FASE 3
+    // ongebruikt toen de proefperiodeknop hun plaats innam. Ze zeggen precies wat hier nodig is
+    // ("er is niets afgeschreven"), dus hergebruikt in plaats van een tweede set sleutels die
+    // hetzelfde zegt.
     meld(
-      gelukt ? t((s) => s.pro.trialStartedTitel) : t((s) => s.pro.trialFailedTitel),
-      gelukt ? t((s) => s.pro.trialStartedTekst) : t((s) => s.pro.trialFailedTekst),
+      t((s) => s.pro.nogNietTitel),
+      t((s) => s.pro.nogNietTekst),
       t((s) => s.instellingen.ok),
     );
   }
@@ -176,7 +187,7 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
                     color: selectedPlan === 'monthly' ? theme.background : theme.text,
                     textAlign: 'center',
                   }}>
-                  €4.99 / month
+                  {t((s) => s.pro.prijsMaand)}
                 </ThemedText>
                 <ThemedText
                   type="caption"
@@ -184,7 +195,7 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
                     color: selectedPlan === 'monthly' ? theme.background : theme.textSecondary,
                     textAlign: 'center',
                   }}>
-                  Renews monthly
+                  {t((s) => s.pro.prijsMaandNoot)}
                 </ThemedText>
               </Pressable>
 
@@ -205,7 +216,7 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
                     color: selectedPlan === 'yearly' ? theme.background : theme.text,
                     textAlign: 'center',
                   }}>
-                  €49.99 / year
+                  {t((s) => s.pro.prijsJaar)}
                 </ThemedText>
                 <ThemedText
                   type="caption"
@@ -213,7 +224,7 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
                     color: selectedPlan === 'yearly' ? theme.background : theme.textSecondary,
                     textAlign: 'center',
                   }}>
-                  Save 17%
+                  {t((s) => s.pro.prijsJaarNoot)}
                 </ThemedText>
               </Pressable>
             </View>
@@ -231,15 +242,24 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
               </View>
             </View>
 
+            {/* Uitgeschakeld tot Billing er is. `theme.inactive` in plaats van `theme.accent`,
+                zodat de knop er ook uitziet zoals hij werkt — een uitgeschakelde knop in
+                accentkleur leest als een knop die het doet en die je tik negeert. Zelfde vorm als
+                `AuthKnop`. `accessibilityState` zegt het ook tegen de schermlezer. */}
             <AnimatedPressable
-              onPress={startFreeTrial}
-              disabled={isStartingTrial || subscriptionLoading}
+              onPress={toonBillingNietBeschikbaar}
+              disabled
               accessibilityRole="button"
-              style={[styles.hoofdKnop, { backgroundColor: theme.accent }]}>
-              <ThemedText type="bodyBold" style={{ color: theme.background }}>
-                {isStartingTrial
-                  ? t((s) => s.pro.startingTrial)
-                  : t((s) => s.pro.startTrial)}
+              accessibilityState={{ disabled: true }}
+              accessibilityHint={t((s) => s.pro.nogNietTekst)}
+              style={[styles.hoofdKnop, { backgroundColor: theme.inactive }]}>
+              {/* `theme.text` en niet `theme.background` zoals op de actieve knop: dat laatste
+                  geeft 2,15:1 op `inactive` en is nauwelijks te lezen. De gedempte vúlling zegt
+                  al dat de knop uit staat; het label hoeft daar niet in mee te verdwijnen. Een
+                  kort uitgeschakelde knop mag onleesbaar zijn (WCAG 1.4.3 zondert inactieve
+                  elementen uit), maar deze staat uit tot Billing er is. */}
+              <ThemedText type="bodyBold" style={{ color: theme.text }}>
+                {t((s) => s.pro.startTrialComingSoon)}
               </ThemedText>
             </AnimatedPressable>
 

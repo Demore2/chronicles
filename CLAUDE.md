@@ -1506,7 +1506,7 @@ Known gaps:
 - ~~Account deletion is a mailto~~ — **it deletes now**, via the `delete-account` edge function
   (see "Account deletion & data requests"). What is still handwork is the **data copy**:
   Instellingen → "Request my data" opens a prefilled mail to `SUPPORT_EMAIL`
-  (`businessthedemoreagency@gmail.com`), and every such request has to be answered by hand within
+  (`businessdemore@gmail.com`), and every such request has to be answered by hand within
   30 days. An export the app builds itself is deliberately not built.
 - **Push notifications are built and scheduled; delivery waits on Firebase.** Schema, both edge
   functions (`send-push`, `push-sweep`), the story catalog, the client wrapper, the preferences UI,

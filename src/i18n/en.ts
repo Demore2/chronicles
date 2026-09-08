@@ -19,6 +19,14 @@ const en = {
     verhaallijnen: 'Storylines',
     ontdekMeer: 'Discover more',
     nieuwToegevoegd: 'New hot topics',
+    toonAlles: 'Show all',
+  },
+  /**
+   * Het opstartscherm (`components/splash-screen.tsx`). "HISTORY" eronder is de merknaam en
+   * blijft onvertaald; deze regel is een zin en hoort dus wél mee te gaan met de taal.
+   */
+  splash: {
+    ondertitel: 'Discover the Stories That Shaped Our World',
   },
   /**
    * De "Recommended for you"-kaart op Home (`recommended-story-card.tsx`).
@@ -338,11 +346,31 @@ const en = {
     sluiten: 'Close',
 
     /**
-     * Elke voordeelregel is iets wat de app heeft of aantoonbaar krijgt. Bewust géén "100+
-     * stories": het er zijn er negentien, en een belofte die de build niet waarmaakt is zowel een
-     * klassieke Play-afwijsreden als gewoon onwaar tegen de gebruiker. Het aantal is daarom een
-     * parameter en geen overgetypt getal — `verhalen.length` vult het.
+     * **Een voordeelregel moet een verschil zijn dat de build vandaag afdwingt.**
+     *
+     * De vijf regels hieronder deden dat geen van alle: zes tijdperken, de portretten, offline
+     * lezen en "geen advertenties" krijgt een gratis lezer óók (alle 20 verhalen en 160 scènes
+     * zitten in de bundel, en `ADS_ENABLED` staat op `false`), en "nieuwe verhalen als eerste"
+     * beloofde een pijplijn die niet bestaat. Vijf regels waarvan er nul waar waren.
+     *
+     * Wat wél alleen Pro is, staat in `constants/monetisatie.ts` en wordt echt afgedwongen:
+     * `VERHAAL_LIMIET_ENABLED` (twee nieuwe verhalen per dag) en `AD_ONDERBREKING_ENABLED` (de
+     * onderbreking na een uitgelezen verhaal). Dat zijn de eerste twee regels hieronder — zelfde
+     * formulering als in `limiet.*`, want het is hetzelfde verschil, en een lezer die de
+     * limietmelding zag hoort het hier terug te lezen.
+     *
+     * **Staan die twee vlaggen op `false`, dan is er geen verschil meer en hoort het hele aanbod
+     * uit** (`PRO_BANNER_ENABLED`). Deze teksten zijn precies zo lang waar als die vlaggen aan
+     * staan; wijzig ze samen.
+     *
+     * De oude vijf blijven staan omdat de vertalingen bruikbaar zijn zodra er een échte
+     * Pro-functie tegenover staat — niet omdat ze weer aangezet mogen worden.
      */
+    voordeelOnbeperkt: 'Read as many stories as you like',
+    voordeelGeenOnderbreking: 'No interruptions between stories',
+    voordeelSupport: 'Support the development of Chronicles',
+
+    // Met opzet niet in gebruik — zie de opmerking hierboven.
     voordeelVerhalen: 'Stories from six eras',
     voordeelPersonages: 'Every character portrait in your collection',
     voordeelVroeg: 'New stories first, as soon as they land',
@@ -351,16 +379,31 @@ const en = {
 
     prijsMaand: '€4.99 / month',
     prijsJaar: '€49.99 / year',
+    // Bijschrift onder de prijs. Bewust niet "Renews monthly": er verlengt niets, want er wordt
+    // niets afgeschreven. "Save 17%" is wél waar — het is 49,99 tegen 12 × 4,99.
+    prijsMaandNoot: 'Monthly plan',
+    prijsJaarNoot: 'Save 17%',
     abonneer: 'Subscribe',
     misschienLater: 'Maybe later',
 
     // Trial messaging (FASE 3)
     trialOffer: '7-day free trial',
-    trialOfferDescription: 'Try Chronicles Pro free for 7 days. Cancel anytime, no credit card needed.',
+    // Geen "cancel anytime" en geen "no credit card needed": allebei uitspraken over een
+    // afrekening die niet bestaat. Wat er staat is wat er is — het aanbod, nog zonder betaalweg.
+    trialOfferDescription:
+      'Seven days of full access when Pro launches. Payments are not available yet.',
     startTrial: 'Start free trial',
     startingTrial: 'Starting trial…',
+    // Label van de hoofdknop zolang er geen Billing is. De knop staat er, uitgeschakeld, in
+    // plaats van te verdwijnen: het aanbod is echt, alleen de kassa nog niet.
+    startTrialComingSoon: 'Available soon',
     trialStartedTitel: 'Trial started!',
-    trialStartedTekst: 'Your 7-day free trial of Chronicles Pro has started. Enjoy unlimited reading and no ads. Auto-renews after 7 days unless cancelled.',
+    // Nog niet in gebruik (de knop is uitgeschakeld tot Billing er is), maar hier stond
+    // "Auto-renews after 7 days unless cancelled" — een verlenging die niets kan uitvoeren en
+    // die niemand kan opzeggen. Bijgewerkt zodat het opnieuw aanzetten van de knop niet
+    // meteen een onware mededeling oplevert.
+    trialStartedTekst:
+      'Your seven days of Chronicles Pro have started. Nothing has been charged and nothing renews on its own.',
     trialFailedTitel: 'Could not start trial',
     trialFailedTekst: 'Something went wrong. Please check your connection and try again.',
 
@@ -690,6 +733,15 @@ const en = {
     inloggen: 'Sign in',
     registreren: 'Create account',
     wachtwoordVergeten: 'Forgot password?',
+    wachtwoordVergetenTitel: 'Password reset is not available yet',
+    /**
+     * De knop deed niets — zie `handleWachtwoordVergeten` in `app/login.tsx`. Dit is de
+     * eerlijke versie: geen herstelmail, wel een adres dat gelezen wordt.
+     */
+    wachtwoordVergetenTekst: (email: string): string =>
+      `We cannot send a reset link yet. Write to ${email} from the address you signed up with and we will help you back in.`,
+    /** Zonder ingevuld supportadres valt de mailroute weg en blijft de mededeling over. */
+    wachtwoordVergetenTekstZonderSupport: 'We cannot send a reset link yet. Please get in touch and we will help you back in.',
     geenAccount: 'No account yet?',
     welAccount: 'Already have an account?',
     naarSignup: 'Sign up',
