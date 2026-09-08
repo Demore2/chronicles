@@ -154,7 +154,7 @@ export const USER_PROPERTIES = {
 export type UserProperty = (typeof USER_PROPERTIES)[keyof typeof USER_PROPERTIES];
 
 /**
- * Verzamelt Chronicles standaard gebruiksstatistieken?
+ * Verzamelt Histora standaard gebruiksstatistieken?
  *
  * `true`: analytics staat aan zodra de app start en de lezer kan het uitzetten in Instellingen
  * (Privacy). Dat is een bewuste keuze en een andere dan bij de e-mailvoorkeuren, die standaard

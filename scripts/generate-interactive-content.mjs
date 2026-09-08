@@ -107,7 +107,7 @@ const ANTWOORD_SCHEMA = {
   additionalProperties: false,
 };
 
-const SYSTEEM = `You write the interactive elements that sit under a chapter in Chronicles, a history reading app.
+const SYSTEEM = `You write the interactive elements that sit under a chapter in Histora, a history reading app.
 
 Three kinds, and they are not interchangeable:
 

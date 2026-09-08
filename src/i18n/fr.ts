@@ -2,6 +2,10 @@ import type { DeepPartial } from './deep-partial';
 import type { Vertalingen } from './en';
 
 const fr: DeepPartial<Vertalingen> = {
+  app: {
+    name: 'Histora',
+    description: "Apprenez l'histoire par des histoires interactives",
+  },
   tabs: {
     ontdek: 'Découvrir',
     voortgang: 'Progrès',
@@ -80,7 +84,7 @@ const fr: DeepPartial<Vertalingen> = {
     herinneringUitleg: 'Un rappel discret pour lire votre prochain chapitre.',
     over: 'À propos',
     privacybeleid: 'Politique de confidentialité',
-    privacybeleidUitleg: 'Chronicles enregistre votre progression uniquement sur cet appareil et ne collecte aucune donnée personnelle.',
+    privacybeleidUitleg: 'Histora enregistre votre progression uniquement sur cet appareil et ne collecte aucune donnée personnelle.',
     instellingenOpenen: 'Ouvrir les paramètres',
     feedbackOpenen: 'Envoyer un commentaire',
     avatarWijzigen: "Changer d'avatar",
@@ -110,7 +114,7 @@ const fr: DeepPartial<Vertalingen> = {
     binnenkort: 'Bientôt',
     binnenkortTitel: 'Pas encore disponible',
     binnenkortTekst: (onderwerp: string): string =>
-      `${onderwerp} ne fait pas encore partie de cette version de Chronicles.`,
+      `${onderwerp} ne fait pas encore partie de cette version d’Histora.`,
     ok: 'OK',
 
     altijdAan: 'Toujours actif',
@@ -126,7 +130,7 @@ const fr: DeepPartial<Vertalingen> = {
     appIcoon: "Icône de l'app",
     appIcoonUitleg: "D'autres icônes pour votre écran d'accueil.",
     appIcoonBinnenkortTekst:
-      "Une version ultérieure vous permettra de remplacer l'icône Chronicles sur votre écran d'accueil par une autre — une variante claire, une sombre, et une par époque. Rien ne change dans l'app elle-même. Ce n'est pas encore dans cette version.",
+      "Une version ultérieure vous permettra de remplacer l'icône Histora sur votre écran d'accueil par une autre — une variante claire, une sombre, et une par époque. Rien ne change dans l'app elle-même. Ce n'est pas encore dans cette version.",
     abonnement: 'Votre formule',
     abonnementGratis: 'Gratuite',
     abonnementPro: 'Pro',
@@ -138,10 +142,10 @@ const fr: DeepPartial<Vertalingen> = {
     onbeperkt: 'Illimité',
 
     meldingenVoet:
-      "Elles font partie de la lecture avec Chronicles, il n'y a donc pas d'interrupteur ici. Android en a un : appuyez longuement sur une notification, ou ouvrez Paramètres → Applis → Chronicles → Notifications, pour en faire taire une sans perdre les autres.",
+      "Elles font partie de la lecture avec Histora, il n'y a donc pas d'interrupteur ici. Android en a un : appuyez longuement sur une notification, ou ouvrez Paramètres → Applis → Histora → Notifications, pour en faire taire une sans perdre les autres.",
     meldingenToestemming: 'Autoriser les notifications',
     meldingenToestemmingUitleg:
-      "Les notifications sont désactivées pour Chronicles ; aucune ne peut donc vous parvenir. Touchez pour les activer.",
+      "Les notifications sont désactivées pour Histora ; aucune ne peut donc vous parvenir. Touchez pour les activer.",
     herinneringTijd: 'Heure du rappel',
     tijdWaarde: (uur: number, minuut: number): string =>
       `${String(uur).padStart(2, '0')} h ${String(minuut).padStart(2, '0')}`,
@@ -154,7 +158,7 @@ const fr: DeepPartial<Vertalingen> = {
     sectieEmail: 'E-mail',
     emailVoorkeuren: 'Préférences e-mail',
     emailUitleg:
-      "Chronicles n'envoie encore aucun e-mail. Chaque e-mail que nous envoyons porte un lien de désabonnement en bas, et ce lien vaut définitivement.",
+      "Histora n'envoie encore aucun e-mail. Chaque e-mail que nous envoyons porte un lien de désabonnement en bas, et ce lien vaut définitivement.",
     emailNieuwsbrief: 'Lettre mensuelle',
     emailNieuwsbriefUitleg: 'Un e-mail par mois, sur nos propres lectures.',
     emailNieuweVerhalen: 'Nouveaux récits',
@@ -162,18 +166,18 @@ const fr: DeepPartial<Vertalingen> = {
     emailTips: 'Conseils de lecture',
     emailTipsUitleg: 'De temps à autre, une idée pour tirer plus de chaque chapitre.',
     emailAanbiedingen: 'Offres',
-    emailAanbiedingenUitleg: 'Des réductions sur Chronicles Pro. Rarement, promis.',
+    emailAanbiedingenUitleg: 'Des réductions sur Histora Pro. Rarement, promis.',
 
     // --- Privacy ---
     sectiePrivacy: 'Confidentialité',
     analytics: 'Statistiques d’utilisation',
-    analyticsUitleg: 'Pour nous aider à améliorer Chronicles.',
+    analyticsUitleg: 'Pour nous aider à améliorer Histora.',
     analyticsVoet:
-      'Chronicles compte les écrans, les chapitres terminés et les appuis, avec votre type d’appareil et votre pays — jamais ce que vous écrivez. Ces données sont liées à votre compte et traitées par Google Firebase ; pour vous y opposer ou la faire supprimer, écrivez-nous ou supprimez votre compte ci-dessous.',
+      'Histora compte les écrans, les chapitres terminés et les appuis, avec votre type d’appareil et votre pays — jamais ce que vous écrivez. Ces données sont liées à votre compte et traitées par Google Firebase ; pour vous y opposer ou la faire supprimer, écrivez-nous ou supprimez votre compte ci-dessous.',
 
     sectiePush: 'Notifications push',
     pushVoet:
-      'Pour les envoyer, Chronicles enregistre cet appareil auprès de Google Firebase et retient la date de votre dernière lecture. Désactivez les deux et l’appareil est à nouveau désenregistré.',
+      'Pour les envoyer, Histora enregistre cet appareil auprès de Google Firebase et retient la date de votre dernière lecture. Désactivez les deux et l’appareil est à nouveau désenregistré.',
     pushVoetLokaal:
       'Ce rappel est créé sur votre appareil et n’en sort jamais. Les suggestions de retour ne sont pas disponibles dans cette version.',
     pushTerugkeer: 'Me rappeler',
@@ -186,9 +190,9 @@ const fr: DeepPartial<Vertalingen> = {
     pushPrestaties: 'Jalons',
     pushPrestatiesUitleg: 'Un mot lorsque vous atteignez un jalon alors que l’application est fermée.',
 
-    beoordeel: 'Noter Chronicles',
+    beoordeel: 'Noter Histora',
     contact: "Contacter l'assistance",
-    contactOnderwerp: 'Assistance Chronicles',
+    contactOnderwerp: 'Assistance Histora',
     voorwaarden: "Conditions d'utilisation",
     bekijkOnline: 'Voir cette page en ligne',
 
@@ -210,23 +214,23 @@ const fr: DeepPartial<Vertalingen> = {
 
     gegevensVerzoek: 'Demander mes données',
     gegevensVerzoekUitleg: 'Une copie de tout ce qui est enregistré sur votre compte, par e-mail.',
-    gegevensVerzoekOnderwerp: 'Demande de données Chronicles',
+    gegevensVerzoekOnderwerp: 'Demande de données Histora',
     gegevensVerzoekBody:
-      'Bonjour,\n\nJe souhaite recevoir une copie des données enregistrées sur mon compte Chronicles.\n\nMerci de les envoyer à l’adresse depuis laquelle j’écris.\n\nCordialement.',
+      'Bonjour,\n\nJe souhaite recevoir une copie des données enregistrées sur mon compte Histora.\n\nMerci de les envoyer à l’adresse depuis laquelle j’écris.\n\nCordialement.',
   },
   pro: {
     titel: 'Accès Pro',
     ondertitel: 'Toutes les époques, sans interruption.',
     knop: 'Voir les formules',
 
-    paywallTitel: 'Chronicles Pro',
+    paywallTitel: 'Histora Pro',
     paywallOndertitel: "Plus d'histoire, moins d'interruptions.",
     sluiten: 'Fermer',
 
     // Voir l’explication de `pro` dans en.ts : seules les trois premières sont affichées.
     voordeelOnbeperkt: "Lisez autant de récits que vous le souhaitez",
     voordeelGeenOnderbreking: "Aucune interruption entre les récits",
-    voordeelSupport: "Soutenez le développement de Chronicles",
+    voordeelSupport: "Soutenez le développement d’Histora",
 
     // Volontairement inutilisées.
     voordeelVerhalen: 'Des récits à travers six époques',
@@ -251,7 +255,7 @@ const fr: DeepPartial<Vertalingen> = {
     startTrialComingSoon: "Bientôt disponible",
     trialStartedTitel: "Essai lancé !",
     trialStartedTekst:
-      "Vos sept jours de Chronicles Pro ont commencé. Rien n’a été facturé et rien ne se renouvelle automatiquement.",
+      "Vos sept jours d’Histora Pro ont commencé. Rien n’a été facturé et rien ne se renouvelle automatiquement.",
     trialFailedTitel: "Impossible de démarrer l’essai",
     trialFailedTekst: "Une erreur est survenue. Vérifiez votre connexion et réessayez.",
 
@@ -259,19 +263,19 @@ const fr: DeepPartial<Vertalingen> = {
       "Les abonnements sont gérés par Google Play. Consultez notre politique de confidentialité pour plus de détails.",
     nogNietTitel: "Pas encore disponible",
     nogNietTekst:
-      "Les abonnements arriveront dans une version ultérieure de Chronicles. Rien n’a été facturé.",
+      "Les abonnements arriveront dans une version ultérieure d’Histora. Rien n’a été facturé.",
   },
   limiet: {
     titel: "Voilà pour aujourd'hui",
     tekst: (n: number): string =>
       n === 1
-        ? "Chronicles ouvre un nouveau récit par jour pour les lecteurs gratuits. Tout ce que vous avez lu est conservé — le suivant vous attend demain."
-        : `Chronicles ouvre ${n} nouveaux récits par jour pour les lecteurs gratuits. Tout ce que vous avez lu est conservé — le suivant vous attend demain.`,
+        ? "Histora ouvre un nouveau récit par jour pour les lecteurs gratuits. Tout ce que vous avez lu est conservé — le suivant vous attend demain."
+        : `Histora ouvre ${n} nouveaux récits par jour pour les lecteurs gratuits. Tout ce que vous avez lu est conservé — le suivant vous attend demain.`,
     verderUitleg: "Les récits déjà ouverts aujourd'hui restent accessibles.",
     voordeelOnbeperkt: 'Lisez autant de récits que vous voulez',
     voordeelGeenAds: 'Aucune publicité entre les chapitres',
     voordeelAlles: 'Chaque époque, chaque personnage',
-    upgrade: 'Découvrir Chronicles Pro',
+    upgrade: 'Découvrir Histora Pro',
     morgen: 'À demain',
   },
   feedback: {
@@ -280,7 +284,7 @@ const fr: DeepPartial<Vertalingen> = {
     soortBug: 'Signaler un bug',
     soortIdee: 'Idée',
     plaatshouderBug: "Que s'est-il passé, et à quoi vous attendiez-vous ?",
-    plaatshouderIdee: 'Que devrait faire Chronicles ?',
+    plaatshouderIdee: 'Que devrait faire Histora ?',
     versturen: 'Envoyer',
     verzenden: 'Envoi…',
     sluiten: 'Fermer',
@@ -340,9 +344,9 @@ const fr: DeepPartial<Vertalingen> = {
     ontgrendeldOp: (datum: string): string => `Obtenu le ${datum}`,
     deel: 'Partager',
     deelOpnieuw: 'Partager à nouveau',
-    deelTitel: 'Jalon Chronicles',
+    deelTitel: 'Jalon Histora',
     deelBericht: (naam: string, uitleg: string): string =>
-      `Je viens de débloquer « ${naam} » dans Chronicles — ${uitleg}`,
+      `Je viens de débloquer « ${naam} » dans Histora — ${uitleg}`,
     deelGelukt: 'Partagé.',
     deelGekopieerd: 'Copié dans le presse-papiers.',
     deelNietMogelijk: 'Le partage n’est pas disponible ici.',
@@ -357,12 +361,12 @@ const fr: DeepPartial<Vertalingen> = {
     nietMogelijk: 'Le partage n’est pas disponible ici.',
     prestatieKop: 'Jalon débloqué',
     prestatieBericht: (naam: string): string =>
-      `${naam} 🏆 Débloqué dans Chronicles ! L’histoire, un chapitre à la fois.`,
+      `${naam} 🏆 Débloqué dans Histora ! L’histoire, un chapitre à la fois.`,
     citaatKnop: 'Partager ce passage',
     citaatKop: 'Partager ce passage',
-    citaatTitel: 'Un passage de Chronicles',
+    citaatTitel: 'Un passage d’Histora',
     citaatBericht: (citaat: string, verhaal: string): string =>
-      `« ${citaat} » — tiré de ${verhaal} 📖 via Chronicles`,
+      `« ${citaat} » — tiré de ${verhaal} 📖 via Histora`,
   },
   referral: {
     titel: 'Inviter des amis',
@@ -372,9 +376,9 @@ const fr: DeepPartial<Vertalingen> = {
     codeKopieren: 'Copier le code',
     codeGekopieerd: 'Code copié.',
     deelUitnodiging: 'Partager l’invitation',
-    deelTitel: 'Rejoignez-moi sur Chronicles',
+    deelTitel: 'Rejoignez-moi sur Histora',
     bericht: (code: string): string =>
-      `Rejoignez-moi sur Chronicles ! L’histoire, un chapitre à la fois. Code : ${code} pour 1 histoire gratuite.`,
+      `Rejoignez-moi sur Histora ! L’histoire, un chapitre à la fois. Code : ${code} pour 1 histoire gratuite.`,
     vriendenUitgenodigd: 'Amis invités',
     beloningenVerdiend: 'Récompenses gagnées',
     beloningenKop: 'Vos récompenses',

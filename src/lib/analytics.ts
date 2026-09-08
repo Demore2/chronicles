@@ -130,7 +130,7 @@ export const analytics = {
    *
    * Alleen voor het dev-dashboard, dat er zijn console-links mee opbouwt. Bewust uitgelezen en
    * niet overgetypt: Firebase plakt bij het aanmaken een willekeurig achtervoegsel achter de naam
-   * die je intypt (`chronicles-app` wordt bijvoorbeeld `chronicles-app-4f21c`), dus elk
+   * die je intypt (`histora-app` wordt bijvoorbeeld `histora-app-4f21c`), dus elk
    * hardgecodeerd id is een gok die naar het verkeerde project linkt.
    */
   get projectId(): string | null {

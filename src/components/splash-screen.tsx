@@ -47,9 +47,14 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
           <HistoryBook width={132} height={132} color={theme.accent} />
         </View>
 
-        {/* App name */}
+        {/*
+          De merknaam. Hij komt uit i18n (`app.name`) zodat hij op één plek staat en niet
+          in elk scherm opnieuw wordt overgetypt, maar hij is gelijk in alle vier de talen —
+          een merknaam vertaal je niet. De hoofdletters zitten in de weergave en niet in de
+          sleutel, want dezelfde sleutel wordt elders in normale schrijfwijze getoond.
+        */}
         <ThemedText type="display" style={styles.title}>
-          HISTORY
+          {t((s) => s.app.name).toUpperCase()}
         </ThemedText>
         <ThemedText themeColor="textSecondary" style={styles.subtitle}>
           {t((s) => s.splash.ondertitel)}

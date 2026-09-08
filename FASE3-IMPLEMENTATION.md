@@ -5,7 +5,7 @@
 
 ## Overview
 
-FASE 3 implements a working premium upsell modal that allows free users to start a 7-day trial of Chronicles Pro. The system now has:
+FASE 3 implements a working premium upsell modal that allows free users to start a 7-day trial of Histora Pro. The system now has:
 
 - **Plan selection UI**: Users can choose between monthly (€4.99) or yearly (€49.99) billing
 - **Active trial activation**: Clicking "Start free trial" calls `setTrial(7)` on subscription store
@@ -127,7 +127,7 @@ async function startFreeTrial() {
 ## User Experience Flow
 
 1. **Free user hits daily limit** → StoryLimitModal shows
-2. **Clicks "See Chronicles Pro"** → ProPaywall modal opens
+2. **Clicks "See Histora Pro"** → ProPaywall modal opens
 3. **Sees plan options**:
    - Monthly (€4.99/month)
    - Yearly (€49.99/year) — highlighted by default

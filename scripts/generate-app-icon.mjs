@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generate the Chronicles app icon at store-ready resolution.
+ * Generate the Histora app icon at store-ready resolution.
  *
  * Usage:
  *   node scripts/generate-app-icon.mjs            # generate 3 candidates

@@ -1,4 +1,4 @@
-# Chronicles — FEATURE STATUS AUDIT
+# Histora — FEATURE STATUS AUDIT
 
 **Audit date:** 19 August 2026 — *revised the same day, see "Changes since the audit" at the bottom.*
 **Auditor:** Claude Code

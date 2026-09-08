@@ -82,15 +82,15 @@ export const voorwaardenZijnGepubliceerd =
  *    (`…/details?id=<pakket>&referrer=code%3DABCD1234`). Play geeft die parameter na de
  *    installatie door via de Install Referrer API, dus een uitnodigingscode overleeft de
  *    installatie zonder eigen infrastructuur. Zonder extra dienst de beste keuze.
- * 2. **Een App Link naar een eigen domein** (`https://chronicles.example/i/ABCD1234`) met een
+ * 2. **Een App Link naar een eigen domein** (`https://histora.example/i/ABCD1234`) met een
  *    `assetlinks.json`; opent de app als hij er is, een webpagina als hij er niet is. Vergt een
  *    domein en een pagina, en `expo.android.intentFilters` in `app.json`.
  *
  * Zolang dit een placeholder is opent de link niets. Dat is zichtbaar en niet stil: de tekst
- * eromheen noemt Chronicles bij naam, dus een ontvanger kan de app hoe dan ook vinden. Wordt hij
+ * eromheen noemt Histora bij naam, dus een ontvanger kan de app hoe dan ook vinden. Wordt hij
  * ingevuld, dan volgt `appLinkIsIngesteld` vanzelf.
  */
-export const APP_DEEL_LINK = 'https://chronicles.app.link';
+export const APP_DEEL_LINK = 'https://histora.app.link';
 
 /** `false` zolang `APP_DEEL_LINK` nog de placeholder van hierboven is. */
-export const appLinkIsIngesteld = !APP_DEEL_LINK.includes('chronicles.app.link');
+export const appLinkIsIngesteld = !APP_DEEL_LINK.includes('histora.app.link');

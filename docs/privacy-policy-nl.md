@@ -1,14 +1,14 @@
-# Chronicles — Privacybeleid
+# Histora — Privacybeleid
 
 *Laatst bijgewerkt: 14 augustus 2026*
 
-**Kort gezegd:** Chronicles bewaart een account en je leesvoortgang, zodat je op elk toestel verder
+**Kort gezegd:** Histora bewaart een account en je leesvoortgang, zodat je op elk toestel verder
 kunt waar je gebleven was. We volgen je niet, we gebruiken geen analytics, we tonen geen advertenties
 en we verkopen je gegevens nooit.
 
 ## Wie we zijn
 
-Chronicles is een leesapp over historische figuren en gebeurtenissen, gemaakt door Quinten Raats.
+Histora is een leesapp over historische figuren en gebeurtenissen, gemaakt door Quinten Raats.
 Onder de AVG zijn wij de verwerkingsverantwoordelijke voor je gegevens. Vragen:
 **quintenraats@gmail.com**.
 
@@ -65,7 +65,7 @@ nationale toezichthouder voor gegevensbescherming.
 
 ## Kinderen
 
-Chronicles is geschikt voor alle leeftijden. Er is geen chat, geen door gebruikers gemaakte inhoud en
+Histora is geschikt voor alle leeftijden. Er is geen chat, geen door gebruikers gemaakte inhoud en
 er zijn geen aankopen.
 
 ## Wijzigingen in dit beleid

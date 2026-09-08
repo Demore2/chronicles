@@ -1,7 +1,7 @@
 /**
  * De schakelaars van het gratis/Pro-model, op één plek.
  *
- * Chronicles kent sinds deze fase drie lagen: een gratis lezer opent een beperkt aantal *nieuwe*
+ * Histora kent sinds deze fase drie lagen: een gratis lezer opent een beperkt aantal *nieuwe*
  * verhalen per dag en krijgt na een uitgelezen verhaal een onderbreking te zien; een Pro-lezer
  * krijgt geen van beide. Wat "Pro" betekent leest `useAbonnement()` uit `abonnement-store`.
  *

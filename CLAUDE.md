@@ -757,7 +757,7 @@ ze lopen allemaal door dezelfde twee lagen: `constants/deel.ts` voor het *hoe*, 
   dev client moet opnieuw gebouwd worden. `Clipboard` uit react-native core bestaat in 0.86 nog,
   maar logt bij elke aanraking een deprecatiewaarschuwing en verdwijnt; `expo-clipboard` heeft
   bovendien een echte webimplementatie, zodat de browserpreview hetzelfde doet als het toestel.
-- **`APP_DEEL_LINK` in `constants/app-info.ts` is een placeholder** (`chronicles.app.link`) en
+- **`APP_DEEL_LINK` in `constants/app-info.ts` is een placeholder** (`histora.app.link`) en
   wordt door `deelBerichtMetLink()` achter élk bericht geplakt — één plek, dus nergens te vergeten.
   **Firebase Dynamic Links is hier géén vervolgstap**: Google heeft die dienst op 25 augustus 2025
   uitgezet. Wat er wél overblijft staat bij de constante: de Play-listing met een
@@ -1220,7 +1220,7 @@ proefperiode, einddatum, auto-renew.
   afmeldlink in **elke** mail. Die afmeldlink is dus geen nice-to-have maar de voorwaarde, en
   afmelden loopt bewust via die link en niet via een tweede route in de app. Een bestaande
   installatie houdt zijn opgeslagen keuzes (de `merge` legt ze over de standaardwaarden). Gaat
-  Chronicles ooit mailen, dan horen ze bij het account en niet bij het toestel — dan is dit de
+  Histora ooit mailen, dan horen ze bij het account en niet bij het toestel — dan is dit de
   store die naar Supabase gaat.
 
 ### Firebase-schakelaar (`EXPO_PUBLIC_FIREBASE_ENABLED`, `.env`, `app.config.js`)
@@ -1347,7 +1347,7 @@ bestaat nog niet; zonder dat bestand faalde `expo prebuild` — en dus élke EAS
 - **Data Safety en de privacypagina zijn bijgewerkt.** `docs/README.md` (inclusief de val
   "approximate location": Firebase leidt land af uit het IP, ook zonder locatiepermissie) én
   `docs/privacy-policy.html`, die nu account, sync, peilingantwoorden, feedback en analytics
-  beschrijft in plaats van "Chronicles collects nothing". Wat er nog ontbreekt is de
+  beschrijft in plaats van "Histora collects nothing". Wat er nog ontbreekt is de
   verwerkingsregio van Supabase — vul die in vóór publicatie als je een expliciete
   EU-doorgifteclausule wilt.
 
@@ -1552,6 +1552,20 @@ Known gaps:
   "chapters done" counter and the streak, so `phone-3/4/7` show a header that no longer looks
   like that and the excluded Profiel/Voortgang shots are now worth taking. Recapture before the
   production build — see `store/listing.md`.
+- **The app is called Histora; four identifiers still say chronicles, on purpose.** The rebrand
+  changed every user-visible name and every document, and deliberately left the strings that are
+  an *identity* rather than a name: `android.package` = `com.chronicles.historyapp` (the Play
+  identity — change it and it is a different app, with a different listing and no update path),
+  the GitHub Pages URLs `https://demore2.github.io/chronicles/…` in `constants/juridisch.ts` and
+  `constants/app-info.ts` (the path is the repository name; renaming the repo is a step outside
+  this repo), the keystore alias `chronicles`, and the test-account domain `@chronicles.app`.
+  The story text in `oudheid/personen.ts` also still reads "chronicles" in three places — that
+  is the English noun in Ashoka’s story, not the brand. Do not "finish the rebrand" by
+  touching any of these.
+- 🚩 **`app.json`’s slug is now `histora`, but the EAS project is still named `chronicles-app`.**
+  `extra.eas.projectId` is what actually binds the two, so a build still resolves, but eas-cli
+  warns on the mismatch and offers to reconcile it. Rename the project on expo.dev (Project
+  settings → name) to match, or put the slug back — one or the other, not both drifting.
 - **The release pipeline is linked**: the project is `@quinten1234/chronicles-app`
   (`extra.eas.projectId` in `app.json`), EAS holds the Android keystore
   (`Build Credentials xHGwqm8DSF`) and the Supabase env vars. What still needs the Play Console —

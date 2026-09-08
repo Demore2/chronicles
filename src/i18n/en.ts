@@ -5,6 +5,18 @@ import type { AanbevelingReden } from '@/content/aanbeveling';
 // structuur volgen; ontbrekende sleutels daar vallen terug op deze Engelse
 // tekst (zie src/i18n/index.ts).
 const en = {
+  /**
+   * De merknaam en de eenregelige omschrijving van de app.
+   *
+   * Staat in i18n en niet in `app-info.ts` omdat het gebruikerstekst is: het opstartscherm toont
+   * `app.name`, en de omschrijving is dezelfde zin als de korte storebeschrijving in
+   * `store/listing.md`. De naam zelf is een merknaam en blijft in elke taal gelijk; alleen de
+   * omschrijving wordt vertaald.
+   */
+  app: {
+    name: 'Histora',
+    description: 'Learn history through interactive stories',
+  },
   tabs: {
     ontdek: 'Home',
     voortgang: 'Progress',
@@ -22,8 +34,8 @@ const en = {
     toonAlles: 'Show all',
   },
   /**
-   * Het opstartscherm (`components/splash-screen.tsx`). "HISTORY" eronder is de merknaam en
-   * blijft onvertaald; deze regel is een zin en hoort dus wél mee te gaan met de taal.
+   * Het opstartscherm (`components/splash-screen.tsx`). De merknaam erboven komt uit `app.name`
+   * en blijft onvertaald; deze regel is een zin en hoort dus wél mee te gaan met de taal.
    */
   splash: {
     ondertitel: 'Discover the Stories That Shaped Our World',
@@ -109,7 +121,7 @@ const en = {
     herinneringUitleg: 'A quiet nudge to read your next chapter.',
     over: 'About',
     privacybeleid: 'Privacy Policy',
-    privacybeleidUitleg: 'Chronicles stores your progress on this device only and collects no personal data.',
+    privacybeleidUitleg: 'Histora stores your progress on this device only and collects no personal data.',
     /** Toegankelijkheidslabels van de twee icoonknoppen bovenaan Profiel. */
     instellingenOpenen: 'Open settings',
     feedbackOpenen: 'Send feedback',
@@ -144,7 +156,7 @@ const en = {
     binnenkort: 'Soon',
     binnenkortTitel: 'Not available yet',
     binnenkortTekst: (onderwerp: string): string =>
-      `${onderwerp} is not part of this version of Chronicles yet.`,
+      `${onderwerp} is not part of this version of Histora yet.`,
     ok: 'OK',
 
     /**
@@ -169,7 +181,7 @@ const en = {
      */
     appIcoonUitleg: 'Alternative icons for your home screen.',
     appIcoonBinnenkortTekst:
-      'A later version lets you swap the Chronicles icon on your home screen for a different one — a light and a dark variant, and one per era. Nothing changes inside the app. It is not in this build yet.',
+      'A later version lets you swap the Histora icon on your home screen for a different one — a light and a dark variant, and one per era. Nothing changes inside the app. It is not in this build yet.',
     abonnement: 'Your plan',
     abonnementGratis: 'Free',
     abonnementPro: 'Pro',
@@ -193,11 +205,11 @@ const en = {
      * kunnen — een categorie zonder uitknop noemen zonder de uitknop te wijzen is een halve zin.
      */
     meldingenVoet:
-      'These belong to reading with Chronicles, so there is no switch for them here. Android keeps its own: press and hold a notification, or open Android Settings → Apps → Chronicles → Notifications, to silence one kind without losing the others.',
+      'These belong to reading with Histora, so there is no switch for them here. Android keeps its own: press and hold a notification, or open Android Settings → Apps → Histora → Notifications, to silence one kind without losing the others.',
     /** Zonder systeemtoestemming kan geen van de drie aankomen. Dan is dit de enige echte knop. */
     meldingenToestemming: 'Allow notifications',
     meldingenToestemmingUitleg:
-      'Notifications are switched off for Chronicles, so none of these can reach you. Tap to turn them on.',
+      'Notifications are switched off for Histora, so none of these can reach you. Tap to turn them on.',
     herinneringTijd: 'Reminder time',
     /**
      * Klok­notatie. Een functie en geen `toLocaleTimeString`: de app kent vier talen die niet met
@@ -227,7 +239,7 @@ const en = {
      * schakelaars erboven, en het liep achter zodra er een standaardwaarde wijzigde.
      */
     emailUitleg:
-      'Chronicles sends no email yet. Every email we send has an unsubscribe link at the bottom, and that link works for good.',
+      'Histora sends no email yet. Every email we send has an unsubscribe link at the bottom, and that link works for good.',
     emailNieuwsbrief: 'Monthly letter',
     emailNieuwsbriefUitleg: 'One email a month, with what we have been reading.',
     emailNieuweVerhalen: 'New stories',
@@ -235,12 +247,12 @@ const en = {
     emailTips: 'Reading tips',
     emailTipsUitleg: 'Occasional ideas on getting more out of a chapter.',
     emailAanbiedingen: 'Offers',
-    emailAanbiedingenUitleg: 'Discounts on Chronicles Pro. Rare, we promise.',
+    emailAanbiedingenUitleg: 'Discounts on Histora Pro. Rare, we promise.',
 
     // --- Privacy ---
     sectiePrivacy: 'Privacy',
     analytics: 'Usage statistics',
-    analyticsUitleg: 'Helps us improve Chronicles.',
+    analyticsUitleg: 'Helps us improve Histora.',
     /**
      * Ingekort tot twee zinnen, maar niet geschrapt, en de twee dingen die moesten blijven staan
      * er nog: wát er gemeten wordt (bewust niet "anoniem" — ingelogd hangt het aan je account) en
@@ -248,7 +260,7 @@ const en = {
      * je over gegevens kunt doen; zie `analytics-preferences.tsx` en `docs/privacy-policy.html`.
      */
     analyticsVoet:
-      'Chronicles counts screens, finished chapters and taps, with your device type and country — never what you write. It is tied to your account and handled by Google Firebase; to object, or to have it removed, write to us or delete your account below.',
+      'Histora counts screens, finished chapters and taps, with your device type and country — never what you write. It is tied to your account and handled by Google Firebase; to object, or to have it removed, write to us or delete your account below.',
 
     // --- Push-notificaties ---
     //
@@ -261,7 +273,7 @@ const en = {
      * gebeurt is dat dit toestel bij ons bekend staat, en dát is de mededeling.
      */
     pushVoet:
-      'To send these, Chronicles registers this device with Google Firebase and keeps track of when you last read. Turn both off and the device is unregistered again.',
+      'To send these, Histora registers this device with Google Firebase and keeps track of when you last read. Turn both off and the device is unregistered again.',
     /** Als FCM in deze build niet bestaat: dan is er maar één schakelaar, en die is lokaal. */
     pushVoetLokaal:
       'This reminder is created on your device and never leaves it. Suggestions to come back are not available in this version.',
@@ -278,9 +290,9 @@ const en = {
     pushPrestaties: 'Milestones',
     pushPrestatiesUitleg: 'A note when you reach a milestone while the app is closed.',
 
-    beoordeel: 'Rate Chronicles',
+    beoordeel: 'Rate Histora',
     contact: 'Contact support',
-    contactOnderwerp: 'Chronicles support',
+    contactOnderwerp: 'Histora support',
     voorwaarden: 'Terms of Service',
 
     /**
@@ -324,9 +336,9 @@ const en = {
      */
     gegevensVerzoek: 'Request my data',
     gegevensVerzoekUitleg: 'A copy of everything stored against your account, by email.',
-    gegevensVerzoekOnderwerp: 'Chronicles data request',
+    gegevensVerzoekOnderwerp: 'Histora data request',
     gegevensVerzoekBody:
-      'Hello,\n\nI would like a copy of the data stored against my Chronicles account.\n\nPlease send it to the address I am writing from.\n\nThank you.',
+      'Hello,\n\nI would like a copy of the data stored against my Histora account.\n\nPlease send it to the address I am writing from.\n\nThank you.',
   },
   /**
    * De premium-banner op Profiel en het paywall-venster erachter (`pro-paywall.tsx`).
@@ -341,7 +353,7 @@ const en = {
     ondertitel: 'Every era, no interruptions.',
     knop: 'See plans',
 
-    paywallTitel: 'Chronicles Pro',
+    paywallTitel: 'Histora Pro',
     paywallOndertitel: 'More history, fewer interruptions.',
     sluiten: 'Close',
 
@@ -368,7 +380,7 @@ const en = {
      */
     voordeelOnbeperkt: 'Read as many stories as you like',
     voordeelGeenOnderbreking: 'No interruptions between stories',
-    voordeelSupport: 'Support the development of Chronicles',
+    voordeelSupport: 'Support the development of Histora',
 
     // Met opzet niet in gebruik — zie de opmerking hierboven.
     voordeelVerhalen: 'Stories from six eras',
@@ -403,7 +415,7 @@ const en = {
     // die niemand kan opzeggen. Bijgewerkt zodat het opnieuw aanzetten van de knop niet
     // meteen een onware mededeling oplevert.
     trialStartedTekst:
-      'Your seven days of Chronicles Pro have started. Nothing has been charged and nothing renews on its own.',
+      'Your seven days of Histora Pro have started. Nothing has been charged and nothing renews on its own.',
     trialFailedTitel: 'Could not start trial',
     trialFailedTekst: 'Something went wrong. Please check your connection and try again.',
 
@@ -415,7 +427,7 @@ const en = {
       'Subscriptions are managed by Google Play. See our privacy policy for details.',
     nogNietTitel: 'Not available yet',
     nogNietTekst:
-      'Subscriptions arrive with a later version of Chronicles. Nothing has been charged.',
+      'Subscriptions arrive with a later version of Histora. Nothing has been charged.',
   },
   /**
    * De dagelijkse leeslimiet voor gratis lezers (`story-limit-modal.tsx`).
@@ -428,14 +440,14 @@ const en = {
     titel: 'That is today’s reading',
     tekst: (n: number): string =>
       n === 1
-        ? 'Chronicles opens one new story a day for free readers. Everything you read is saved — the next one is waiting tomorrow.'
-        : `Chronicles opens ${n} new stories a day for free readers. Everything you read is saved — the next one is waiting tomorrow.`,
+        ? 'Histora opens one new story a day for free readers. Everything you read is saved — the next one is waiting tomorrow.'
+        : `Histora opens ${n} new stories a day for free readers. Everything you read is saved — the next one is waiting tomorrow.`,
     /** Een verhaal dat je vandaag al opende blijft open; dat zegt deze regel. */
     verderUitleg: 'Stories you already started today stay open.',
     voordeelOnbeperkt: 'Read as many stories as you like',
     voordeelGeenAds: 'No ads between chapters',
     voordeelAlles: 'Every era, every character',
-    upgrade: 'See Chronicles Pro',
+    upgrade: 'See Histora Pro',
     morgen: 'Come back tomorrow',
   },
   /**
@@ -450,7 +462,7 @@ const en = {
     soortBug: 'Bug report',
     soortIdee: 'Feature idea',
     plaatshouderBug: 'What happened, and what did you expect instead?',
-    plaatshouderIdee: 'What would you like Chronicles to do?',
+    plaatshouderIdee: 'What would you like Histora to do?',
     versturen: 'Send feedback',
     verzenden: 'Sending…',
     sluiten: 'Close',
@@ -538,10 +550,10 @@ const en = {
     deel: 'Share',
     deelOpnieuw: 'Share again',
     /** Titel van het deelvenster van het toestel. */
-    deelTitel: 'Chronicles milestone',
+    deelTitel: 'Histora milestone',
     /** Wat er daadwerkelijk verstuurd wordt. */
     deelBericht: (naam: string, uitleg: string): string =>
-      `I just unlocked “${naam}” in Chronicles — ${uitleg}`,
+      `I just unlocked “${naam}” in Histora — ${uitleg}`,
     deelGelukt: 'Shared.',
     deelGekopieerd: 'Copied to your clipboard.',
     deelNietMogelijk: 'Sharing is not available here.',
@@ -573,14 +585,14 @@ const en = {
     /** Het deelvenster van een mijlpaal (`share-achievement-modal.tsx`). */
     prestatieKop: 'Milestone unlocked',
     prestatieBericht: (naam: string): string =>
-      `${naam} 🏆 Unlocked in Chronicles! History, one chapter at a time.`,
+      `${naam} 🏆 Unlocked in Histora! History, one chapter at a time.`,
 
     /** De deelknop onder een alinea of citaat (`share-quote-button.tsx`). */
     citaatKnop: 'Share this passage',
     citaatKop: 'Share this passage',
-    citaatTitel: 'A passage from Chronicles',
+    citaatTitel: 'A passage from Histora',
     citaatBericht: (citaat: string, verhaal: string): string =>
-      `“${citaat}” — from ${verhaal} 📖 via Chronicles`,
+      `“${citaat}” — from ${verhaal} 📖 via Histora`,
   },
   /**
    * Het uitnodigingsscherm (`profiel/invite-friends.tsx`).
@@ -599,9 +611,9 @@ const en = {
     codeKopieren: 'Copy code',
     codeGekopieerd: 'Code copied.',
     deelUitnodiging: 'Share invite',
-    deelTitel: 'Join me on Chronicles',
+    deelTitel: 'Join me on Histora',
     bericht: (code: string): string =>
-      `Join me on Chronicles! Read history, one chapter at a time. Use code: ${code} for 1 free story.`,
+      `Join me on Histora! Read history, one chapter at a time. Use code: ${code} for 1 free story.`,
     /** De twee tellers. Getal en label staan apart: het cijfer staat er als los `display`-getal. */
     vriendenUitgenodigd: 'Friends invited',
     beloningenVerdiend: 'Rewards earned',

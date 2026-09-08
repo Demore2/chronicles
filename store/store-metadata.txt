@@ -1,0 +1,120 @@
+HISTORA — GOOGLE PLAY CONSOLE METADATA
+======================================
+
+Voor handmatige invoer in de Play Console. Dit bestand is de rebrand-versie van de
+velden; `store/listing.md` blijft het uitgebreide document met de toelichting per
+Console-veld, de IARC-antwoorden en de tekenlimieten.
+
+LET OP — twee dingen in `listing.md` kloppen niet meer met de app en zijn hieronder
+gecorrigeerd, niet overgenomen:
+  * het aantal verhalen is 20 (niet 19) — `npm run validate:content` telt ze;
+  * "No account" en "No tracking and no analytics" zijn achterhaald: de app zit sinds
+    R8.AUTH achter een inlogscherm en Firebase Analytics is bedraad (al staat het
+    achter `EXPO_PUBLIC_FIREBASE_ENABLED=false`). Een listing die "geen account" belooft
+    en dan om een e-mailadres vraagt is een afwijzingsgrond.
+Werk `listing.md` bij vóór de daadwerkelijke inzending; dit bestand loopt vooruit.
+
+
+APP TITLE (max 30)
+------------------
+Histora: History Stories
+
+(24/30.) Puur merk is `Histora` (7/30); de suffix staat er omdat "Histora" op zichzelf
+niets over de inhoud zegt in een zoekresultaat. De launchernaam blijft `Histora`
+(`app.json` → `expo.name`) en hoeft niet gelijk te zijn aan de storenaam.
+
+
+SHORT DESCRIPTION (max 80)
+--------------------------
+Learn history through interactive stories
+
+(41/80.) Dit is dezelfde zin als `app.description` in `src/i18n/en.ts` — één
+formulering voor de store en de app.
+
+Alternatieven binnen de limiet:
+  Six eras, 20 stories, eight chapters each. Finish one, unlock the figure.  (72)
+  History as short stories. 20 lives and events, eight chapters each.        (66)
+
+
+FULL DESCRIPTION (max 4000)
+---------------------------
+Histora turns history into something you actually finish.
+
+Every figure and every event is one story, split into eight short chapters. Read one on the bus, one before bed. A chapter takes a few minutes; a whole story takes about ten.
+
+WHAT'S INSIDE
+
+Twenty stories across six eras, from the founding of Rome to the present day.
+
+Antiquity — Julius Caesar, Spartacus, the rise of Rome, the eruption of Vesuvius, Ashoka the Great
+Middle Ages — Joan of Arc, Charlemagne, Richard the Lionheart
+Early Modern Period — Leonardo da Vinci, Galileo Galilei, Catherine the Great
+Industrial Revolution — James Watt, Florence Nightingale, Thomas Edison
+20th Century — Marie Curie, Winston Churchill, Martin Luther King Jr.
+Contemporary Era — Nelson Mandela, Steve Jobs, Malala Yousafzai
+
+HOW IT READS
+
+Chapters unlock one at a time, so you never have to remember where you left off. Every chapter opens with an illustrated scene, and quotes, key dates and short "did you know" notes break the text up instead of burying you in it.
+
+Under a chapter you will sometimes find a quiz, a poll or a choice point — a moment to test yourself and to see how other readers decided. They are optional, and they never block the next chapter.
+
+COLLECT THE PEOPLE
+
+Finish a story and its figure joins your collection. Twenty circles, filled in one at a time — a quiet reason to come back for the next one. Fourteen milestones track the chapters, stories, characters and reading days behind you.
+
+BUILT TO STAY OUT OF THE WAY
+
+Stories and images are bundled with the app, so reading works offline.
+Your progress follows your account to any device you sign in on.
+The interface is available in English, Dutch, French and German. The stories themselves are in English.
+Light and dark themes, and a reading streak if you want one.
+One daily reminder, at a time you choose, and you can switch it off.
+
+Histora is free to read.
+
+
+KEYWORDS / TAGS (Play staat er max 5 toe)
+-----------------------------------------
+history, education, learning, stories, interactive
+
+Bredere set voor ASO-teksten en de omschrijving:
+history, education, learning, stories, interactive, illustrated, reading,
+educational app, world history, biographies
+
+
+CATEGORISATIE
+-------------
+App or game            : App
+Category               : Books & Reference   (Education is een verdedigbaar alternatief)
+Target audience        : 13+
+App access             : vereist een account — geef in de Console een testaccount op
+                         (zie docs/TEST_ACCOUNTS.md, gitignored)
+News app               : No
+Ads                    : No     (`ADS_ENABLED = false` in src/components/ad-banner.tsx)
+In-app purchases       : No     (Billing is een stub; niets is te koop)
+
+
+CONTACT
+-------
+SUPPORT EMAIL          : businessdemore@gmail.com
+                         Zelfde adres als `SUPPORT_EMAIL` in src/constants/app-info.ts
+                         en als de privacypagina. Wijzig je er één, wijzig ze alle drie.
+Website                : —  (optioneel; de GitHub Pages-map uit docs/ kan hier)
+Phone                  : —  (optioneel, laat leeg)
+
+
+URL'S — BEIDE NOG NIET GEPUBLICEERD
+-----------------------------------
+PRIVACY POLICY URL     : https://demore2.github.io/chronicles/privacy-policy.html
+TERMS URL              : https://demore2.github.io/chronicles/terms-of-service.html
+
+Deze twee staan zo in `src/constants/juridisch.ts` en `src/constants/app-info.ts` en
+zijn bij de rebrand **bewust niet gewijzigd**: het pad `/chronicles/` is de naam van de
+GitHub-repository die de pagina's serveert, niet de merknaam in de tekst (die pagina's
+zelf zeggen nu wél "Histora"). Wil je `/histora/` in de URL, dan is dat één handeling
+buiten deze repo — hernoem de repository op GitHub — gevolgd door het bijwerken van
+beide constanten, `docs/README.md` en dit bestand.
+
+De pagina's zijn nog nergens gepubliceerd, dus beide URL's geven op dit moment een 404.
+Een bereikbare privacy-URL is een **harde blocker** voor de inzending.

@@ -1,4 +1,4 @@
-# Play Store listing — Chronicles v1.0
+# Play Store listing — Histora v1.0
 
 Alle tekst die de Play Console vraagt, klaar om te kopiëren. **Engels**, want de verhalen zelf zijn
 Engels (de UI is en/nl/fr/de, de content niet — zie LAUNCH-PLAN.md B5). Voeg later gerust extra
@@ -12,12 +12,12 @@ De tekens tussen haakjes zijn getelde lengtes tegen de limiet van Play. Herteld 
 ## App name (max 30)
 
 ```
-Chronicles: History Stories
+Histora: History Stories
 ```
 
-(27/30.) De **launcher**-naam blijft `Chronicles` — die staat in `app.json` en hoeft niet gelijk te
-zijn aan de storenaam. Wil je puur merk, gebruik dan `Chronicles` (10/30); de suffix is er alleen
-omdat "Chronicles" op zichzelf niets over de inhoud zegt in een zoekresultaat.
+(24/30.) De **launcher**-naam blijft `Histora` — die staat in `app.json` en hoeft niet gelijk te
+zijn aan de storenaam. Wil je puur merk, gebruik dan `Histora` (7/30); de suffix is er alleen
+omdat "Histora" op zichzelf niets over de inhoud zegt in een zoekresultaat.
 
 ## Short description (max 80)
 
@@ -25,7 +25,7 @@ omdat "Chronicles" op zichzelf niets over de inhoud zegt in een zoekresultaat.
 Six eras, 19 stories, eight chapters each. Finish one, unlock the figure.
 ```
 
-(72/80.)
+(73/80.)
 
 Alternatieven binnen de limiet, mocht je willen A/B'en:
 
@@ -40,7 +40,7 @@ Alternatieven binnen de limiet, mocht je willen A/B'en:
 > de app doet is precies waar reviews en Play-meldingen over gaan.
 
 ```
-Chronicles turns history into something you actually finish.
+Histora turns history into something you actually finish.
 
 Every figure and every event is one story, split into eight short chapters. Read one on the bus, one before bed. A chapter takes a few minutes; a whole story takes about ten.
 
@@ -74,10 +74,10 @@ One optional reminder a day, off unless you switch it on.
 
 The interface is available in English, Dutch, French and German. The stories themselves are in English. Light and dark themes, and a reading streak if you want one.
 
-Chronicles is free.
+Histora is free.
 ```
 
-(1.633/4000.)
+(1.627/4000.)
 
 ---
 

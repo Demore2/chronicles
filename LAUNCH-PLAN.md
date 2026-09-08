@@ -1,4 +1,4 @@
-# Chronicles — Launch Plan (Google Play v1.0)
+# Histora — Launch Plan (Google Play v1.0)
 
 > **Werkwijze:** dit plan wordt **fase voor fase** uitgevoerd, elke fase in een **nieuwe chat**
 > (om contextvervuiling te voorkomen). Aan het eind van elke fase werkt Claude de sectie
@@ -257,7 +257,7 @@ hieronder staan, plus één ronde nieuwe screenshots.
 >   schakelaar uit op Profiel.
 > - Onveranderd open: **`PRIVACY_BELEID_URL` is nog een placeholder** (harde blocker voor Fase 7),
 >   **nl/fr/de content**, **B3b** (rijke blokken voor 120 hoofdstukken, v1.1), **lege
->   `collecties.ts`**, en de **naamkwestie HISTORY/Chronicles** uit Fase L.
+>   `collecties.ts`**, en de **naamkwestie HISTORY/Histora** uit Fase L.
 
 > ### Fase L — nieuw logo (History Book)
 >
@@ -281,7 +281,7 @@ hieronder staan, plus één ronde nieuwe screenshots.
 >   begroeting of de dagelijkse quiz.
 >
 > **Wat open blijft:**
-> - **De in-app splash zegt nog "HISTORY", de app heet "Chronicles"** (`app.json`,
+> - **De in-app splash zegt nog "HISTORY", de app heet "Histora"** (`app.json`,
 >   `store/listing.md`). Dat is nu de enige plek waar de oude naam nog staat. Bewust niet
 >   aangeraakt — een naamwijziging is geen logowijziging. Beslis dit vóór de productie-build.
 > - `scripts/generate-app-icon.mjs` is dood gewicht geworden (Replicate-prompt voor het vórige
@@ -367,7 +367,7 @@ er nu tussen jou en de Play Store staat is inhoudelijk, niet technisch:
 1. **De dev-launcher zit níét in een release-build.** Dat stond sinds Fase 6 open. De release-APK
    bevat **0** `dev-launcher`-entries, en de app start zonder Metro. Dat is ook per ongeluk
    *tegenbewezen* getest: toen er even een debug-build overheen stond, opende de app op
-   "Chronicles — Development Build / Connect to a development server". Zo ziet het eruit als het
+   "Histora — Development Build / Connect to a development server". Zo ziet het eruit als het
    fout gaat, en zo ziet het er dus níét uit.
 2. **Alle 152 scènebeelden zitten in de release-APK**: 186 webp-entries, samen 33 MB, opgeslagen als
    `res/*.webp` met verkorte namen (AAPT2). Dat komt overeen met de ~35 MB die dit plan schatte.
@@ -386,7 +386,7 @@ er nu tussen jou en de Play Store staat is inhoudelijk, niet technisch:
   toont zijn borstplaat zonder hoofd. Daarom staat er geen screenshot van een era-rij in de set. Dit
   is nog steeds het aandachtspunt uit Fase 3 en het is nu een reden om er iets aan te doen: het is
   het eerste wat iemand ziet als hij op Home naar beneden scrolt.
-- ~~**De in-app splash is inmiddels wél het Chronicles-icoon**~~ — **dit klopte niet.** De
+- ~~**De in-app splash is inmiddels wél het Histora-icoon**~~ — **dit klopte niet.** De
   *native* splash was vervangen, maar `src/components/splash-screen.tsx` (die 2,5 s ná de native
   splash overheen ligt) toonde nog steeds het handgebouwde zandloper-logo. Opgelost in fase L.
 - **Emulator-state**: de leesvoortgang op Pixel_8 is meerdere keren gewist (door beide sessies) en
@@ -799,7 +799,7 @@ Er viel hier niets te repareren; het punt is alleen geverifieerd.
 - Het **"Advertisement"-placeholderblok** is in de reader zichtbaar bevestigd. Dat is precies de
   afwijsreden uit A4 — staat gepland voor Fase 6.
 - Bij het opstarten toont de app nog een **in-app splash met het oude "HISTORY"-logo** (het
-  zandloper-mark, niet het Chronicles-icoon uit Fase 1). Niet blocking, maar inconsistent met de
+  zandloper-mark, niet het Histora-icoon uit Fase 1). Niet blocking, maar inconsistent met de
   nieuwe identiteit; meenemen wanneer een fase toch aan het opstartpad zit.
 - `character-unlock-modal` wordt nog steeds automatisch getoond door het `hasAutoUnlockedRef`-effect
   (overgenomen uit Fase 2, nog steeds open). **Fase 4 raakt precies dit scherm — daar meenemen.**
@@ -882,8 +882,8 @@ Er viel hier niets te repareren; het punt is alleen geverifieerd.
   `android.versionCode: 1`, dode top-level `splash`-blok verwijderd, `imageWidth` 76 → 200,
   achtergrondkleuren op `#FAEDD8` (de werkelijke kleur van het icoon).
 - `npx expo prebuild --clean --platform android` gedraaid. Geverifieerd op de emulator:
-  `applicationId` = `com.chronicles.historyapp` ✅, `app_name` = `Chronicles` ✅, launcher toont het
-  Chronicles-icoon ✅. `npx tsc --noEmit` en `npm run validate:content` schoon.
+  `applicationId` = `com.chronicles.historyapp` ✅, `app_name` = `Histora` ✅, launcher toont het
+  Histora-icoon ✅. `npx tsc --noEmit` en `npm run validate:content` schoon.
 
 **Openstaande aandachtspunten:**
 - **Release-signing staat nog op `signingConfigs.debug`** in `android/app/build.gradle`. Dat is het
@@ -940,7 +940,7 @@ AI-gegenereerde beelden lokaal gebundeld, en beeld + motion samen aanpakken.
 > `assets/images/icon.png` (1024x1024) en de `android-icon-*.png`-set te gebruiken "want die
 > bestaan al". Dat is **fout**: dat zijn allemaal het **Expo-standaard blauwe icoon**.
 > `splash-icon.png` is leeg/wit, `favicon.png` is de default, en `logo.svg` is een oud
-> "HISTORY"-zandloperlogo met andere branding. Het enige echte Chronicles-logo was
+> "HISTORY"-zandloperlogo met andere branding. Het enige echte Histora-logo was
 > `chronicles-logo.webp` (240x240, met ingebakken donkere rand). Controleer bij assets altijd de
 > *inhoud*, niet alleen de afmetingen.
 
@@ -1177,7 +1177,7 @@ hoofdstukoverzicht toont alle 8 hoofdstukken → hoofdstuk 1 openen → tot het 
 
 Fase-specifiek:
 - **Fase 1 (icoon):** `npx expo prebuild --clean` → `npm run android` → controleer op het
-  emulator-startscherm dat het launcher-icoon Chronicles is en het label "Chronicles"
+  emulator-startscherm dat het launcher-icoon Histora is en het label "Histora"
   (niet "history-app").
 - **Fase 3 (beelden):** zet het toestel in vliegtuigmodus en open Home + Profiel — als portretten
   nog steeds laden, komen ze uit de bundel en niet van een verlopende URL. Doorslaggevende test.

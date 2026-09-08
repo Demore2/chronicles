@@ -34,13 +34,13 @@ export type JuridischeAlinea = {
   tekst: string;
 };
 
-export const VOORWAARDEN_TITEL = 'Terms of Service — Chronicles';
+export const VOORWAARDEN_TITEL = 'Terms of Service — Histora';
 
 export const VOORWAARDEN_ALINEAS: JuridischeAlinea[] = [
-  { tekst: 'By using Chronicles, you agree to these terms.' },
+  { tekst: 'By using Histora, you agree to these terms.' },
   {
     tekst:
-      'Chronicles provides historical stories and educational content, available in a Free tier and an optional Pro subscription with additional features.',
+      'Histora provides historical stories and educational content, available in a Free tier and an optional Pro subscription with additional features.',
   },
   {
     tekst:
@@ -48,11 +48,11 @@ export const VOORWAARDEN_ALINEAS: JuridischeAlinea[] = [
   },
   {
     tekst:
-      'Content in Chronicles (stories, illustrations, text) belongs to Chronicles and may not be redistributed without permission.',
+      'Content in Histora (stories, illustrations, text) belongs to Histora and may not be redistributed without permission.',
   },
   {
     tekst:
-      'Chronicles is provided "as is." We aim for historical accuracy but cannot guarantee the content is error-free.',
+      'Histora is provided "as is." We aim for historical accuracy but cannot guarantee the content is error-free.',
   },
   {
     tekst: 'We may update these Terms; continued use after changes means you accept them.',
@@ -60,7 +60,7 @@ export const VOORWAARDEN_ALINEAS: JuridischeAlinea[] = [
   { label: 'Questions', tekst: SUPPORT_EMAIL },
 ];
 
-export const PRIVACY_TITEL = 'Privacy Policy — Chronicles';
+export const PRIVACY_TITEL = 'Privacy Policy — Histora';
 
 /**
  * Wat hier staat moet kloppen met wat de app in *deze* build doet, niet met wat er ooit is
@@ -77,7 +77,7 @@ export const PRIVACY_TITEL = 'Privacy Policy — Chronicles';
  */
 export const PRIVACY_ALINEAS: JuridischeAlinea[] = [
   {
-    tekst: `Chronicles ("we", "us") is operated by Quinten, contact: ${SUPPORT_EMAIL}.`,
+    tekst: `Histora ("we", "us") is operated by Quinten, contact: ${SUPPORT_EMAIL}.`,
   },
   {
     label: 'What we collect',
@@ -91,7 +91,7 @@ export const PRIVACY_ALINEAS: JuridischeAlinea[] = [
   {
     label: 'Usage statistics',
     tekst:
-      'this version of Chronicles sends no usage statistics and contains no analytics or advertising SDK.',
+      'this version of Histora sends no usage statistics and contains no analytics or advertising SDK.',
   },
   {
     label: 'On this device only',
@@ -101,7 +101,7 @@ export const PRIVACY_ALINEAS: JuridischeAlinea[] = [
   {
     label: 'Email',
     tekst:
-      'Chronicles has not launched yet and currently sends no emails. Once live, emails are only sent based on your Settings preferences (Monthly letter, New stories, Reading tips, Offers), and every email includes a working unsubscribe link.',
+      'Histora has not launched yet and currently sends no emails. Once live, emails are only sent based on your Settings preferences (Monthly letter, New stories, Reading tips, Offers), and every email includes a working unsubscribe link.',
   },
   {
     label: 'Your rights (EU/GDPR)',

@@ -1,14 +1,14 @@
-# Chronicles — Privacy Policy
+# Histora — Privacy Policy
 
 *Last updated: 14 August 2026*
 
-**In short:** Chronicles keeps an account and your reading progress, so you can carry on where you
+**In short:** Histora keeps an account and your reading progress, so you can carry on where you
 left off on any device. We don't track you, we run no analytics, we show no ads, and we never sell
 your data.
 
 ## Who we are
 
-Chronicles is a reading app about historical figures and events, made by Quinten Raats. Under the
+Histora is a reading app about historical figures and events, made by Quinten Raats. Under the
 GDPR we are the controller of your data. Questions: **quintenraats@gmail.com**.
 
 ## What we store
@@ -63,7 +63,7 @@ answer doesn't satisfy you, you can complain to your national data protection au
 
 ## Children
 
-Chronicles is suitable for all ages. There is no chat, no user-generated content and no purchases.
+Histora is suitable for all ages. There is no chat, no user-generated content and no purchases.
 
 ## Changes to this policy
 

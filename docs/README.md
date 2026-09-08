@@ -1,6 +1,6 @@
 # docs/ — publieke pagina's
 
-Deze map bevat de drie pagina's die Chronicles **publiceert**, los van de app:
+Deze map bevat de drie pagina's die Histora **publiceert**, los van de app:
 
 | Bestand | Wat het is |
 |---|---|
@@ -195,7 +195,7 @@ route die aankomt en een antwoord binnen 30 dagen — beide staan zo ook in `pri
 
 `privacy-policy.html` is **herschreven** en beschrijft nu wat de app echt doet: het account, de
 voortgangssync, de antwoorden op peilingen en keuzepunten, de feedback, en Firebase Analytics en
-de verwerking door Google. Ze opende eerst met "Chronicles collects nothing"; die zin was waar
+de verwerking door Google. Ze opende eerst met "Histora collects nothing"; die zin was waar
 toen ze geschreven werd en al onjuist sinds R8.AUTH.
 
 Sindsdien is ze op drie punten bijgewerkt, allemaal omdat de app veranderde en de pagina niet:

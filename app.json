@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Chronicles",
-    "slug": "chronicles-app",
+    "name": "Histora",
+    "slug": "histora",
     "version": "1.0.0",
     "runtimeVersion": {
       "policy": "appVersion"
@@ -70,7 +70,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Chronicles asks for a picture only when you choose one as your profile avatar. It stays on this device.",
+          "photosPermission": "Histora asks for a picture only when you choose one as your profile avatar. It stays on this device.",
           "cameraPermission": false,
           "microphonePermission": false
         }

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 /**
- * Waar Chronicles je wél en niet over zou mailen.
+ * Waar Histora je wél en niet over zou mailen.
  *
  * **Er gaat vandaag geen enkele mail de deur uit** — er is geen verzendsysteem, en deze voorkeuren
  * staan (net als taal, thema en de avatar) alleen op dit toestel. Dat is precies waarom het scherm
