@@ -8,7 +8,6 @@ import { ANALYTICS_EVENTS } from '@/constants/analytics';
 import { meld } from '@/constants/dialoog';
 import { Radii, Spacing, withAlpha } from '@/constants/theme';
 import type { IoniconNaam } from '@/constants/types';
-import { verhalen } from '@/content/verhalen';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { logStoryEvent } from '@/hooks/useAnalytics';
@@ -41,9 +40,9 @@ type ProPaywallProps = {
  * 1. De prijzen dragen een voorbehoud. Een bedrag tonen mag; doen alsof er vandaag iets af te
  *    rekenen valt niet. Er staat daarom ook geen "7 dagen gratis proberen" — een proefperiode die
  *    niet bestaat is een belofte die niemand kan opzeggen.
- * 2. De voordelenlijst noemt alleen wat de app heeft of aantoonbaar krijgt, en het aantal verhalen
- *    komt uit `verhalen.length`. Een overgetypte "100+ stories" zou én onwaar zijn (het zijn er
- *    negentien) én precies het soort claim waarop een Play-review afwijst.
+ * 2. De voordelenlijst noemt alleen wat de app heeft of aantoonbaar krijgt en noemt bewust geen
+ *    aantal — een overgetypte "100+ stories" zou én onwaar zijn én precies het soort claim
+ *    waarop een Play-review afwijst.
  *
  * Zie `pro-access-banner.tsx` voor de vlag die het hele aanbod aan- en uitzet.
  */
@@ -61,7 +60,7 @@ export function ProPaywall({ visible, onClose, bron }: ProPaywallProps) {
   const [isStartingTrial, setIsStartingTrial] = useState(false);
 
   const voordelen: { icoon: IoniconNaam; tekst: string }[] = [
-    { icoon: 'book-outline', tekst: t((s) => s.pro.voordeelVerhalen)(verhalen.length) },
+    { icoon: 'book-outline', tekst: t((s) => s.pro.voordeelVerhalen) },
     { icoon: 'people-outline', tekst: t((s) => s.pro.voordeelPersonages) },
     { icoon: 'sparkles-outline', tekst: t((s) => s.pro.voordeelVroeg) },
     { icoon: 'cloud-offline-outline', tekst: t((s) => s.pro.voordeelOffline) },

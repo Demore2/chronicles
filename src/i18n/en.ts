@@ -343,7 +343,7 @@ const en = {
      * klassieke Play-afwijsreden als gewoon onwaar tegen de gebruiker. Het aantal is daarom een
      * parameter en geen overgetypt getal — `verhalen.length` vult het.
      */
-    voordeelVerhalen: (n: number): string => `All ${n} stories, across six eras`,
+    voordeelVerhalen: 'Stories from six eras',
     voordeelPersonages: 'Every character portrait in your collection',
     voordeelVroeg: 'New stories first, as soon as they land',
     voordeelOffline: 'Read offline, anywhere',

@@ -212,7 +212,7 @@ const nl: DeepPartial<Vertalingen> = {
     paywallOndertitel: 'Meer geschiedenis, minder onderbrekingen.',
     sluiten: 'Sluiten',
 
-    voordeelVerhalen: (n: number): string => `Alle ${n} verhalen, uit zes tijdperken`,
+    voordeelVerhalen: 'Verhalen uit zes tijdperken',
     voordeelPersonages: 'Elk personageportret in je collectie',
     voordeelVroeg: 'Nieuwe verhalen als eerste, zodra ze er zijn',
     voordeelOffline: 'Offline lezen, waar je ook bent',

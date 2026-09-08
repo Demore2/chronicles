@@ -216,7 +216,7 @@ const de: DeepPartial<Vertalingen> = {
     paywallOndertitel: 'Mehr Geschichte, weniger Unterbrechungen.',
     sluiten: 'Schließen',
 
-    voordeelVerhalen: (n: number): string => `Alle ${n} Geschichten aus sechs Epochen`,
+    voordeelVerhalen: 'Geschichten aus sechs Epochen',
     voordeelPersonages: 'Jedes Charakterporträt in deiner Sammlung',
     voordeelVroeg: 'Neue Geschichten zuerst, sobald sie erscheinen',
     voordeelOffline: 'Offline lesen, überall',
