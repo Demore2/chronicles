@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Histora">
+  <!--
+    Histora brand mark: a solid blue disc with a white H.
+
+    Supersedes history-book.svg (the open book with an H). The book files stay in
+    place — see CLAUDE.md, "File deletion" — but nothing imports them any more.
+
+    Two things about this drawing are deliberate:
+
+    * The H is geometry, not <text>. react-native-svg resolves a font-family
+      against whatever the device has; "Arial, sans-serif" on Android is
+      Roboto, so a text-based H would render at a different width per platform
+      and the mark would stop being one shape. Rects render identically
+      everywhere and at every size.
+    * The depth comes from the 15% halo ring, not from an feGaussianBlur.
+      SVG filters are the least-supported corner of react-native-svg, and a
+      glow that silently drops out on one platform is worse than no glow.
+
+    Fixed colours, not `currentColor`: a brand mark is one colour in both
+    themes. #0EA5E9 carries on the beige #F7F1E4 and on the dark brown #1C1A16.
+  -->
+  <circle cx="512" cy="512" r="486" fill="#0EA5E9" fill-opacity="0.15" stroke="#0EA5E9" stroke-width="10"/>
+  <circle cx="512" cy="512" r="435" fill="#0EA5E9"/>
+  <g fill="#FFFFFF">
+    <!-- H: 276 x 360, optically centred on the disc -->
+    <rect x="374" y="332" width="60" height="360"/>
+    <rect x="590" y="332" width="60" height="360"/>
+    <rect x="374" y="485" width="276" height="54"/>
+  </g>
+</svg>

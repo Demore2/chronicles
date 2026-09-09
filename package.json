@@ -89,6 +89,7 @@
     "generate:images:scenes": "node scripts/generate-scene-images.mjs",
     "generate:app-icon": "node scripts/generate-app-icon.mjs",
     "derive:icon-variants": "node scripts/derive-icon-variants.mjs",
+    "generate:logo": "node scripts/generate-logo.mjs",
     "generate:store-assets": "node scripts/generate-store-assets.mjs",
     "generate:notification-icon": "node scripts/generate-notification-icon.mjs",
     "check:listing": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-listing-lengths.mjs",

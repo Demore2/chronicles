@@ -7,9 +7,9 @@
  * Android draws this icon as a **silhouette**: every non-transparent pixel is
  * repainted in the tint colour, whatever colour it had. So the source has to be
  * white-on-transparent, and any detail that relies on two colours disappears.
- * That is why this renders `history-book-compact.svg` and not the full mark: the
- * compact variant already drops the outer cover line and the clasp, which merge
- * into mush at 96px, and it carries a heavier line weight.
+ * That is why this renders `histora-mark-compact.svg` and not the full mark: the
+ * mark's solid disc would flatten into a plain white blob and take the H with
+ * it, so the compact variant draws a ring instead and survives as one shape.
  *
  * Same approach as generate-store-assets.mjs — the SVG is the source of truth,
  * headless Chrome does the rasterising. The markup is **inlined into the page**
@@ -30,7 +30,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.join(__dirname, '..');
 
 const SIZE = 96;
-const source = path.join(projectRoot, 'assets/images/mascotte/history-book-compact.svg');
+const source = path.join(projectRoot, 'assets/images/mascotte/histora-mark-compact.svg');
 const target = path.join(projectRoot, 'assets/images/notification-icon.png');
 const tempPagina = path.join(projectRoot, '.tmp-notification-icon.html');
 
@@ -49,11 +49,11 @@ function findBrowser() {
   return found;
 }
 
-// De compacte variant is crème-op-teal; voor een silhouet moet alles wit worden
+// De compacte variant is crème-op-blauw; voor een silhouet moet alles wit worden
 // en de achtergrond weg. Vandaar de vervanging in plaats van een tweede SVG-bestand.
 const svg = fs
   .readFileSync(source, 'utf8')
-  .replace(/<rect width="1024" height="1024" fill="#3B6E7D"\/>\s*/, '')
+  .replace(/<rect width="1024" height="1024" fill="#0EA5E9"\/>\s*/, '')
   .replace(/#F7F1E4/g, '#FFFFFF');
 
 fs.writeFileSync(

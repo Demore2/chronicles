@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Histora">
+  <!--
+    Small-size variant, and the source for the Android notification icon.
+
+    Android repaints every non-transparent pixel of a notification icon in the
+    tint colour, so it is a silhouette: a filled disc with a white H inside
+    would come out as a plain white blob, the H erased along with the blue.
+    Hence a **ring** instead of a disc — outline and letter survive the
+    flattening as one readable shape.
+
+    Colours follow the family convention (light marks on a full-bleed
+    background) so generate-notification-icon.mjs can strip the rect and map the
+    light colour to white with the same two substitutions it always used.
+  -->
+  <rect width="1024" height="1024" fill="#0EA5E9"/>
+  <g transform="translate(512 512) scale(1.1) translate(-512 -512)">
+    <circle cx="512" cy="512" r="420" fill="none" stroke="#F7F1E4" stroke-width="60"/>
+    <g fill="#F7F1E4">
+      <rect x="374" y="332" width="60" height="360"/>
+      <rect x="590" y="332" width="60" height="360"/>
+      <rect x="374" y="485" width="276" height="54"/>
+    </g>
+  </g>
+</svg>

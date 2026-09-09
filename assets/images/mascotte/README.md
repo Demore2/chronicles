@@ -1,4 +1,4 @@
-# History Book — het merk
+# Histora — het merk
 
 De bron van het app-logo. Open **`preview.html`** in een browser voor het overzicht op echte
 UI-formaten.
@@ -8,54 +8,77 @@ UI-formaten.
 
 ## Wat er live is
 
+Het merk is sinds de logo-herziening een **blauwe schijf met een witte H**. De boekvariant
+(open boek met een H) is vervangen; de bestanden blijven staan, maar niets importeert ze nog.
+
 | Bestand | Waar het wordt gebruikt |
 |---|---|
-| `history-book.svg` | **In de app.** `src/components/splash-screen.tsx`, met `color={theme.accent}`. |
-| `history-book-teal.svg` | **Bron van het app-icoon** — zie de pipeline hieronder. |
-| `history-book-compact.svg` | Nog nergens. Klaar voor als het merk klein moet (20–48 px). |
+| `histora-mark.svg` | **In de app.** `splash-screen.tsx` (96 px), `login.tsx` en `signup.tsx` (40 px). |
+| `histora-mark-tile.svg` | **Bron van het app-icoon** — full bleed, geen schijf. Zie de pipeline hieronder. |
+| `histora-mark-compact.svg` | **Bron van het meldingsicoon.** Ring in plaats van schijf, zie "Silhouet". |
 | `01-kroniekschrijver-simpel.svg` | **In de app.** Rechtsboven in het Profiel-scherm, nog zonder functie. |
 
-En wat blijft staan zonder gebruikt te worden: `history-book-goud.svg` (de originele goudvariant),
-`01-kroniekschrijver.svg` (mét veer en hand), `history-book-origineel.webp` + `HIstory book` (het
-aangeleverde raster; die laatste heeft geen extensie en kan weg).
+Vervangen en niet meer geïmporteerd: `history-book.svg`, `history-book-teal.svg`,
+`history-book-compact.svg`, `history-book-goud.svg`. Verder staat er zonder gebruik
+`01-kroniekschrijver.svg` (mét veer en hand) en `history-book-origineel.webp` + `HIstory book`
+(het aangeleverde raster; die laatste heeft geen extensie).
 
 De `*.png`-bestanden zijn 512×512 previews om naar te kijken. **De SVG is de bron.**
 
 ## Kleur
 
-- teal `#3B6E7D` = `Colors.light.accent`, crème `#F7F1E4` = `Colors.light.background`.
-- `history-book.svg` is getekend in **`currentColor`**, dus de kleur komt van buiten:
+- Blauw `#0EA5E9`, wit `#FFFFFF`. De halo rond de schijf is hetzelfde blauw op 15%.
+- **Vaste kleuren, géén `currentColor`.** Het boekmerk volgde `theme.accent`; dit merk niet.
+  Een merkteken is in beide thema's één kleur, en `#0EA5E9` draagt zowel op het beige `#F7F1E4`
+  als op het donkerbruine `#1C1A16` — `preview.html` zet ze naast elkaar. De aanroepen geven dus
+  geen `color` meer mee:
   ```tsx
-  import Mark from '@/assets/images/mascotte/history-book.svg';
-  <Mark width={132} height={132} color={theme.accent} />
+  import Mark from '@/assets/images/mascotte/histora-mark.svg';
+  <Mark width={96} height={96} />
   ```
-  Dat is niet cosmetisch: op het donkere thema is `accent` `#6FA8B8`, en `#3B6E7D` zou daar op
-  `#1C1A16` te weinig contrast houden.
-- **Let op bij het renderen naar PNG:** `currentColor` werkt alleen als de SVG *inline* in de
-  pagina staat. Via `<img src="history-book.svg">` krijg je een zwart merk, want die img is een
-  eigen document.
-- `history-book-teal.svg` en `-compact.svg` staan wél vast op crème-op-teal — een app-icoon heeft
-  geen thema.
+- **De H is geometrie, geen `<text>`.** `react-native-svg` zoekt een `font-family` op tegen wat
+  het toestel heeft — "Arial, sans-serif" is op Android Roboto — dus een letter als tekst rendert
+  per platform anders breed. Drie rechthoeken renderen overal hetzelfde, op elk formaat.
+- **Er zit geen `feGaussianBlur` in.** De diepte komt van de halo. SVG-filters zijn de zwakste
+  hoek van `react-native-svg`, en een gloed die op één platform stilletjes wegvalt is erger dan
+  geen gloed.
+- **Let op bij het renderen naar PNG:** een SVG via `<img src>` is een eigen document. Voor de
+  vaste kleuren maakt dat nu niet meer uit, maar de scripts inlinen de markup nog steeds — houd
+  dat zo als er ooit weer `currentColor` in komt.
+
+## Silhouet (meldingsicoon)
+
+Android hertekent élke niet-transparante pixel van een meldingsicoon in de tintkleur. Een gevulde
+schijf met een witte H wordt daardoor één witte vlek en de H verdwijnt mee. `histora-mark-compact.svg`
+tekent daarom een **ring** in plaats van een schijf; ring en letter overleven het platslaan samen
+als één leesbare vorm. `npm run generate:notification-icon` strippt het achtergrondvlak en zet
+crème om naar wit — en meet na dat er niets zwarts en niet te veel dekking overblijft.
 
 ## Icoon opnieuw genereren
 
-`derive-icon-variants.mjs` verwacht een PNG, dus het is twee stappen:
+`derive-icon-variants.mjs` verwacht een PNG, dus het is drie stappen:
 
-1. Render `history-book-teal.svg` naar 1024×1024 PNG in `assets/images/icon-candidates/`
-   (headless Chrome, zelfde aanpak als `scripts/generate-store-assets.mjs`).
-2. `node scripts/derive-icon-variants.mjs assets/images/icon-candidates/<die>.png`
+1. `npm run generate:logo` → `assets/images/icon-candidates/histora-mark-tile-1024.png` (de
+   icoonbron) én `assets/images/app-splash.png` (het merk op transparant).
+2. `node scripts/derive-icon-variants.mjs assets/images/icon-candidates/histora-mark-tile-1024.png`
    → `app-icon.png`, `app-icon-adaptive.png`, `app-favicon.png`.
 3. `npm run generate:store-assets` → `store/assets/icon-512.png` en de feature graphic volgen
    automatisch; beide leiden af van `app-icon.png`.
 
-De native splash (`app-splash.png`) is apart: dat is `history-book.svg` in teal op transparant,
-op een crème achtergrond via `app.json`. Bewust géén teal vlak, zodat de overgang naar de app
-(ook crème) naadloos is.
+De tegel heeft bewust géén schijf: een launcher-icoon wordt zelf al tot een cirkel of squircle
+gemaskeerd, dus een tweede cirkel erin verkleint alleen de letter. De H staat daar om dezelfde
+reden groter (400×520 in plaats van 276×360).
 
-`scripts/generate-app-icon.mjs` is de oude Replicate-prompt en levert het vórige icoon op — niet
-draaien.
+De native splash (`app-splash.png`) is het merk mét schijf op **transparant**, met een crème
+achtergrond via `app.json`. Bewust géén blauw vlak, zodat de overgang naar de app (ook crème)
+naadloos is.
 
-## Hoe de vector tot stand kwam
+`scripts/generate-app-icon.mjs` is de oude Replicate-prompt en levert een nóg ouder icoon op —
+niet draaien.
+
+## Hoe de boekvector tot stand kwam (historie)
+
+Geldt voor `history-book*.svg`, die niet meer in de app zitten.
 
 Het aangeleverde bestand was raster. De geometrie is pixel voor pixel opgemeten en opnieuw
 opgebouwd, en daarbij rechtgetrokken: één lijndikte (32 op een canvas van 1024), exacte

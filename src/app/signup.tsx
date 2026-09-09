@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import HistoryBook from '@/assets/images/mascotte/history-book.svg';
+import HistoraMark from '@/assets/images/mascotte/histora-mark.svg';
 import { AuthKnop } from '@/components/auth-knop';
 import { AuthVeld } from '@/components/auth-veld';
 import { ThemedText } from '@/components/themed-text';
@@ -103,7 +103,7 @@ export default function SignupScreen() {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}>
             <View style={styles.kop}>
-              <HistoryBook width={56} height={56} color={theme.accent} />
+              <HistoraMark width={40} height={40} />
               <ThemedText type="title">{t((s) => s.auth.signupTitel)}</ThemedText>
               <ThemedText type="small" themeColor="textSecondary">
                 {t((s) => s.auth.signupOndertitel)}

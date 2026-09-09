@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Animated, View, StyleSheet } from 'react-native';
-import HistoryBook from '@/assets/images/mascotte/history-book.svg';
+import HistoraMark from '@/assets/images/mascotte/histora-mark.svg';
 import { useTheme } from '@/hooks/use-theme';
 import { useVertaling } from '@/hooks/use-vertaling';
 import { ThemedText } from './themed-text';
@@ -37,14 +37,15 @@ export function SplashScreen({ onFinish }: SplashScreenProps) {
       ]}>
       <View style={styles.content}>
         {/*
-          Het merk is `currentColor`, dus het volgt `theme.accent` — op het donkere
-          thema is dat #6FA8B8 en niet #3B6E7D, wat op de donkerbruine achtergrond
-          te weinig contrast zou geven.
+          Het merk heeft vaste kleuren en volgt `theme.accent` dus niet meer — een
+          merkteken is in beide thema's één kleur, en #0EA5E9 draagt zowel op het
+          beige #F7F1E4 als op het donkerbruine #1C1A16.
         */}
         <View style={styles.logoContainer}>
-          {/* Het merk vult maar ~53% van zijn eigen canvas, dus 132 op de tekening
-              levert optisch zo'n 70 px echte inkt — in balans met de 32 px titel. */}
-          <HistoryBook width={132} height={132} color={theme.accent} />
+          {/* De schijf vult ~85% van zijn eigen canvas (de boekversie ~53%), dus 96
+              op de tekening levert optisch zo'n 80 px inkt — in balans met de 32 px
+              titel. Vergroten naar 132 laat het merk over de titel heen domineren. */}
+          <HistoraMark width={96} height={96} />
         </View>
 
         {/*
@@ -80,8 +81,8 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   logoContainer: {
-    width: 132,
-    height: 132,
+    width: 96,
+    height: 96,
     justifyContent: 'center',
     alignItems: 'center',
   },

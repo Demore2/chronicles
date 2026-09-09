@@ -19,6 +19,7 @@ npm run generate:map-data      # regenerate src/constants/map-data.ts (orphaned 
 npm run generate:images:r9     # Replicate portrait generation (R9, not wired into the app yet)
 npm run generate:images:scenes # Replicate scene generation, one per chapter (all 20 stories)
 npm run generate:batch         # orchestration-controller.mjs batch content/image runs
+npm run generate:logo          # histora-mark-tile PNG + app-splash.png (see "Brand mark")
 npm run generate:store-assets  # store/assets/ icon-512.png + feature-graphic.png (see "Store assets")
 npm run generate:notification-icon # assets/images/notification-icon.png (white-on-transparent, 96px)
 npm run check:listing          # count store/listing.md copy against Play's limits (--check = dry run)
@@ -93,37 +94,59 @@ Unreferenced by any code or config right now: `chronicles-logo.webp`, `icon.png`
 ### Brand mark (`assets/images/mascotte/`)
 
 **The logo is a hand-built SVG, not generated art.** `assets/images/mascotte/` holds the source —
-an open book with an `H` — plus a `preview.html` that shows every variant at real UI sizes, and
-its own README with the full story. The three that matter:
+a blue disc with a white **H** — plus a `preview.html` that shows every variant at real UI sizes,
+and its own README with the full story. It replaced an open-book-with-an-H mark; per the no-delete
+rule the `history-book*.svg` files stay put, but nothing imports them any more. The three that
+matter:
 
-- `history-book.svg` — mark only, **drawn in `currentColor`**, so it follows the theme. This is
-  the one the app imports (`splash-screen.tsx`), with `color={theme.accent}`.
-- `history-book-teal.svg` — cream on a teal tile, full bleed. The **icon** source.
-- `history-book-compact.svg` — same drawing minus the outer cover line and the clasp, scaled up so
-  the line weight survives below ~40 px. Nothing uses it yet; it exists for when the mark lands
-  next to a button.
+- `histora-mark.svg` — the mark with its disc and a 15% halo ring, on transparent. This is the one
+  the app imports (`splash-screen.tsx` at 96 px, `login.tsx` / `signup.tsx` at 40 px).
+- `histora-mark-tile.svg` — white H on a full-bleed `#0EA5E9` tile, no disc. The **icon** source.
+- `histora-mark-compact.svg` — a **ring** instead of a disc, plus the H. The notification-icon
+  source; see below for why the disc cannot be used there.
 
-`react-native-svg-transformer` is wired up in `metro.config.js` and `src/types/svg.d.ts` declares
-`*.svg`, so `import Mark from '@/assets/images/mascotte/history-book.svg'` yields an
-`FC<SvgProps>`. `@/assets/*` maps to `./assets/*` (a second tsconfig path, separate from `@/*` →
-`./src/*`).
+Three things about the drawing are deliberate, and undoing any of them breaks a platform:
 
-**Regenerating the icon** is a two-step pipeline, because `derive-icon-variants.mjs` takes a PNG:
+- **Fixed colours, not `currentColor`.** The book mark followed `theme.accent`; this one does not,
+  because a brand mark is one colour in both themes and `#0EA5E9` carries on the beige `#F7F1E4`
+  as well as on the dark brown `#1C1A16`. So the call sites pass no `color` prop.
+- **The H is three `<rect>`s, not `<text>`.** `react-native-svg` resolves `font-family` against
+  whatever the device has (`Arial, sans-serif` is Roboto on Android), so a text-based H renders at
+  a different width per platform and the mark stops being one shape.
+- **The depth is the halo, not an `feGaussianBlur`.** SVG filters are the least-supported corner of
+  `react-native-svg`, and a glow that silently drops out on one platform is worse than none.
 
-1. Render `history-book-teal.svg` to a 1024×1024 PNG (headless Chrome, same approach as
-   `generate-store-assets.mjs`) into `assets/images/icon-candidates/`.
-2. `node scripts/derive-icon-variants.mjs assets/images/icon-candidates/<that>.png` — writes
-   `app-icon.png`, `app-icon-adaptive.png` and `app-favicon.png`, sampling the flat teal
+**The notification icon needs a ring, not the disc.** Android repaints every non-transparent pixel
+of it in the tint colour, so a filled disc with a white H flattens into a plain white blob and takes
+the H with it. `generate-notification-icon.mjs` therefore renders `histora-mark-compact.svg`, and
+measures the result (nothing non-white, not more than 60% opaque) rather than assuming.
+
+**Regenerating the icon** is a three-step pipeline, because `derive-icon-variants.mjs` takes a PNG:
+
+1. `npm run generate:logo` — headless Chrome renders `histora-mark-tile.svg` to a 1024×1024 PNG in
+   `assets/images/icon-candidates/`, **and** `histora-mark.svg` onto transparent as
+   `assets/images/app-splash.png`. It is Chrome + `pngjs` like its two sibling scripts, deliberately
+   not `sharp` — no native module for a job three scripts already do without one.
+2. `node scripts/derive-icon-variants.mjs assets/images/icon-candidates/histora-mark-tile-1024.png`
+   — writes `app-icon.png`, `app-icon-adaptive.png` and `app-favicon.png`, sampling the flat blue
    background from the corners.
 3. `npm run generate:store-assets` — `store/assets/icon-512.png` is a 2× downscale of
    `app-icon.png`, and `store/feature-graphic.html` embeds `app-icon.png`, so both follow.
 
-`scripts/generate-app-icon.mjs` (the Replicate prompt that produced the *old* icon) is now dead
-weight — the icon is vector-sourced. Don't run it expecting the current mark.
+`app.json`'s `adaptiveIcon.backgroundColor` and the `expo-notifications` `color` are `#0EA5E9`; the
+splash `backgroundColor` stays `#F7F1E4`, because the splash PNG is transparent so the plate behind
+it matches the app's own background.
 
-**`currentColor` only resolves when the SVG is inlined.** Rendering `history-book.svg` through an
-`<img src>` gives you a black mark, because the img is an isolated document. Any script that
-renders it to PNG has to inline the markup into the page and set `color` on a wrapper.
+**The app palette was not repainted.** `theme.ts` is still the beige/teal design system and
+`accent` is still `#3B6E7D` — the blue lives only in the mark, the icon and the feature graphic.
+
+`scripts/generate-app-icon.mjs` (the Replicate prompt that produced a much older icon) is dead
+weight. Don't run it expecting the current mark.
+
+**`currentColor` only resolves when the SVG is inlined.** The current mark has fixed colours so it
+does not depend on this, but every rendering script still inlines the markup rather than using an
+`<img src>` — keep it that way, because an img is an isolated document and a future `currentColor`
+variant would come out black.
 
 ## Architecture
 
