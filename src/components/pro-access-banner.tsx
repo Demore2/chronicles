@@ -24,7 +24,7 @@ import { useVertaling } from '@/hooks/use-vertaling';
  * De `isPremium`-check hieronder is voorlopig dood, maar staat er zodat een betalende gebruiker
  * straks niet naar zijn eigen aanbieding zit te kijken.
  */
-export const PRO_BANNER_ENABLED = true;
+export const PRO_BANNER_ENABLED = false;
 
 // TODO (v1.1): koppelen aan Google Play Billing; tot die tijd verkoopt dit scherm niets.
 export function ProAccessBanner() {

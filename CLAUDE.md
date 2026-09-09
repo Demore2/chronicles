@@ -402,10 +402,10 @@ uitloggen zijn verhuisd, niet nagebouwd — verwacht ze niet meer op Profiel zel
   en `verhaal.portretKleur`, zodat de rij niet als grijze blokken leest. De volgorde is bewust de
   contentvolgorde en niet ontgrendeld-eerst — een rij die zichzelf herschikt laat je je eigen
   collectie steeds opnieuw zoeken.
-- **`PRO_BANNER_ENABLED` (in `pro-access-banner.tsx`) staat nu op `true`** en is de enige
+- **`PRO_BANNER_ENABLED` (in `pro-access-banner.tsx`) staat op `false`** en is de enige
   schakelaar voor het hele Pro-aanbod: de banner, het `pro-paywall.tsx`-venster erachter én de
-  regel "Your plan" in Instellingen, die zonder de vlag terugvalt op "Soon". **Zet hem terug op
-  `false` vóór een productiebuild zolang Play Billing een stub is** — zelfde afweging als
+  regel "Your plan" in Instellingen, die zonder de vlag terugvalt op "Soon". Hij is uitgezet
+  voor de Play-inzending en **blijft uit zolang Play Billing een stub is** — zelfde afweging als
   `ADS_ENABLED`: een reviewer die een prijs ziet zonder werkende aankoop wijst af. De paywall zelf
   liegt niet (geen "100+ stories" — het aantal komt uit `verhalen.length`, geen proefperiode die
   niet bestaat, en een voorbehoud onder de prijzen), maar eerlijk is niet hetzelfde als toegestaan.
@@ -960,10 +960,13 @@ is one self-contained page (no build, no CDN, no external fonts) in the app's be
 Data Safety answers, so the page and the form can't drift apart. If you change what the app stores,
 change both.
 
-`PRIVACY_BELEID_URL` is the single place the URL lives. **It is still a placeholder** — the repo has
-no git remote yet, so the page isn't published. `privacyBeleidIsGepubliceerd` derives from it, and
-Profiel's "About" section renders only when it's true, so an unpublished URL can never ship as a
-dead link. Filling in the real URL is the only step; nothing else needs enabling.
+`PRIVACY_BELEID_URL` is the single place the URL lives, and **it is now a real, reachable URL** —
+`https://demore2.github.io/chronicles/privacy-policy.html`, served by GitHub Pages out of `docs/`,
+alongside `terms-of-service.html`. `privacyBeleidIsGepubliceerd` derives from it, and Profiel's
+"About" section renders only when it's true, so a placeholder can never ship as a dead link.
+**The published pages lag the repo by one rebrand**: the live copies still say "Chronicles"
+throughout, because the rebrand commit has not been pushed to `origin/master`. Pushing republishes
+them; check with `curl -s <url> | grep -c Chronicles` afterwards.
 
 ### Account deletion & data requests (`supabase/functions/delete-account`, `useDeleteAccount.ts`)
 
@@ -1138,12 +1141,12 @@ Don't re-enable it while it's still a placeholder.
 Het gratis model is: een beperkt aantal **nieuwe** verhalen per dag, plus één onderbreking aan het
 eind van een uitgelezen verhaal. Pro heft beide op. Alle schakelaars staan in
 **`src/constants/monetisatie.ts`** — `DAGELIJKSE_VERHAAL_LIMIET` (2), `VERHAAL_LIMIET_ENABLED` en
-`AD_ONDERBREKING_ENABLED`, allebei nu `true`.
+`AD_ONDERBREKING_ENABLED`, allebei nu `false`.
 
 - **Allebei die vlaggen zijn releaseblokkers zolang Billing een stub is**, en zwaarder dan
   `PRO_BANNER_ENABLED`: een limiet die alleen met een aankoop opgeheven kan worden terwijl er niets
-  te kopen valt, is een muur zonder deur. Zet ze op `false` vóór de productiebuild, of lever ze
-  samen met een werkende aankoop.
+  te kopen valt, is een muur zonder deur. Ze staan daarom uit voor de Play-inzending. Wil je het
+  model bekijken, zet ze tijdelijk aan en weer uit — of lever ze samen met een werkende aankoop.
 - **`useAbonnement()` telt sinds Fase 2A twee dingen bij elkaar op**: het serverabonnement uit
   `subscription-store` (`isAbonnementActief`) **óf** het lokale tegoed uit `abonnement-store`
   (`isProActief`, de week Pro uit een uitnodiging). Wie één van beide heeft, heeft Pro. Beide
@@ -1486,9 +1489,9 @@ counts), full i18n (en/nl/fr/de) with a language picker, theme picker, email pre
   and the Vault secret `service_role_key` (whose absence is what keeps the armed cron inert).
   The three *local* notifications (daily reminder, streak, milestones) do work.
 - **GDPR** — account deletion genuinely deletes (edge function deployed, cascade verified, local
-  wipe correct) and the data-request mailto is live. But the **privacy policy is written and not
-  published**: `PRIVACY_BELEID_URL` is still the placeholder, so Settings hides the link. Play
-  requires a reachable URL. Terms of service have no document at all.
+  wipe correct), the data-request mailto is live, and the **privacy policy and terms of service are
+  published** at `https://demore2.github.io/chronicles/` (both return 200). What is still open is a
+  push: the live pages are the pre-rebrand copies and still read "Chronicles".
 
 ### ⏳ IN PROGRESS / NOT STARTED
 
@@ -1551,26 +1554,27 @@ Known gaps:
 - ~~The privacy policy still describes a device-only app~~ — **rewritten.**
   `docs/privacy-policy.html` now covers the account, the progress sync, poll/choice answers,
   feedback and Firebase Analytics (including the opt-out and the IP-derived approximate location),
-  and `docs/README.md` carries the matching Data Safety answers. Two things are still open: the
-  page is **not published** (`PRIVACY_BELEID_URL` in `src/constants/juridisch.ts` is still the
-  placeholder, so Settings hides the link), and it does not name Supabase's processing region —
+  and `docs/README.md` carries the matching Data Safety answers. **The page is published** and
+  `PRIVACY_BELEID_URL` points at it. Two things are still open: the live copy is the pre-rebrand
+  one until `origin/master` is pushed, and it does not name Supabase's processing region —
   fill that in if you want an explicit EU-transfer clause. Nothing in the code fails when the page
   is wrong, so this only gets caught by reading it.
 - **Google Play Billing is a stub** — nothing can actually be bought. `useAbonnement()` now reads
   the server row (`subscription-store`) as well as the local credit; premium is set **by hand in
   Supabase** (`docs/TEST_ACCOUNTS.md`), the `__DEV__` "Simulate Pro" switch is gone and
-  `setPremium()` is commented out. `ADS_ENABLED`
-  in `ad-banner.tsx` is still `false`, but **three other flags are on**: `PRO_BANNER_ENABLED`
-  (`pro-access-banner.tsx`), and `VERHAAL_LIMIET_ENABLED` + `AD_ONDERBREKING_ENABLED`
-  (`constants/monetisatie.ts`). Together they show an offer that cannot be completed *and* gate
-  content behind it. Fine for development, **release blockers all three** — flip them to `false`
-  before the next production AAB unless Billing has landed in the meantime.
+  `setPremium()` is commented out. **All four monetisation flags are now `false`** —
+  `ADS_ENABLED` (`ad-banner.tsx`), `PRO_BANNER_ENABLED` (`pro-access-banner.tsx`), and
+  `VERHAAL_LIMIET_ENABLED` + `AD_ONDERBREKING_ENABLED` (`constants/monetisatie.ts`) — so the app
+  shows no price, no banner, no daily limit and no interruption. That is the state a production
+  AAB has to ship in while Billing is a stub: together those flags showed an offer that cannot be
+  completed *and* gated content behind it. Turn them back on only alongside a working purchase.
 - **Feedback needs `public.feedback`.** `feedback-modal.tsx` inserts into it, so a fresh Supabase
   project needs that table (see the migration `create_feedback_table`) or the send button fails
   with a policy/relation error. Nothing reads the rows yet — they wait in the dashboard.
-- **The privacy policy is written but not published.** `PRIVACY_BELEID_URL` in
-  `src/constants/juridisch.ts` is still a placeholder, so Profiel hides the "About" section — see
-  "Legal & privacy" below.
+- ~~The privacy policy is written but not published~~ — **it is published**, and so are the terms
+  of service; `PRIVACY_BELEID_URL` and `VOORWAARDEN_URL` both resolve, so Instellingen shows the
+  links. The remaining step is pushing the rebrand so the live pages stop saying "Chronicles" —
+  see "Legal & privacy" below.
 - **All eight store screenshots are stale.** Fase 8 fixed the reader's safe-area inset, the
   "chapters done" counter and the streak, so `phone-3/4/7` show a header that no longer looks
   like that and the excluded Profiel/Voortgang shots are now worth taking. Recapture before the

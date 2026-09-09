@@ -1,5 +1,13 @@
 # Histora — Privacy Policy
 
+> **Superseded — do not publish this file.**
+> The privacy policy that Histora actually points at is
+> [`privacy-policy.html`](privacy-policy.html), the page served at
+> `https://demore2.github.io/chronicles/privacy-policy.html` and named by `PRIVACY_BELEID_URL` in
+> `src/constants/juridisch.ts`. This Markdown draft predates the account, the progress sync and
+> the poll/choice answers, so it still says progress never leaves the device. It is kept only
+> because this project does not delete superseded files. Read the HTML page instead.
+
 *Last updated: 14 August 2026*
 
 **In short:** Histora keeps an account and your reading progress, so you can carry on where you
@@ -9,7 +17,7 @@ your data.
 ## Who we are
 
 Histora is a reading app about historical figures and events, made by Quinten Raats. Under the
-GDPR we are the controller of your data. Questions: **quintenraats@gmail.com**.
+GDPR we are the controller of your data. Questions: **businessdemore@gmail.com**.
 
 ## What we store
 
@@ -50,7 +58,7 @@ encrypted backups still holding a copy are rotated out within 30 days.
 
 ## Deleting your account
 
-E-mail **quintenraats@gmail.com** from the address you signed up with, and we will delete your
+E-mail **businessdemore@gmail.com** from the address you signed up with, and we will delete your
 account and all its data within 30 days — usually much sooner. Uninstalling the app removes the copy
 on your device, but leaves the account on the server, so send that mail if you want it gone
 entirely.

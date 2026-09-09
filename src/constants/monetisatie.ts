@@ -29,7 +29,7 @@
 export const DAGELIJKSE_VERHAAL_LIMIET = 2;
 
 /** De dagelijkse leeslimiet zelf. `false` = elke lezer leest onbeperkt, zoals vóór deze fase. */
-export const VERHAAL_LIMIET_ENABLED = true;
+export const VERHAAL_LIMIET_ENABLED = false;
 
 /**
  * De onderbreking ná een uitgelezen verhaal (`ad-modal.tsx`).
@@ -39,7 +39,7 @@ export const VERHAAL_LIMIET_ENABLED = true;
  * acht hoofdstukken, met een aftelling en een uitweg. Ook dit is nog een placeholder — er zit geen
  * AdMob achter — en het scherm zegt dat er ook bij.
  */
-export const AD_ONDERBREKING_ENABLED = true;
+export const AD_ONDERBREKING_ENABLED = false;
 
 /**
  * Hoeveel seconden de onderbreking blijft staan voordat hij weggeklikt kan worden.

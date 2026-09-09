@@ -1,5 +1,13 @@
 # Histora — Privacybeleid
 
+> **Vervallen — publiceer dit bestand niet.**
+> Het privacybeleid waar Histora naar verwijst is
+> [`privacy-policy.html`](privacy-policy.html), de pagina op
+> `https://demore2.github.io/chronicles/privacy-policy.html` en de waarde van `PRIVACY_BELEID_URL`
+> in `src/constants/juridisch.ts`. Deze Markdown-versie is van vóór het account, de
+> voortgangssync en de antwoorden op peilingen, en beweert dus nog dat je voortgang het toestel
+> nooit verlaat. Hij blijft staan omdat dit project niets weggooit. Lees de HTML-pagina.
+
 *Laatst bijgewerkt: 14 augustus 2026*
 
 **Kort gezegd:** Histora bewaart een account en je leesvoortgang, zodat je op elk toestel verder
@@ -10,7 +18,7 @@ en we verkopen je gegevens nooit.
 
 Histora is een leesapp over historische figuren en gebeurtenissen, gemaakt door Quinten Raats.
 Onder de AVG zijn wij de verwerkingsverantwoordelijke voor je gegevens. Vragen:
-**quintenraats@gmail.com**.
+**businessdemore@gmail.com**.
 
 ## Wat we bewaren
 
@@ -52,7 +60,7 @@ back-ups waarin nog een kopie staat, verdwijnen binnen 30 dagen uit de rotatie.
 
 ## Je account verwijderen
 
-Mail **quintenraats@gmail.com** vanaf het adres waarmee je je hebt aangemeld, dan verwijderen we je
+Mail **businessdemore@gmail.com** vanaf het adres waarmee je je hebt aangemeld, dan verwijderen we je
 account en alle gegevens binnen 30 dagen — meestal veel sneller. De app verwijderen wist de kopie op
 je toestel, maar laat het account op de server staan; stuur dus die mail als het echt weg moet.
 

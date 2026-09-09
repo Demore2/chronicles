@@ -22,20 +22,20 @@ omdat "Histora" op zichzelf niets over de inhoud zegt in een zoekresultaat.
 ## Short description (max 80)
 
 ```
-Six eras, 19 stories, eight chapters each. Finish one, unlock the figure.
+Six eras, 20 stories, eight chapters each. Finish one, unlock the figure.
 ```
 
 (73/80.)
 
 Alternatieven binnen de limiet, mocht je willen A/B'en:
 
-- `History as short stories. 19 lives and events, eight chapters each. No ads.` (75)
-- `Read history one chapter at a time. 19 stories, six eras, no ads.` (65)
+- `History as short stories. 20 lives and events, eight chapters each. No ads.` (75)
+- `Read history one chapter at a time. 20 stories, six eras, no ads.` (65)
 
 ## Full description (max 4000)
 
 > De regel "Every chapter opens with an illustrated scene" is gecontroleerd tegen de content, niet
-> aangenomen: 152 `{ type: 'afbeelding' }`-blokken en 152 × `Chapter.afbeelding` over 19 verhalen ×
+> aangenomen: 160 `{ type: 'afbeelding' }`-blokken en 160 × `Chapter.afbeelding` over 20 verhalen ×
 > 8 hoofdstukken (Fase 6.5). Verandert dat, pas dan deze zin aan — een listing die meer belooft dan
 > de app doet is precies waar reviews en Play-meldingen over gaan.
 
@@ -46,9 +46,9 @@ Every figure and every event is one story, split into eight short chapters. Read
 
 WHAT'S INSIDE
 
-Nineteen stories across six eras, from the founding of Rome to the present day.
+Twenty stories across six eras, from the founding of Rome to the present day.
 
-Antiquity — Julius Caesar, Spartacus, the rise of Rome, the eruption of Vesuvius
+Antiquity — Julius Caesar, Spartacus, Ashoka the Great, the rise of Rome, the eruption of Vesuvius
 Middle Ages — Joan of Arc, Charlemagne, Richard the Lionheart
 Early Modern Period — Leonardo da Vinci, Galileo Galilei, Catherine the Great
 Industrial Revolution — James Watt, Florence Nightingale, Thomas Edison
@@ -61,23 +61,22 @@ Chapters unlock one at a time, so you never have to remember where you left off.
 
 COLLECT THE PEOPLE
 
-Finish a story and its figure joins your collection. Nineteen circles, filled in one at a time — a quiet reason to come back for the next one.
+Finish a story and its figure joins your collection. Twenty cards, filled in one at a time — a quiet reason to come back for the next one.
 
 BUILT TO STAY OUT OF THE WAY
 
 No ads.
-No account. There is nothing to sign up for.
-No tracking and no analytics.
-Works offline. Every story and every image is inside the app.
-Your reading progress stays on your device.
-One optional reminder a day, off unless you switch it on.
+No tracking, no advertising profiles, and nothing sold to anyone.
+A free account, so your chapters, characters and streak follow you to a new phone.
+Every story and every image is inside the app, so reading keeps working without a connection.
+One reminder a day, at a time you pick, and you can switch it off.
 
 The interface is available in English, Dutch, French and German. The stories themselves are in English. Light and dark themes, and a reading streak if you want one.
 
 Histora is free.
 ```
 
-(1.627/4000.)
+(1.710/4000.)
 
 ---
 
@@ -91,16 +90,16 @@ Histora is free.
 | Contact e-mail | businessdemore@gmail.com | Verplicht en **publiek zichtbaar** in de listing. Hetzelfde adres als `SUPPORT_EMAIL` in `src/constants/app-info.ts` en als de privacypagina — dat is met opzet: hier stond een persóónlijk adres, en dan staan er drie adressen voor één app waarvan de lezer niet weet welke gelezen wordt. Wijzig je er één, wijzig ze alle drie. |
 | Website | — | Optioneel. Als je `docs/` via GitHub Pages publiceert kun je die repo-pagina gebruiken. |
 | Phone | — | Optioneel, laat leeg. |
-| Privacy policy | ⬜ **nog te vullen** | De URL van `docs/privacy-policy.html`. Zie `docs/README.md`. **Harde blocker.** |
+| Privacy policy | `https://demore2.github.io/chronicles/privacy-policy.html` | Dezelfde URL als `PRIVACY_BELEID_URL` in `src/constants/juridisch.ts`. Wijzig je de host, wijzig ze samen. |
 | Ads | **No, my app does not contain ads** | Klopt: `ADS_ENABLED = false` in `src/components/ad-banner.tsx`. |
-| In-app purchases | **No** | `useAbonnement()` is een stub die altijd `isPremium: false` geeft; er is geen Billing-integratie. |
+| In-app purchases | **No** | Billing is een stub, en de drie vlaggen die een aanbod toonden staan uit: `PRO_BANNER_ENABLED`, `VERHAAL_LIMIET_ENABLED`, `AD_ONDERBREKING_ENABLED`. Er is dus nergens een prijs te zien. |
 | Content rating | IARC-vragenlijst, zie hieronder | |
 | Target audience | **13+** | Bewust niet onder 13: dan val je onder het Families-programma met een eigen set eisen. |
-| App access | **All functionality is available without special access** | Geen login, geen gated content. |
+| App access | **All or some functionality is restricted** | De hele app zit achter `AuthPoort`, dus Play heeft **testgegevens** nodig: geef het account uit `docs/TEST_ACCOUNTS.md` op bij "App access → Add new instructions". Zonder dat komt de reviewer niet voorbij het loginscherm en volgt een afwijzing. |
 | News app | **No** | |
 | Government app | **No** | |
 | Financial features | **None** | |
-| Data safety | zie `docs/README.md` | "No data collected". |
+| Data safety | zie `docs/README.md` | **Niet** "no data collected": e-mailadres, gebruikersnaam, leesvoortgang, peilingantwoorden en feedback gaan naar Supabase. De ingevulde antwoorden staan in `docs/README.md` en horen gelijk te lopen met `docs/privacy-policy.html`. |
 
 ### IARC-vragenlijst
 
@@ -134,7 +133,7 @@ Alles staat in `store/assets/`, gegenereerd met `npm run generate:store-assets`.
 De feature graphic is **geen** PNG die je met de hand bewerkt: de bron is `store/feature-graphic.html`
 en het script rendert die met headless Chrome. Wijzig de HTML en draai het script opnieuw.
 
-⚠️ De feature graphic zegt letterlijk **"19 STORIES · 6 ERAS · NO ADS"**. Verandert een van die drie
+⚠️ De feature graphic zegt letterlijk **"20 STORIES · 6 ERAS · NO ADS"**. Verandert een van die drie
 (v1.1 met advertenties, extra verhalen), pas dan de HTML aan en render opnieuw.
 
 ### Screenshot-volgorde
