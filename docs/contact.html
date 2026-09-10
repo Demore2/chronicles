@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histora Support — Account &amp; Data Requests</title>
+<meta name="description" content="Request deletion of your Histora account, ask for a copy of your data, or contact Histora support.">
+<style>
+    :root {
+        --green: #163D31;
+        --green-dark: #0d2820;
+        --gold: #D6A84F;
+        --gold-dark: #c09640;
+        --text: #333;
+        --muted: #666;
+        --line: #e0e0e0;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+        padding: 48px 40px;
+    }
+
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 { color: var(--green); font-size: 30px; margin-bottom: 8px; }
+    .header p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+    .accent-line {
+        width: 60px;
+        height: 4px;
+        background: var(--gold);
+        margin: 18px auto 0;
+        border-radius: 2px;
+    }
+
+    .form-section { margin-bottom: 28px; }
+
+    .form-section h2 {
+        color: var(--green);
+        font-size: 18px;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .request-type {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+    }
+
+    .radio-option { flex: 1; min-width: 150px; }
+
+    .radio-option input[type="radio"] {
+        margin-right: 8px;
+        accent-color: var(--gold);
+        cursor: pointer;
+    }
+
+    .radio-option label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        color: var(--text);
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-group label {
+        display: block;
+        color: var(--green);
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        color: var(--text);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(214, 168, 79, 0.15);
+    }
+
+    .form-group input.invalid,
+    .form-group textarea.invalid { border-color: #d94f4f; }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .button-group { display: flex; gap: 12px; margin-top: 28px; }
+
+    .submit-btn {
+        flex: 2;
+        padding: 14px 24px;
+        background: var(--gold);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .submit-btn:hover {
+        background: var(--gold-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(214, 168, 79, 0.3);
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    .cancel-btn {
+        flex: 1;
+        padding: 14px 24px;
+        background: #f0f0f0;
+        color: var(--green);
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+    }
+
+    .cancel-btn:hover { background: #e8e8e8; border-color: #d0d0d0; }
+
+    .info-box {
+        background: #f0f7f5;
+        border-left: 4px solid var(--green);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 22px;
+    }
+
+    .info-box p { color: var(--text); font-size: 13px; line-height: 1.6; }
+    .info-box p + p { margin-top: 10px; }
+    .info-box a { color: var(--green); }
+
+    .status-message {
+        display: none;
+        background: #e8f5e9;
+        border: 2px solid #4caf50;
+        color: #2e7d32;
+        padding: 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 22px;
+    }
+
+    .status-message.show { display: block; }
+    .status-message a { color: #2e7d32; }
+
+    footer {
+        margin-top: 32px;
+        padding-top: 18px;
+        border-top: 1px solid #f0f0f0;
+        text-align: center;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    footer a { color: var(--green); }
+
+    @media (max-width: 600px) {
+        .container { padding: 32px 22px; }
+        .header h1 { font-size: 23px; }
+        .request-type { flex-direction: column; gap: 12px; }
+        .radio-option { min-width: auto; }
+        .button-group { flex-direction: column-reverse; }
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Histora Support</h1>
+        <p>Account &amp; data management requests</p>
+        <div class="accent-line"></div>
+    </div>
+
+    <div class="status-message" id="statusMessage" role="status" aria-live="polite"></div>
+
+    <form id="contactForm" novalidate>
+        <div class="form-section">
+            <h2>What can we help you with?</h2>
+
+            <div class="request-type">
+                <div class="radio-option">
+                    <input type="radio" id="delete" name="requestType" value="delete_account" checked>
+                    <label for="delete">Delete account</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="data" name="requestType" value="request_data">
+                    <label for="data">Request my data</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="other" name="requestType" value="other">
+                    <label for="other">Other request</label>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>You can delete your account inside the app.</strong> Open Histora and go to
+                <em>Profile &rarr; Settings &rarr; Delete account</em>. That removes your account and
+                everything stored with it straight away, on the server and on your device. Use this
+                form if you no longer have the app installed or cannot sign in.</p>
+                <p><strong>Privacy.</strong> Requests are handled under the GDPR and answered within
+                30 days. What the app stores is described in the
+                <a href="https://demore2.github.io/chronicles/privacy-policy.html">privacy policy</a>.</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Your information</h2>
+
+            <div class="form-group">
+                <label for="email">Email address *</label>
+                <input type="email" id="email" name="email" required autocomplete="email"
+                       placeholder="The address you signed up with">
+            </div>
+
+            <div class="form-group">
+                <label for="userId">Histora user ID (optional)</label>
+                <input type="text" id="userId" name="userId" placeholder="Only if you know it">
+            </div>
+
+            <div class="form-group">
+                <label for="message">Details *</label>
+                <textarea id="message" name="message" required
+                          placeholder="Tell us what you would like us to do."></textarea>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="reset" class="cancel-btn">Clear</button>
+            <button type="submit" class="submit-btn">Send request</button>
+        </div>
+    </form>
+
+    <footer>
+        This form opens your email app with the request filled in. You can also write to us directly at
+        <a href="mailto:businessdemore@gmail.com">businessdemore@gmail.com</a>.<br>
+        <a href="https://demore2.github.io/chronicles/privacy-policy.html">Privacy policy</a> &middot;
+        <a href="https://demore2.github.io/chronicles/terms-of-service.html">Terms of service</a>
+    </footer>
+</div>
+
+<script>
+    var SUPPORT_EMAIL = 'businessdemore@gmail.com';
+
+    var ONDERWERPEN = {
+        delete_account: 'Histora: account deletion request',
+        request_data: 'Histora: copy of my data',
+        other: 'Histora: support request'
+    };
+
+    var form = document.getElementById('contactForm');
+    var statusMessage = document.getElementById('statusMessage');
+    var emailVeld = document.getElementById('email');
+    var berichtVeld = document.getElementById('message');
+
+    function isEmail(waarde) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(waarde.trim());
+    }
+
+    function toon(html) {
+        statusMessage.innerHTML = html;
+        statusMessage.classList.add('show');
+    }
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        statusMessage.classList.remove('show');
+
+        var email = emailVeld.value.trim();
+        var bericht = berichtVeld.value.trim();
+
+        emailVeld.classList.toggle('invalid', !isEmail(email));
+        berichtVeld.classList.toggle('invalid', bericht === '');
+
+        if (!isEmail(email)) { emailVeld.focus(); return; }
+        if (bericht === '') { berichtVeld.focus(); return; }
+
+        var soort = document.querySelector('input[name="requestType"]:checked').value;
+        var userId = document.getElementById('userId').value.trim();
+
+        var regels = [
+            'Request type: ' + soort,
+            'Account email: ' + email,
+            'User ID: ' + (userId || 'not provided'),
+            'Submitted: ' + new Date().toISOString(),
+            '',
+            bericht,
+            ''
+        ];
+
+        window.location.href = 'mailto:' + SUPPORT_EMAIL +
+            '?subject=' + encodeURIComponent(ONDERWERPEN[soort]) +
+            '&body=' + encodeURIComponent(regels.join('\n'));
+
+        toon('<strong>Your email app is opening.</strong><br>' +
+             'The request is only sent once you press send there. If nothing opened, write to ' +
+             '<a href="mailto:' + SUPPORT_EMAIL + '">' + SUPPORT_EMAIL + '</a> and mention the ' +
+             'request type and the address on your account. We answer within 30 days.');
+    });
+
+    emailVeld.addEventListener('blur', function () {
+        this.classList.toggle('invalid', this.value.trim() !== '' && !isEmail(this.value));
+    });
+
+    form.addEventListener('reset', function () {
+        statusMessage.classList.remove('show');
+        emailVeld.classList.remove('invalid');
+        berichtVeld.classList.remove('invalid');
+    });
+</script>
+</body>
+</html>
